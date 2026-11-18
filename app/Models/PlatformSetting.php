@@ -1,0 +1,242 @@
+<?php
+
+namespace App\Models;
+
+use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Facades\Schema;
+
+class PlatformSetting extends Model
+{
+    protected $fillable = [
+        'key',
+        'group',
+        'type',
+        'label',
+        'value',
+        'updated_by',
+    ];
+
+    private static ?array $cache = null;
+
+    public static function defaults(): array
+    {
+        return [
+            // Dynamic Text Overrides
+            'text.top_bar_office' => [
+                'group' => 'text', 'type' => 'string',
+                'label' => 'Top Utility Bar — Office & Location Text',
+                'value' => 'East Legon, Accra, Ghana',
+            ],
+            'text.brand_title' => [
+                'group' => 'text', 'type' => 'string',
+                'label' => 'Header — Brand Title',
+                'value' => 'Bridge-Tailor',
+            ],
+            'text.brand_subtitle' => [
+                'group' => 'text', 'type' => 'string',
+                'label' => 'Header — Platform Subtitle',
+                'value' => 'AI Business Diagnostic Platform',
+            ],
+            'text.hero_eyebrow' => [
+                'group' => 'text', 'type' => 'string',
+                'label' => 'Landing Hero — Eyebrow Tagline',
+                'value' => 'DIAGNOSTICS.BRIDGE-TAILOR.COM · DIGITAL MANAGEMENT CONSULTANT',
+            ],
+            'text.hero_title' => [
+                'group' => 'text', 'type' => 'string',
+                'label' => 'Landing Hero — Main Headline',
+                'value' => 'Bridge Tailor — AI-Driven Business Diagnostic & Advisory Engine',
+            ],
+            'text.hero_subtitle' => [
+                'group' => 'text', 'type' => 'string',
+                'label' => 'Landing Hero — Lead Paragraph',
+                'value' => 'A structured diagnostic platform purpose-built for African SMEs. Instead of generic chatbot advice, this engine evaluates your enterprise against Bridge Tailor’s consulting methodology—blending how operational strain feels from the inside with hard evidence across five business functions, calculating deterministic health scores, exposing blind spots, and sequencing the exact consulting intervention required.',
+            ],
+            'text.hero_cta_primary' => [
+                'group' => 'text', 'type' => 'string',
+                'label' => 'Landing Hero — Primary CTA Button Text',
+                'value' => 'Launch Business Health Diagnostic →',
+            ],
+            'text.capabilities_title' => [
+                'group' => 'text', 'type' => 'string',
+                'label' => 'Landing Section 2 — Six Capabilities Heading',
+                'value' => 'Six Core Capabilities & Client Diagnostic Workflow',
+            ],
+            'text.modules_title' => [
+                'group' => 'text', 'type' => 'string',
+                'label' => 'Landing Section 3 — Five Assessment Modules Heading',
+                'value' => 'Aligned with Bridge Tailor’s Consulting Practice Lines',
+            ],
+            'text.wp_kit_title' => [
+                'group' => 'text', 'type' => 'string',
+                'label' => 'Landing Section 4 — WordPress Integration Heading',
+                'value' => 'WordPress Integration Kit for www.bridge-tailor.com',
+            ],
+            'text.wizard_step1_title' => [
+                'group' => 'text', 'type' => 'string',
+                'label' => 'Assessment Wizard — Step 01 Heading',
+                'value' => 'Business Profile & Diagnostic Scope',
+            ],
+            'text.wizard_step2_title' => [
+                'group' => 'text', 'type' => 'string',
+                'label' => 'Assessment Wizard — Step 02 Intake Heading',
+                'value' => 'What\'s Going On in the Business?',
+            ],
+            'text.wizard_step3_title' => [
+                'group' => 'text', 'type' => 'string',
+                'label' => 'Assessment Wizard — Step 03 Questionnaire Heading',
+                'value' => 'Adaptive Functional Diagnostic Questionnaire',
+            ],
+            'text.report_consult_heading' => [
+                'group' => 'text', 'type' => 'string',
+                'label' => 'Report Conversion Band — Consultation Heading',
+                'value' => 'Request a Bridge Tailor Strategy & Diagnostic Review Session',
+            ],
+            'text.footer_tagline' => [
+                'group' => 'text', 'type' => 'string',
+                'label' => 'Footer — Consulting Tagline & Description',
+                'value' => 'Our drive is to make every business thrive. Boutique management consultancy supporting African SMEs through Corporate Strategy, Performance Management, Finance Access, and Market Access.',
+            ],
+
+            // Dynamic Component & Card Visibility Toggles ('1' = visible, '0' = hidden)
+            'vis.top_utility_bar' => [
+                'group' => 'visibility', 'type' => 'boolean',
+                'label' => 'Global — Top Utility Bar (Accra Office & User Status)',
+                'value' => '1',
+            ],
+            'vis.landing_architecture_box' => [
+                'group' => 'visibility', 'type' => 'boolean',
+                'label' => 'Landing — Right-Hand Controlled Diagnostic Architecture Card',
+                'value' => '1',
+            ],
+            'vis.landing_capabilities_section' => [
+                'group' => 'visibility', 'type' => 'boolean',
+                'label' => 'Landing — Section 2: Six Core Capabilities & Workflow Cards',
+                'value' => '1',
+            ],
+            'vis.landing_modules_table' => [
+                'group' => 'visibility', 'type' => 'boolean',
+                'label' => 'Landing — Section 3: Five Assessment Modules Table',
+                'value' => '1',
+            ],
+            'vis.landing_wp_integration_kit' => [
+                'group' => 'visibility', 'type' => 'boolean',
+                'label' => 'Landing — Section 4: WordPress Integration Kit Section',
+                'value' => '1',
+            ],
+            'vis.wizard_demo_prefill_button' => [
+                'group' => 'visibility', 'type' => 'boolean',
+                'label' => 'Wizard — "Prefill Sample African SME Profile" Shortcut Button',
+                'value' => '1',
+            ],
+            'vis.report_kpi_strip' => [
+                'group' => 'visibility', 'type' => 'boolean',
+                'label' => 'Report — 4-Column Headline KPI Strip',
+                'value' => '1',
+            ],
+            'vis.report_perception_vs_evidence' => [
+                'group' => 'visibility', 'type' => 'boolean',
+                'label' => 'Report — "How It Feels vs. What the Evidence Shows" & Cross-Area Insights',
+                'value' => '1',
+            ],
+            'vis.report_swot_risk_cards' => [
+                'group' => 'visibility', 'type' => 'boolean',
+                'label' => 'Report — Strengths, Weaknesses, Risk & Opportunity Cards',
+                'value' => '1',
+            ],
+            'vis.report_roadmap_and_priorities' => [
+                'group' => 'visibility', 'type' => 'boolean',
+                'label' => 'Report — Recommendations, 30/90/180-Day Roadmap & Consulting Priorities',
+                'value' => '1',
+            ],
+            'vis.report_epistemic_ledger' => [
+                'group' => 'visibility', 'type' => 'boolean',
+                'label' => 'Report — Fact vs. Assumption Epistemic Ledger Cards',
+                'value' => '1',
+            ],
+            'vis.report_document_vault_card' => [
+                'group' => 'visibility', 'type' => 'boolean',
+                'label' => 'Report — Supporting Document Upload Card',
+                'value' => '1',
+            ],
+            'vis.report_team_invite_card' => [
+                'group' => 'visibility', 'type' => 'boolean',
+                'label' => 'Report — Multi-Employee Team Invite Card',
+                'value' => '1',
+            ],
+            'vis.report_history_card' => [
+                'group' => 'visibility', 'type' => 'boolean',
+                'label' => 'Report — Historical Diagnostic Trajectory Card',
+                'value' => '1',
+            ],
+            'vis.report_consultation_booking' => [
+                'group' => 'visibility', 'type' => 'boolean',
+                'label' => 'Report — Bottom Strategy Session Booking Section',
+                'value' => '1',
+            ],
+            'vis.footer_section' => [
+                'group' => 'visibility', 'type' => 'boolean',
+                'label' => 'Global — Footer Section',
+                'value' => '1',
+            ],
+
+            // Automated Consultant Routing Engine Settings
+            'system.auto_assign_consultants' => [
+                'group' => 'system', 'type' => 'boolean',
+                'label' => 'Automated Consultant Assignment when Admin is Unavailable',
+                'value' => '1',
+            ],
+            'system.auto_assign_strategy' => [
+                'group' => 'system', 'type' => 'string',
+                'label' => 'Automated Assignment Strategy (least_loaded | round_robin)',
+                'value' => 'least_loaded',
+            ],
+        ];
+    }
+
+    public static function allMap(): array
+    {
+        if (static::$cache !== null) {
+            return static::$cache;
+        }
+
+        $defaults = collect(static::defaults())->mapWithKeys(fn ($item, $key) => [$key => $item['value']])->all();
+
+        try {
+            if (Schema::hasTable('platform_settings')) {
+                $dbRows = static::query()->pluck('value', 'key')->all();
+                static::$cache = array_replace($defaults, $dbRows);
+
+                return static::$cache;
+            }
+        } catch (\Throwable $e) {
+            // Fallback to defaults if migration hasn't run yet
+        }
+
+        static::$cache = $defaults;
+
+        return static::$cache;
+    }
+
+    public static function text(string $key, ?string $default = null): string
+    {
+        $map = static::allMap();
+
+        return (string) ($map[$key] ?? $default ?? (static::defaults()[$key]['value'] ?? ''));
+    }
+
+    public static function visible(string $key, bool $default = true): bool
+    {
+        $map = static::allMap();
+        if (! array_key_exists($key, $map)) {
+            return $default;
+        }
+
+        return in_array((string) $map[$key], ['1', 'true', 'yes', 'on'], true);
+    }
+
+    public static function flushCache(): void
+    {
+        static::$cache = null;
+    }
+}
