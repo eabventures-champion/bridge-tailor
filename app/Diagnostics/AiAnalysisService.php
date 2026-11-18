@@ -29,23 +29,36 @@ class AiAnalysisService
         $benchmarks = Benchmark::forProfile($company->sector ?? 'general', $company->stage ?? 'growth');
         $documents = $assessment->documents()->where('extraction_status', 'analyzed')->get();
 
-        $apiKey = (string) config('services.openai.key', env('OPENAI_API_KEY', ''));
+        $preferredProvider = strtolower((string) config('services.gemini.provider', env('IDEA_AI_PROVIDER', 'gemini')));
+        $geminiKey = (string) config('services.gemini.key', env('GEMINI_API_KEY', ''));
+        $openAiKey = (string) config('services.openai.key', env('OPENAI_API_KEY', ''));
 
-        if ($assessment->ai_consent && $apiKey !== '') {
-            try {
-                $aiResult = $this->callOpenAiResponsesApi($assessment, $scored, $fw, $benchmarks, $documents, $apiKey);
-                if ($aiResult) {
-                    return [
-                        'provider' => 'openai',
-                        'model' => config('services.openai.model', env('OPENAI_MODEL', 'gpt-4o-2024-08-06')),
-                        'analysis' => $aiResult,
-                    ];
+        if ($assessment->ai_consent) {
+            // 1. Primary: Google Gemini Structured Outputs (when IDEA_AI_PROVIDER=gemini or GEMINI_API_KEY is set)
+            if ($geminiKey !== '' && ($preferredProvider === 'gemini' || $openAiKey === '')) {
+                $geminiResult = $this->callGeminiWithFallbacks($assessment, $scored, $fw, $benchmarks, $documents, $geminiKey);
+                if ($geminiResult) {
+                    return $geminiResult;
                 }
-            } catch (\Throwable $e) {
-                Log::warning('OpenAI Responses API call failed; falling back to Bridge-Tailor deterministic framework engine.', [
-                    'assessment_id' => $assessment->id,
-                    'error' => $e->getMessage(),
-                ]);
+            }
+
+            // 2. OpenAI Responses API Structured Outputs (when OPENAI_API_KEY is set)
+            if ($openAiKey !== '') {
+                try {
+                    $aiResult = $this->callOpenAiResponsesApi($assessment, $scored, $fw, $benchmarks, $documents, $openAiKey);
+                    if ($aiResult) {
+                        return [
+                            'provider' => 'openai',
+                            'model' => config('services.openai.model', env('OPENAI_MODEL', 'gpt-4o-2024-08-06')),
+                            'analysis' => $aiResult,
+                        ];
+                    }
+                } catch (\Throwable $e) {
+                    Log::warning('OpenAI Responses API call failed; falling back to Bridge-Tailor deterministic framework engine.', [
+                        'assessment_id' => $assessment->id,
+                        'error' => $e->getMessage(),
+                    ]);
+                }
             }
         }
 
@@ -58,8 +71,18 @@ class AiAnalysisService
 
     public function analyzeDocument(UploadedDocument $document, string $rawText): array
     {
-        $apiKey = (string) config('services.openai.key', env('OPENAI_API_KEY', ''));
+        $geminiKey = (string) config('services.gemini.key', env('GEMINI_API_KEY', ''));
+        $openAiKey = (string) config('services.openai.key', env('OPENAI_API_KEY', ''));
         $snippet = mb_substr(trim($rawText), 0, 12000);
+
+        if ($geminiKey !== '' && $snippet !== '') {
+            $geminiDoc = $this->callGeminiDocumentExtraction($document, $snippet, $geminiKey);
+            if ($geminiDoc) {
+                return $geminiDoc;
+            }
+        }
+
+        $apiKey = $openAiKey;
 
         if ($apiKey !== '' && $snippet !== '') {
             try {
@@ -125,6 +148,210 @@ class AiAnalysisService
         }
 
         return $this->deterministicDocumentExtraction($document, $snippet);
+    }
+
+    private function geminiModelsToTry(): array
+    {
+        $primary = trim((string) config('services.gemini.model', env('GEMINI_MODEL', 'gemini-flash-lite-latest')));
+        $fallbacksRaw = (string) config('services.gemini.fallback_models', env('GEMINI_FALLBACK_MODELS', 'gemini-flash-latest'));
+        $fallbacks = array_filter(array_map('trim', explode(',', $fallbacksRaw)));
+
+        return array_values(array_unique(array_filter(array_merge([$primary], $fallbacks))));
+    }
+
+    private function stripAdditionalProperties(array $schema): array
+    {
+        unset($schema['additionalProperties']);
+        if (isset($schema['properties']) && is_array($schema['properties'])) {
+            foreach ($schema['properties'] as $k => $v) {
+                if (is_array($v)) {
+                    $schema['properties'][$k] = $this->stripAdditionalProperties($v);
+                }
+            }
+        }
+        if (isset($schema['items']) && is_array($schema['items'])) {
+            $schema['items'] = $this->stripAdditionalProperties($schema['items']);
+        }
+
+        return $schema;
+    }
+
+    private function callGeminiWithFallbacks(
+        Assessment $assessment,
+        array $scored,
+        Framework $fw,
+        array $benchmarks,
+        $documents,
+        string $apiKey
+    ): ?array {
+        $company = $assessment->company;
+        $moduleInstructions = [];
+        foreach ($fw->modules() as $mKey => $m) {
+            $moduleInstructions[$mKey] = $m['ai_instructions'] ?? '';
+        }
+
+        $docSummaries = [];
+        foreach ($documents as $doc) {
+            $docSummaries[] = [
+                'name' => $doc->original_name,
+                'category' => $doc->category,
+                'extraction' => $doc->ai_extraction,
+            ];
+        }
+
+        $payload = [
+            'company' => [
+                'name' => $company->name,
+                'sector' => $company->sector,
+                'stage' => $company->stage,
+                'size_band' => $company->size_band,
+                'revenue_band' => $company->revenue_band,
+                'country' => $company->country,
+                'city' => $company->city,
+                'objectives' => $company->objectives,
+                'challenges' => $company->challenges,
+            ],
+            'client_own_words' => $assessment->custom_issue,
+            'controlled_scores' => [
+                'health_index' => $scored['health_index'],
+                'band' => $scored['band'],
+                'modules' => $scored['modules'],
+                'strengths' => $scored['strengths'],
+                'gaps' => $scored['gaps'],
+                'evidence' => $scored['evidence'],
+                'risks' => $scored['risks'],
+                'sequence' => $scored['sequence'],
+                'cross_area_insights' => $scored['insights'],
+            ],
+            'sector_benchmarks' => $benchmarks,
+            'uploaded_document_signals' => $docSummaries,
+            'module_ai_instructions' => $moduleInstructions,
+        ];
+
+        $systemPrompt = <<<'PROMPT'
+You are Bridge Tailor's AI Diagnostic Engine, built around Bridge Tailor's management consulting methodology for African SMEs (Accra, Ghana & across Africa).
+
+CRITICAL RULES:
+1. NEVER invent, extrapolate, or modify numerical scores or financial performance figures. All numerical scores are computed by the controlled scoring engine and passed to you in `controlled_scores`.
+2. Distinguish strictly between:
+   - `CLIENT-PROVIDED`: Self-reported questionnaire answers, symptom ratings, or company profile statements (unaudited).
+   - `DOCUMENT-EVIDENCED`: Facts extracted from uploaded supporting documents.
+   - `CONSULTANT-ASSUMPTION`: Working hypotheses that require verification during a Bridge-Tailor discovery or Scale Readiness engagement.
+3. Align every recommendation and consulting priority with Bridge Tailor's four core practice lines:
+   - Business Strategy (Scale Readiness Review -> Governance & Structure Programme)
+   - Business Performance (Performance System Setup -> Finance Desk retainer)
+   - Finance Access (Capital Preparation Programme -> Investment Readiness Sprint)
+   - Market Access (Market Intelligence Report -> Market Entry Package)
+4. Respect sequencing gates: when Financial Control / Performance is weak, it gates Capital Raising (Finance Access) because capital does not convert on unverifiable books.
+Return valid JSON matching the requested schema.
+PROMPT;
+
+        $geminiSchema = $this->stripAdditionalProperties($this->reportJsonSchema());
+
+        foreach ($this->geminiModelsToTry() as $model) {
+            try {
+                $url = "https://generativelanguage.googleapis.com/v1beta/models/{$model}:generateContent?key=".urlencode($apiKey);
+                $response = Http::timeout(45)->post($url, [
+                    'systemInstruction' => [
+                        'parts' => [['text' => $systemPrompt]],
+                    ],
+                    'contents' => [
+                        [
+                            'role' => 'user',
+                            'parts' => [['text' => json_encode($payload, JSON_UNESCAPED_UNICODE)]],
+                        ],
+                    ],
+                    'generationConfig' => [
+                        'responseMimeType' => 'application/json',
+                        'responseSchema' => $geminiSchema,
+                        'temperature' => 0.2,
+                    ],
+                ]);
+
+                if ($response->successful()) {
+                    $text = $response->json('candidates.0.content.parts.0.text');
+                    $decoded = is_string($text) ? json_decode($text, true) : null;
+                    if (is_array($decoded) && isset($decoded['executive_summary'])) {
+                        return [
+                            'provider' => 'gemini',
+                            'model' => $model,
+                            'analysis' => $decoded,
+                        ];
+                    }
+                }
+            } catch (\Throwable $e) {
+                Log::warning("Gemini model {$model} failed; trying next fallback model.", [
+                    'assessment_id' => $assessment->id,
+                    'error' => $e->getMessage(),
+                ]);
+            }
+        }
+
+        return null;
+    }
+
+    private function callGeminiDocumentExtraction(UploadedDocument $document, string $snippet, string $apiKey): ?array
+    {
+        $docSchema = [
+            'type' => 'object',
+            'required' => ['document_summary', 'extracted_facts', 'governance_or_financial_flags', 'verification_note'],
+            'properties' => [
+                'document_summary' => ['type' => 'string'],
+                'extracted_facts' => [
+                    'type' => 'array',
+                    'items' => [
+                        'type' => 'object',
+                        'required' => ['fact', 'source_basis', 'module_relevance'],
+                        'properties' => [
+                            'fact' => ['type' => 'string'],
+                            'source_basis' => ['type' => 'string', 'enum' => ['CLIENT-PROVIDED', 'DOCUMENT-EVIDENCED', 'UNVERIFIED-ESTIMATE']],
+                            'module_relevance' => ['type' => 'string', 'enum' => ['SG', 'FH', 'OE', 'MG', 'HC']],
+                        ],
+                    ],
+                ],
+                'governance_or_financial_flags' => [
+                    'type' => 'array',
+                    'items' => ['type' => 'string'],
+                ],
+                'verification_note' => ['type' => 'string'],
+            ],
+        ];
+
+        foreach ($this->geminiModelsToTry() as $model) {
+            try {
+                $url = "https://generativelanguage.googleapis.com/v1beta/models/{$model}:generateContent?key=".urlencode($apiKey);
+                $response = Http::timeout(35)->post($url, [
+                    'systemInstruction' => [
+                        'parts' => [[
+                            'text' => 'You are a Bridge-Tailor senior management consultant analyzing an uploaded client business document. Never invent financial numbers. Only report figures explicitly present in the text and mark them as client-provided and unverified unless an audit opinion is explicitly stated.',
+                        ]],
+                    ],
+                    'contents' => [[
+                        'role' => 'user',
+                        'parts' => [[
+                            'text' => "Document Name: {$document->original_name}\nCategory: {$document->category}\nExtracted Text:\n{$snippet}",
+                        ]],
+                    ]],
+                    'generationConfig' => [
+                        'responseMimeType' => 'application/json',
+                        'responseSchema' => $docSchema,
+                        'temperature' => 0.1,
+                    ],
+                ]);
+
+                if ($response->successful()) {
+                    $text = $response->json('candidates.0.content.parts.0.text');
+                    $decoded = is_string($text) ? json_decode($text, true) : null;
+                    if (is_array($decoded) && isset($decoded['document_summary'])) {
+                        return $decoded;
+                    }
+                }
+            } catch (\Throwable $e) {
+                Log::warning("Gemini document extraction with {$model} failed.", ['error' => $e->getMessage()]);
+            }
+        }
+
+        return null;
     }
 
     private function callOpenAiResponsesApi(

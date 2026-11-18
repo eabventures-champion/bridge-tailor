@@ -40,4 +40,11 @@ return [
         'model' => env('OPENAI_MODEL', 'gpt-4o-2024-08-06'),
     ],
 
+    'gemini' => [
+        'provider' => env('IDEA_AI_PROVIDER', env('AI_PROVIDER', 'gemini')),
+        'key' => env('GEMINI_API_KEY'),
+        'model' => env('GEMINI_MODEL', 'gemini-flash-lite-latest'),
+        'fallback_models' => env('GEMINI_FALLBACK_MODELS', 'gemini-flash-latest'),
+    ],
+
 ];
