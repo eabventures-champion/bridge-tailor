@@ -34,6 +34,9 @@
             border-radius: 0 !important;
             box-shadow: none !important;
         }
+        html {
+            height: 100%;
+        }
         html, body {
             margin: 0;
             padding: 0;
@@ -46,6 +49,19 @@
             color: var(--bt-ink);
             background-color: var(--bt-white);
             -webkit-font-smoothing: antialiased;
+        }
+        body {
+            min-height: 100%;
+            min-height: 100vh;
+            min-height: 100dvh;
+            display: flex;
+            flex-direction: column;
+            padding-top: 90px;
+        }
+        main {
+            flex: 1 0 auto;
+            display: flex;
+            flex-direction: column;
         }
         pre, code {
             max-width: 100%;
@@ -79,9 +95,6 @@
             width: 100%;
             z-index: 9999;
             background-color: var(--bt-espresso);
-        }
-        body {
-            padding-top: 90px;
         }
         /* Top Utility Strip */
         .bt-utility {
@@ -449,6 +462,8 @@
         }
         /* Footer */
         .bt-footer {
+            margin-top: auto;
+            flex-shrink: 0;
             background-color: var(--bt-ink);
             color: #c2bab2;
             border-top: 3px solid var(--bt-amber);

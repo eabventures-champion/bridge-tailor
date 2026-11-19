@@ -4,9 +4,9 @@
 
 @section('content')
 <!-- Section 1: Solid Espresso Hero Band -->
-<section class="sec-espresso">
-    <div class="bt-container {{ $uiVisible('vis.landing_architecture_box') ? 'bt-hero-grid' : '' }}">
-        <div style="display:flex;flex-direction:column;justify-content:space-between;">
+<section class="sec-espresso" style="flex:1 0 auto;display:flex;flex-direction:column;justify-content:center;">
+    <div class="bt-container {{ $uiVisible('vis.landing_architecture_box') ? 'bt-hero-grid' : '' }}" style="width:100%;">
+        <div style="display:flex;flex-direction:column;justify-content:space-between;height:100%;">
             <div>
                 <div class="eyebrow">{{ $uiText('text.hero_eyebrow') }}</div>
                 <div style="margin-top:20px;margin-bottom:26px;">
