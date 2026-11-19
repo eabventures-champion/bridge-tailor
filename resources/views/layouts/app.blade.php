@@ -713,36 +713,17 @@
                     <span>☰ MENU</span>
                 </button>
                 <nav class="bt-nav" id="bt-main-nav">
-                    @guest
-                        <a href="{{ route('diagnostic.landing') }}" class="{{ request()->routeIs('diagnostic.landing') ? 'active' : '' }}">Overview</a>
-                        <a href="{{ route('diagnostic.wizard') }}" class="{{ request()->routeIs('diagnostic.wizard') ? 'active' : '' }}">Business Health Test</a>
-                        <a href="{{ route('login') }}" class="{{ request()->routeIs('login') ? 'active' : '' }}">Sign In</a>
-                        <a href="{{ route('diagnostic.wizard') }}" class="bt-nav-cta">Start Assessment →</a>
-                    @endguest
+                    @php
+                        $dynamicNavItems = \App\Models\NavigationItem::getForCurrentRequest();
+                    @endphp
 
-                    @auth
-                        @if(auth()->user()->role === 'client')
-                            <a href="{{ route('portal.index') }}" class="{{ request()->routeIs('portal.*') ? 'active' : '' }}">My Companies &amp; Action Tracker</a>
-                            <a href="{{ route('diagnostic.wizard') }}" class="bt-nav-cta">+ New Business Assessment →</a>
-                        @elseif(auth()->user()->role === 'consultant')
-                            <a href="{{ route('consultant.dashboard') }}" class="{{ request()->routeIs('consultant.dashboard') || request()->routeIs('consultant.review') ? 'active' : '' }}">Consultant Review Desk &amp; CRM</a>
-                            <a href="{{ route('portal.index') }}" class="{{ request()->routeIs('portal.*') ? 'active' : '' }}">Client Portfolios</a>
-                            <a href="{{ route('diagnostic.wizard') }}" class="bt-nav-cta">+ Assisted Diagnostic →</a>
-                        @elseif(auth()->user()->role === 'admin')
-                            <a href="{{ route('admin.console') }}" class="{{ request()->routeIs('admin.*') ? 'active' : '' }}">Admin Console</a>
-                            <a href="{{ route('consultant.dashboard') }}" class="{{ request()->routeIs('consultant.dashboard') || request()->routeIs('consultant.review') ? 'active' : '' }}">Consultant Desk &amp; CRM</a>
-                            <a href="{{ route('consultant.framework') }}" class="{{ request()->routeIs('consultant.framework') ? 'active' : '' }}">Framework &amp; Questions Config</a>
-                            <a href="{{ route('portal.index') }}" class="{{ request()->routeIs('portal.*') ? 'active' : '' }}">Client Portfolios</a>
-                            <a href="{{ route('diagnostic.wizard') }}" class="bt-nav-cta">+ New Diagnostic →</a>
-                        @elseif(auth()->user()->role === 'developer')
-                            <a href="{{ route('developer.console') }}" class="{{ request()->routeIs('developer.*') ? 'active' : '' }}">Developer Console</a>
-                            <a href="{{ route('diagnostic.landing') }}" class="{{ request()->routeIs('diagnostic.landing') ? 'active' : '' }}">Overview</a>
-                            <a href="{{ route('consultant.dashboard') }}" class="{{ request()->routeIs('consultant.dashboard') || request()->routeIs('consultant.review') ? 'active' : '' }}">Consultant Desk</a>
-                            <a href="{{ route('consultant.framework') }}" class="{{ request()->routeIs('consultant.framework') ? 'active' : '' }}">Framework JSON</a>
-                            <a href="{{ route('portal.index') }}" class="{{ request()->routeIs('portal.*') ? 'active' : '' }}">Client Portal</a>
-                            <a href="{{ route('diagnostic.wizard') }}" class="bt-nav-cta">+ New Assessment →</a>
-                        @endif
-                    @endauth
+                    @foreach($dynamicNavItems as $navItem)
+                        <a href="{{ $navItem->resolvedUrl() }}"
+                           target="{{ $navItem->target ?: '_self' }}"
+                           class="{{ $navItem->is_cta ? 'bt-nav-cta' : '' }} {{ $navItem->isCurrent() ? 'active' : '' }}">
+                            {{ $navItem->label }}
+                        </a>
+                    @endforeach
                 </nav>
             </div>
         </header>

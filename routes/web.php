@@ -60,6 +60,12 @@ Route::prefix('admin')->middleware(EnsureRole::class.':admin')->group(function (
     Route::post('/auto-assign-settings', [DeveloperController::class, 'updateAutoAssignmentSettings'])->name('admin.assignment.settings');
     Route::post('/companies/{company}/assign', [DeveloperController::class, 'assignCompanyConsultant'])->name('admin.companies.assign');
     Route::post('/companies/auto-assign-all', [DeveloperController::class, 'runBatchAutoAssign'])->name('admin.companies.auto_assign_all');
+    Route::post('/menu', [DeveloperController::class, 'storeMenuItem'])->name('admin.menu.store');
+    Route::post('/menu/{item}', [DeveloperController::class, 'updateMenuItem'])->name('admin.menu.update');
+    Route::post('/menu/{item}/toggle-visibility', [DeveloperController::class, 'toggleMenuVisibility'])->name('admin.menu.toggle_visibility');
+    Route::post('/menu/{item}/toggle-active', [DeveloperController::class, 'toggleMenuActive'])->name('admin.menu.toggle_active');
+    Route::post('/menu/{item}/delete', [DeveloperController::class, 'destroyMenuItem'])->name('admin.menu.delete');
+    Route::post('/menu-reset', [DeveloperController::class, 'resetMenuDefaults'])->name('admin.menu.reset');
 });
 
 // Developer Super-Account Console (Dynamic Text, Component Visibility Toggles, Full User Directory & System Control)
@@ -73,6 +79,12 @@ Route::prefix('developer')->middleware(EnsureRole::class.':developer,admin')->gr
     Route::post('/auto-assign-settings', [DeveloperController::class, 'updateAutoAssignmentSettings'])->name('developer.assignment.settings');
     Route::post('/companies/{company}/assign', [DeveloperController::class, 'assignCompanyConsultant'])->name('developer.companies.assign');
     Route::post('/companies/auto-assign-all', [DeveloperController::class, 'runBatchAutoAssign'])->name('developer.companies.auto_assign_all');
+    Route::post('/menu', [DeveloperController::class, 'storeMenuItem'])->name('developer.menu.store');
+    Route::post('/menu/{item}', [DeveloperController::class, 'updateMenuItem'])->name('developer.menu.update');
+    Route::post('/menu/{item}/toggle-visibility', [DeveloperController::class, 'toggleMenuVisibility'])->name('developer.menu.toggle_visibility');
+    Route::post('/menu/{item}/toggle-active', [DeveloperController::class, 'toggleMenuActive'])->name('developer.menu.toggle_active');
+    Route::post('/menu/{item}/delete', [DeveloperController::class, 'destroyMenuItem'])->name('developer.menu.delete');
+    Route::post('/menu-reset', [DeveloperController::class, 'resetMenuDefaults'])->name('developer.menu.reset');
 });
 
 // Authenticated User Profile (All Roles: Client, Consultant, Admin, Developer)

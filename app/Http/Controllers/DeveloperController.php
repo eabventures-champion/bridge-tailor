@@ -9,6 +9,7 @@ use App\Models\AuditLog;
 use App\Models\Company;
 use App\Models\ConsultationRequest;
 use App\Models\FrameworkVersion;
+use App\Models\NavigationItem;
 use App\Models\PlatformSetting;
 use App\Models\UploadedDocument;
 use App\Models\User;
@@ -62,6 +63,9 @@ class DeveloperController extends Controller
             ->limit(40)
             ->get();
 
+        $navigationItems = NavigationItem::orderBy('audience')->orderBy('sort_order')->orderBy('id')->get();
+        $routePrefix = request()->is('admin*') ? 'admin' : ($isDeveloper ? 'developer' : 'admin');
+
         $stats = [
             'users_total' => $users->count(),
             'clients_count' => $users->where('role', 'client')->count(),
@@ -76,6 +80,8 @@ class DeveloperController extends Controller
             'consultations_total' => ConsultationRequest::count(),
             'visible_components' => collect($visibilitySettings)->filter(fn ($v) => in_array((string) $v['current'], ['1', 'true'], true))->count(),
             'total_components' => count($visibilitySettings),
+            'menu_items_total' => $navigationItems->count(),
+            'menu_items_active' => $navigationItems->where('is_active', true)->where('is_visible', true)->count(),
         ];
 
         $availableRoles = $isDeveloper
@@ -93,6 +99,7 @@ class DeveloperController extends Controller
         return view('developer.console', [
             'fw' => FrameworkVersion::active(),
             'isDeveloper' => $isDeveloper,
+            'routePrefix' => $routePrefix,
             'availableRoles' => $availableRoles,
             'assignableConsultants' => $assignableConsultants,
             'autoAssignEnabled' => $assignmentService->isAutoAssignEnabled(),
@@ -100,6 +107,7 @@ class DeveloperController extends Controller
             'unassignedCompaniesCount' => $unassignedCompaniesCount,
             'textSettings' => $textSettings,
             'visibilitySettings' => $visibilitySettings,
+            'navigationItems' => $navigationItems,
             'users' => $users,
             'companies' => $companies,
             'assessments' => $assessments,
@@ -155,6 +163,13 @@ class DeveloperController extends Controller
                     'updated_by' => Auth::id(),
                 ]
             );
+        }
+
+        if (isset($checked['vis.nav_overview'])) {
+            $isOverviewOn = in_array((string) $checked['vis.nav_overview'], ['1', 'on', 'true'], true);
+            NavigationItem::where('key', 'like', '%overview%')->update(['is_visible' => $isOverviewOn]);
+        } else {
+            NavigationItem::where('key', 'like', '%overview%')->update(['is_visible' => false]);
         }
 
         PlatformSetting::flushCache();
@@ -339,5 +354,126 @@ class DeveloperController extends Controller
         return back()->with('status', $count > 0
             ? "Automated routing engine assigned {$count} unassigned business(es) across active consultants."
             : 'All businesses already have an assigned consultant.');
+    }
+
+    public function storeMenuItem(Request $request)
+    {
+        $data = $request->validate([
+            'label' => 'required|string|max:160',
+            'url' => 'required|string|max:255',
+            'route_name' => 'nullable|string|max:120',
+            'target' => 'required|in:_self,_blank',
+            'audience' => 'required|in:guest,all,auth,client,consultant,admin,developer',
+            'is_active' => 'nullable|boolean',
+            'is_visible' => 'nullable|boolean',
+            'is_cta' => 'nullable|boolean',
+            'sort_order' => 'nullable|integer',
+        ]);
+
+        $item = NavigationItem::create([
+            'key' => 'custom_'.time().'_'.substr(md5($data['label']), 0, 6),
+            'label' => $data['label'],
+            'url' => $data['url'],
+            'route_name' => $data['route_name'] ?? null,
+            'target' => $data['target'] ?? '_self',
+            'audience' => $data['audience'] ?? 'all',
+            'is_active' => $request->boolean('is_active', true),
+            'is_visible' => $request->boolean('is_visible', true),
+            'is_cta' => $request->boolean('is_cta', false),
+            'is_system' => false,
+            'sort_order' => (int) ($data['sort_order'] ?? 50),
+        ]);
+
+        AuditLog::record('menu.created', null, null, [
+            'item_id' => $item->id,
+            'label' => $item->label,
+            'url' => $item->url,
+            'audience' => $item->audience,
+        ]);
+
+        return back()->with('status', "Dynamic navigation menu item '{$item->label}' created successfully.");
+    }
+
+    public function updateMenuItem(Request $request, NavigationItem $item)
+    {
+        $data = $request->validate([
+            'label' => 'required|string|max:160',
+            'url' => 'required|string|max:255',
+            'route_name' => 'nullable|string|max:120',
+            'target' => 'required|in:_self,_blank',
+            'audience' => 'required|in:guest,all,auth,client,consultant,admin,developer',
+            'is_active' => 'nullable|boolean',
+            'is_visible' => 'nullable|boolean',
+            'is_cta' => 'nullable|boolean',
+            'sort_order' => 'nullable|integer',
+        ]);
+
+        $item->update([
+            'label' => $data['label'],
+            'url' => $data['url'],
+            'route_name' => $data['route_name'] ?? null,
+            'target' => $data['target'] ?? '_self',
+            'audience' => $data['audience'],
+            'is_active' => $request->boolean('is_active'),
+            'is_visible' => $request->boolean('is_visible'),
+            'is_cta' => $request->boolean('is_cta'),
+            'sort_order' => (int) ($data['sort_order'] ?? $item->sort_order),
+        ]);
+
+        AuditLog::record('menu.updated', null, null, [
+            'item_id' => $item->id,
+            'label' => $item->label,
+        ]);
+
+        return back()->with('status', "Navigation menu item '{$item->label}' updated successfully.");
+    }
+
+    public function toggleMenuVisibility(NavigationItem $item)
+    {
+        $item->update(['is_visible' => ! $item->is_visible]);
+
+        $state = $item->is_visible ? 'VISIBLE (shown on header)' : 'HIDDEN (hidden from header)';
+        AuditLog::record('menu.visibility_toggled', null, null, [
+            'item_id' => $item->id,
+            'label' => $item->label,
+            'is_visible' => $item->is_visible,
+        ]);
+
+        return back()->with('status', "Navigation menu item '{$item->label}' is now {$state}.");
+    }
+
+    public function toggleMenuActive(NavigationItem $item)
+    {
+        $item->update(['is_active' => ! $item->is_active]);
+
+        $state = $item->is_active ? 'ACTIVE (enabled)' : 'INACTIVE (disabled)';
+        AuditLog::record('menu.active_toggled', null, null, [
+            'item_id' => $item->id,
+            'label' => $item->label,
+            'is_active' => $item->is_active,
+        ]);
+
+        return back()->with('status', "Navigation menu item '{$item->label}' is now {$state}.");
+    }
+
+    public function destroyMenuItem(NavigationItem $item)
+    {
+        $label = $item->label;
+        $item->delete();
+
+        AuditLog::record('menu.totally_removed', null, null, [
+            'item_label' => $label,
+        ]);
+
+        return back()->with('status', "Menu item '{$label}' has been totally removed from the platform.");
+    }
+
+    public function resetMenuDefaults()
+    {
+        NavigationItem::resetToDefaults();
+
+        AuditLog::record('menu.reset_defaults', null, null, []);
+
+        return back()->with('status', 'All navigation menu items have been restored to platform system defaults.');
     }
 }

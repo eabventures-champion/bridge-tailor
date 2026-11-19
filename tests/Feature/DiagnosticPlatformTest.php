@@ -7,6 +7,8 @@ use App\Diagnostics\ScoringEngine;
 use App\Models\Assessment;
 use App\Models\Company;
 use App\Models\FrameworkVersion;
+use App\Models\NavigationItem;
+use App\Models\User;
 use Illuminate\Foundation\Testing\DatabaseTransactions;
 use Tests\TestCase;
 
@@ -191,5 +193,126 @@ class DiagnosticPlatformTest extends TestCase
         $v11 = FrameworkVersion::where('version', '1.1.0')->first();
         $this->assertFalse($v10->is_active, 'Previous version v1.0.0 must be archived and logged for reference');
         $this->assertTrue($v11->is_active, 'New version v1.1.0 must be active');
+    }
+
+    public function test_admin_can_hide_show_overview_and_manage_dynamic_menu(): void
+    {
+        $admin = User::firstOrCreate(
+            ['email' => 'admin@bridge-tailor.com'],
+            ['name' => 'Samuel Bridge-Tailor', 'role' => 'admin', 'password' => bcrypt('password')]
+        );
+
+        // Verify Overview initially visible in guest header
+        $overview = NavigationItem::where('key', 'guest_overview')->first();
+        $this->assertNotNull($overview);
+        $this->assertTrue($overview->is_visible);
+        $this->assertTrue($overview->is_active);
+
+        $response = $this->get('/');
+        $response->assertStatus(200);
+        $response->assertSee('Overview');
+
+        // Admin hides Overview
+        $this->actingAs($admin)
+            ->post("/admin/menu/{$overview->id}/toggle-visibility")
+            ->assertRedirect();
+
+        $overview->refresh();
+        $this->assertFalse($overview->is_visible);
+
+        // Guest visits landing page — Overview nav link must NOT be visible!
+        auth()->logout();
+        $response = $this->get('/');
+        $response->assertStatus(200);
+        $this->assertStringNotContainsString('class=" active">Overview</a>', $response->getContent());
+
+        // Admin enables Overview to show again
+        $this->actingAs($admin)
+            ->post("/admin/menu/{$overview->id}/toggle-visibility")
+            ->assertRedirect();
+
+        $overview->refresh();
+        $this->assertTrue($overview->is_visible);
+
+        // Guest sees Overview again
+        auth()->logout();
+        $response = $this->get('/');
+        $response->assertSee('Overview');
+
+        // Admin creates a dynamic menu item
+        $this->actingAs($admin)
+            ->post('/admin/menu', [
+                'label' => 'Advisory Insights',
+                'url' => 'https://www.bridge-tailor.com/insights',
+                'audience' => 'guest',
+                'target' => '_blank',
+                'is_active' => '1',
+                'is_visible' => '1',
+                'sort_order' => 25,
+            ])
+            ->assertRedirect();
+
+        $customItem = NavigationItem::where('label', 'Advisory Insights')->first();
+        $this->assertNotNull($customItem);
+        $this->assertTrue($customItem->is_active);
+        $this->assertTrue($customItem->is_visible);
+
+        auth()->logout();
+        $response = $this->get('/');
+        $response->assertSee('Advisory Insights');
+        $response->assertSee('https://www.bridge-tailor.com/insights');
+
+        // Admin deactivates the dynamic menu
+        $this->actingAs($admin)
+            ->post("/admin/menu/{$customItem->id}/toggle-active")
+            ->assertRedirect();
+
+        $customItem->refresh();
+        $this->assertFalse($customItem->is_active);
+
+        // It must no longer appear in the navigation when inactive
+        auth()->logout();
+        $response = $this->get('/');
+        $this->assertStringNotContainsString('href="https://www.bridge-tailor.com/insights"', $response->getContent());
+
+        // Total removal of dynamic item
+        $this->actingAs($admin)
+            ->post("/admin/menu/{$customItem->id}/delete")
+            ->assertRedirect();
+
+        $this->assertDatabaseMissing('navigation_items', ['id' => $customItem->id]);
+    }
+
+    public function test_admin_can_execute_total_removal_and_reset_menu_defaults(): void
+    {
+        $admin = User::firstOrCreate(
+            ['email' => 'admin@bridge-tailor.com'],
+            ['name' => 'Samuel Bridge-Tailor', 'role' => 'admin', 'password' => bcrypt('password')]
+        );
+
+        $overview = NavigationItem::where('key', 'guest_overview')->first();
+        $this->assertNotNull($overview);
+
+        // Execute Total Removal on Overview
+        $this->actingAs($admin)
+            ->post("/admin/menu/{$overview->id}/delete")
+            ->assertRedirect();
+
+        $this->assertDatabaseMissing('navigation_items', ['key' => 'guest_overview']);
+
+        // Verify Overview is completely gone for guest
+        auth()->logout();
+        $response = $this->get('/');
+        $this->assertStringNotContainsString('Overview</a>', $response->getContent());
+
+        // Reset menu defaults
+        $this->actingAs($admin)
+            ->post('/admin/menu-reset')
+            ->assertRedirect();
+
+        $this->assertDatabaseHas('navigation_items', ['key' => 'guest_overview']);
+        auth()->logout();
+        $response = $this->get('/');
+        $response->assertSee('Overview');
     }
 }

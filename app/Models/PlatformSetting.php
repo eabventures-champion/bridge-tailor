@@ -99,6 +99,11 @@ class PlatformSetting extends Model
             ],
 
             // Dynamic Component & Card Visibility Toggles ('1' = visible, '0' = hidden)
+            'vis.nav_overview' => [
+                'group' => 'visibility', 'type' => 'boolean',
+                'label' => 'Navigation — "Overview" Header Link (Highlighted in Navigation)',
+                'value' => '1',
+            ],
             'vis.top_utility_bar' => [
                 'group' => 'visibility', 'type' => 'boolean',
                 'label' => 'Global — Top Utility Bar (Accra Office & User Status)',

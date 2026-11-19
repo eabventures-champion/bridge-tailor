@@ -15,7 +15,7 @@
                 </div>
             </div>
             <div style="display:flex;gap:6px;flex-wrap:wrap;">
-                <form action="{{ route('developer.reset') }}" method="POST" style="margin:0;">
+                <form action="{{ route($routePrefix . '.reset') }}" method="POST" style="margin:0;">
                     @csrf
                     <button type="submit" class="btn btn-outline btn-sm" style="background:#141210;color:#fff;border-color:#786e67;">
                         ↺ Reset All Text &amp; Visibility to Defaults
@@ -55,7 +55,7 @@
 <!-- Section 2: Solid Cream Band — Show / Hide Platform Components & Cards -->
 <section class="sec-cream" id="dev-visibility">
     <div class="bt-container">
-        <form action="{{ route('developer.visibility.update') }}" method="POST">
+        <form action="{{ route($routePrefix . '.visibility.update') }}" method="POST">
             @csrf
             <div class="sec-header">
                 <div>
@@ -90,10 +90,273 @@
     </div>
 </section>
 
+<!-- Section 01B: Solid Slate Band — Dynamic Navigation Menu CMS, Visibility & Total Removal -->
+<section class="sec-slate" id="dev-navigation-menu">
+    <div class="bt-container">
+        <div class="sec-header">
+            <div>
+                <div class="eyebrow">01B · DYNAMIC NAVIGATION MENU CMS, VISIBILITY &amp; TOTAL REMOVAL</div>
+                <h2 style="font-size:23px;">Header Navigation: Hide / Show, Make Active Dynamic Menus &amp; Total Removal</h2>
+                <div style="font-size:12.5px;color:#555;margin-top:4px;">
+                    Control top-level menu items (including the highlighted <strong>Overview</strong>). Hide or enable to show, activate/deactivate dynamic items, add custom links, or execute total removal.
+                </div>
+            </div>
+            <div style="display:flex;gap:8px;flex-wrap:wrap;align-items:center;">
+                <button type="button" class="btn btn-amber btn-sm" onclick="toggleElement('add-menu-drawer')">+ Add Dynamic Menu Item →</button>
+                <form action="{{ route($routePrefix . '.menu.reset') }}" method="POST" style="margin:0;" onsubmit="return confirm('Restore all system navigation items to initial platform defaults?');">
+                    @csrf
+                    <button type="submit" class="btn btn-outline btn-sm">↺ Reset Menu to Defaults</button>
+                </form>
+            </div>
+        </div>
+
+        <!-- Add Dynamic Menu Item Drawer / Card -->
+        <div id="add-menu-drawer" class="flat-box" style="display:none;background:#fff;margin-bottom:16px;border-left:4px solid var(--bt-amber);">
+            <div style="font-size:14px;font-weight:700;margin-bottom:12px;color:var(--bt-ink);">+ Create New Dynamic Navigation Menu Link</div>
+            <form action="{{ route($routePrefix . '.menu.store') }}" method="POST">
+                @csrf
+                <div class="flat-grid-4">
+                    <div class="field">
+                        <label>Menu Label *</label>
+                        <input type="text" name="label" required placeholder="e.g. Advisory Insights">
+                    </div>
+                    <div class="field">
+                        <label>Destination URL *</label>
+                        <input type="text" name="url" required placeholder="e.g. /about or https://...">
+                    </div>
+                    <div class="field">
+                        <label>Target Audience *</label>
+                        <select name="audience">
+                            <option value="guest">Guest Only (Public Header)</option>
+                            <option value="all">Everyone (Guest &amp; Logged In)</option>
+                            <option value="auth">All Logged-In Users</option>
+                            <option value="client">Client Accounts Only</option>
+                            <option value="consultant">Consultants Only</option>
+                            <option value="admin">Administrators Only</option>
+                            @if($isDeveloper)
+                                <option value="developer">Developers Only</option>
+                            @endif
+                        </select>
+                    </div>
+                    <div class="field">
+                        <label>Open In</label>
+                        <select name="target">
+                            <option value="_self">Same Window (_self)</option>
+                            <option value="_blank">New Tab (_blank)</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div style="display:flex;gap:20px;align-items:center;flex-wrap:wrap;margin:10px 0 14px;">
+                    <label style="display:inline-flex;align-items:center;gap:6px;font-size:12px;cursor:pointer;">
+                        <input type="checkbox" name="is_active" value="1" checked style="width:16px;height:16px;accent-color:var(--bt-amber);">
+                        <span><strong>Make Active</strong> (operational in dynamic menu)</span>
+                    </label>
+                    <label style="display:inline-flex;align-items:center;gap:6px;font-size:12px;cursor:pointer;">
+                        <input type="checkbox" name="is_visible" value="1" checked style="width:16px;height:16px;accent-color:var(--bt-amber);">
+                        <span><strong>Enable to Show</strong> (visible to visitors)</span>
+                    </label>
+                    <label style="display:inline-flex;align-items:center;gap:6px;font-size:12px;cursor:pointer;">
+                        <input type="checkbox" name="is_cta" value="1" style="width:16px;height:16px;accent-color:var(--bt-amber);">
+                        <span>Highlight as CTA Button (Solid Amber)</span>
+                    </label>
+                    <div style="display:inline-flex;align-items:center;gap:6px;font-size:12px;">
+                        <span>Sort Order:</span>
+                        <input type="number" name="sort_order" value="50" style="width:60px;padding:4px 6px;">
+                    </div>
+                </div>
+
+                <div style="display:flex;justify-content:flex-end;gap:8px;">
+                    <button type="button" class="btn btn-outline btn-sm" onclick="toggleElement('add-menu-drawer')">Cancel</button>
+                    <button type="submit" class="btn btn-amber btn-sm">+ Publish Dynamic Menu Link →</button>
+                </div>
+            </form>
+        </div>
+
+        <!-- Filter Pills -->
+        <div style="display:flex;gap:6px;flex-wrap:wrap;margin-bottom:12px;">
+            <button type="button" class="btn btn-sm menu-filter-btn active-filter" onclick="filterMenuItems('all', this)" style="padding:4px 10px;font-size:11px;background:var(--bt-espresso);color:#fff;">ALL ({{ $navigationItems->count() }})</button>
+            <button type="button" class="btn btn-sm menu-filter-btn" onclick="filterMenuItems('guest', this)" style="padding:4px 10px;font-size:11px;background:#fff;color:#141210;">GUEST (Overview &amp; Public)</button>
+            <button type="button" class="btn btn-sm menu-filter-btn" onclick="filterMenuItems('client', this)" style="padding:4px 10px;font-size:11px;background:#fff;color:#141210;">CLIENT</button>
+            <button type="button" class="btn btn-sm menu-filter-btn" onclick="filterMenuItems('consultant', this)" style="padding:4px 10px;font-size:11px;background:#fff;color:#141210;">CONSULTANT</button>
+            <button type="button" class="btn btn-sm menu-filter-btn" onclick="filterMenuItems('admin', this)" style="padding:4px 10px;font-size:11px;background:#fff;color:#141210;">ADMIN</button>
+            @if($isDeveloper)
+                <button type="button" class="btn btn-sm menu-filter-btn" onclick="filterMenuItems('developer', this)" style="padding:4px 10px;font-size:11px;background:#fff;color:#141210;">DEVELOPER</button>
+            @endif
+            <button type="button" class="btn btn-sm menu-filter-btn" onclick="filterMenuItems('custom', this)" style="padding:4px 10px;font-size:11px;background:#fff;color:#141210;">DYNAMIC CUSTOM</button>
+        </div>
+
+        <!-- Menu Items List Table -->
+        <div style="overflow-x:auto;background:#fff;border:1px solid var(--bt-border);">
+            <table class="bt-table" style="margin:0;font-size:12px;">
+                <thead>
+                    <tr style="background:#2c2927;color:#fff;">
+                        <th style="width:24%;">MENU ITEM &amp; TARGET</th>
+                        <th style="width:12%;">AUDIENCE</th>
+                        <th style="width:10%;">TYPE</th>
+                        <th style="width:12%;">ACTIVE STATUS</th>
+                        <th style="width:12%;">VISIBILITY</th>
+                        <th style="width:6%;">ORDER</th>
+                        <th style="width:24%;text-align:right;">MANAGEMENT &amp; ACTIONS</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach($navigationItems as $item)
+                        @php
+                            $isOverview = str_contains(strtolower($item->label), 'overview') || str_contains((string)$item->key, 'overview');
+                            $itemType = $item->is_system ? 'system' : 'custom';
+                        @endphp
+                        <tr class="menu-item-row" data-audience="{{ $item->audience }}" data-type="{{ $itemType }}" style="{{ $isOverview ? 'background:#fffbf2;border-left:4px solid var(--bt-amber);' : '' }}">
+                            <td data-label="Menu Item">
+                                <div style="display:flex;align-items:center;gap:6px;flex-wrap:wrap;">
+                                    <strong style="font-size:13px;color:var(--bt-ink);">{{ $item->label }}</strong>
+                                    @if($isOverview)
+                                        <span class="tag tag-amber" style="font-size:9px;">HIGHLIGHTED</span>
+                                    @endif
+                                    @if($item->is_cta)
+                                        <span class="tag tag-ok" style="font-size:9px;">CTA BUTTON</span>
+                                    @endif
+                                </div>
+                                <div style="font-size:11px;color:#666;margin-top:2px;">
+                                    URL: <code>{{ $item->url }}</code>
+                                    @if($item->route_name)
+                                        <span style="opacity:0.7;">(Route: {{ $item->route_name }})</span>
+                                    @endif
+                                    @if($item->target === '_blank')
+                                        <span class="tag" style="font-size:8.5px;padding:1px 4px;">↗ NEW TAB</span>
+                                    @endif
+                                </div>
+                            </td>
+                            <td data-label="Audience">
+                                <span class="tag" style="background:#ede8e2;color:#2c2927;text-transform:uppercase;font-weight:700;">{{ $item->audience }}</span>
+                            </td>
+                            <td data-label="Type">
+                                <span class="tag {{ $item->is_system ? '' : 'tag-amber' }}">{{ $item->is_system ? 'CORE' : 'DYNAMIC' }}</span>
+                            </td>
+                            <td data-label="Active Status">
+                                @if($item->is_active)
+                                    <span class="tag tag-ok">ACTIVE</span>
+                                @else
+                                    <span class="tag tag-high">INACTIVE</span>
+                                @endif
+                            </td>
+                            <td data-label="Visibility">
+                                @if($item->is_visible)
+                                    <span class="tag tag-ok">VISIBLE</span>
+                                @else
+                                    <span class="tag tag-high" style="background:#b32400;color:#fff;">HIDDEN</span>
+                                @endif
+                            </td>
+                            <td data-label="Order">
+                                <span>{{ $item->sort_order }}</span>
+                            </td>
+                            <td data-label="Actions" style="text-align:right;">
+                                <div style="display:inline-flex;gap:4px;flex-wrap:wrap;justify-content:flex-end;">
+                                    <!-- Toggle Visibility Form (Hide / Enable to Show) -->
+                                    <form action="{{ route($routePrefix . '.menu.toggle_visibility', $item->id) }}" method="POST" style="margin:0;">
+                                        @csrf
+                                        <button type="submit" class="btn btn-sm" style="padding:3px 7px;font-size:10px;background:{{ $item->is_visible ? '#5c544f' : '#28a745' }};color:#fff;" title="{{ $item->is_visible ? 'Hide from navigation' : 'Enable to show in navigation' }}">
+                                            {{ $item->is_visible ? 'Hide' : 'Enable Show' }}
+                                        </button>
+                                    </form>
+
+                                    <!-- Toggle Active Form (Make Active / Inactive) -->
+                                    <form action="{{ route($routePrefix . '.menu.toggle_active', $item->id) }}" method="POST" style="margin:0;">
+                                        @csrf
+                                        <button type="submit" class="btn btn-sm" style="padding:3px 7px;font-size:10px;background:{{ $item->is_active ? '#786e67' : 'var(--bt-amber)' }};color:{{ $item->is_active ? '#fff' : 'var(--bt-ink)' }};" title="{{ $item->is_active ? 'Make inactive' : 'Make active' }}">
+                                            {{ $item->is_active ? 'Deactivate' : 'Make Active' }}
+                                        </button>
+                                    </form>
+
+                                    <!-- Quick Edit Trigger -->
+                                    <button type="button" class="btn btn-outline btn-sm" style="padding:3px 7px;font-size:10px;" onclick="toggleElement('edit-menu-{{ $item->id }}')">
+                                        Edit
+                                    </button>
+
+                                    <!-- Total Removal Form -->
+                                    <form action="{{ route($routePrefix . '.menu.delete', $item->id) }}" method="POST" style="margin:0;" onsubmit="return confirm('WARNING: Are you sure you want to execute TOTAL REMOVAL of \'{{ addslashes($item->label) }}\'? This will permanently delete this item from the platform menu.');">
+                                        @csrf
+                                        <button type="submit" class="btn btn-sm" style="padding:3px 7px;font-size:10px;background:#9E2A1C;color:#fff;" title="Total removal of this item">
+                                            ✕ Total Removal
+                                        </button>
+                                    </form>
+                                </div>
+                            </td>
+                        </tr>
+
+                        <!-- Edit Drawer Row -->
+                        <tr id="edit-menu-{{ $item->id }}" style="display:none;background:#f9f6f2;border-bottom:2px solid var(--bt-amber);">
+                            <td colspan="7" style="padding:14px;">
+                                <form action="{{ route($routePrefix . '.menu.update', $item->id) }}" method="POST">
+                                    @csrf
+                                    <div style="font-weight:700;font-size:12px;margin-bottom:8px;color:var(--bt-ink);">Edit Menu Item: {{ $item->label }}</div>
+                                    <div class="flat-grid-4">
+                                        <div class="field">
+                                            <label>Label</label>
+                                            <input type="text" name="label" value="{{ $item->label }}" required>
+                                        </div>
+                                        <div class="field">
+                                            <label>URL</label>
+                                            <input type="text" name="url" value="{{ $item->url }}" required>
+                                        </div>
+                                        <div class="field">
+                                            <label>Audience</label>
+                                            <select name="audience">
+                                                <option value="guest" {{ $item->audience === 'guest' ? 'selected' : '' }}>Guest Only</option>
+                                                <option value="all" {{ $item->audience === 'all' ? 'selected' : '' }}>Everyone</option>
+                                                <option value="auth" {{ $item->audience === 'auth' ? 'selected' : '' }}>All Logged In</option>
+                                                <option value="client" {{ $item->audience === 'client' ? 'selected' : '' }}>Client</option>
+                                                <option value="consultant" {{ $item->audience === 'consultant' ? 'selected' : '' }}>Consultant</option>
+                                                <option value="admin" {{ $item->audience === 'admin' ? 'selected' : '' }}>Admin</option>
+                                                @if($isDeveloper)
+                                                    <option value="developer" {{ $item->audience === 'developer' ? 'selected' : '' }}>Developer</option>
+                                                @endif
+                                            </select>
+                                        </div>
+                                        <div class="field">
+                                            <label>Target</label>
+                                            <select name="target">
+                                                <option value="_self" {{ $item->target === '_self' ? 'selected' : '' }}>Same Window (_self)</option>
+                                                <option value="_blank" {{ $item->target === '_blank' ? 'selected' : '' }}>New Tab (_blank)</option>
+                                            </select>
+                                        </div>
+                                    </div>
+                                    <div style="display:flex;gap:16px;align-items:center;flex-wrap:wrap;margin:8px 0 10px;">
+                                        <label style="display:inline-flex;align-items:center;gap:6px;font-size:11.5px;cursor:pointer;">
+                                            <input type="checkbox" name="is_active" value="1" {{ $item->is_active ? 'checked' : '' }} style="accent-color:var(--bt-amber);">
+                                            <span>Active</span>
+                                        </label>
+                                        <label style="display:inline-flex;align-items:center;gap:6px;font-size:11.5px;cursor:pointer;">
+                                            <input type="checkbox" name="is_visible" value="1" {{ $item->is_visible ? 'checked' : '' }} style="accent-color:var(--bt-amber);">
+                                            <span>Visible</span>
+                                        </label>
+                                        <label style="display:inline-flex;align-items:center;gap:6px;font-size:11.5px;cursor:pointer;">
+                                            <input type="checkbox" name="is_cta" value="1" {{ $item->is_cta ? 'checked' : '' }} style="accent-color:var(--bt-amber);">
+                                            <span>CTA Button Style</span>
+                                        </label>
+                                        <div style="display:inline-flex;align-items:center;gap:6px;font-size:11.5px;">
+                                            <span>Order:</span>
+                                            <input type="number" name="sort_order" value="{{ $item->sort_order }}" style="width:55px;padding:3px;">
+                                        </div>
+                                    </div>
+                                    <div style="display:flex;justify-content:flex-end;gap:6px;">
+                                        <button type="button" class="btn btn-outline btn-sm" onclick="toggleElement('edit-menu-{{ $item->id }}')">Cancel</button>
+                                        <button type="submit" class="btn btn-amber btn-sm">Save Changes →</button>
+                                    </div>
+                                </form>
+                            </td>
+                        </tr>
+                    @endforeach
+                </tbody>
+            </table>
+        </div>
+    </div>
+</section>
+
 <!-- Section 3: Solid White Band — Dynamic Text & Copy CMS Editor -->
 <section class="sec-white" id="dev-text">
     <div class="bt-container">
-        <form action="{{ route('developer.text.update') }}" method="POST">
+        <form action="{{ route($routePrefix . '.text.update') }}" method="POST">
             @csrf
             <div class="sec-header">
                 <div>
@@ -392,4 +655,36 @@
         </table>
     </div>
 </section>
+
+<script>
+function toggleElement(id) {
+    const el = document.getElementById(id);
+    if (!el) return;
+    const isHidden = (el.style.display === 'none' || el.style.display === '');
+    el.style.display = isHidden ? (el.tagName === 'TR' ? 'table-row' : 'block') : 'none';
+}
+
+function filterMenuItems(category, btn) {
+    document.querySelectorAll('.menu-filter-btn').forEach(b => {
+        b.style.background = '#fff';
+        b.style.color = '#141210';
+    });
+    btn.style.background = 'var(--bt-espresso)';
+    btn.style.color = '#fff';
+
+    document.querySelectorAll('.menu-item-row').forEach(row => {
+        const aud = row.getAttribute('data-audience');
+        const type = row.getAttribute('data-type');
+        if (category === 'all') {
+            row.style.display = '';
+        } else if (category === 'custom') {
+            row.style.display = type === 'custom' ? '' : 'none';
+        } else if (category === 'guest') {
+            row.style.display = (aud === 'guest' || aud === 'all') ? '' : 'none';
+        } else {
+            row.style.display = aud === category ? '' : 'none';
+        }
+    });
+}
+</script>
 @endsection
