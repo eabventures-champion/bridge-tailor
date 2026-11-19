@@ -197,6 +197,8 @@ class DiagnosticPlatformTest extends TestCase
 
     public function test_admin_can_hide_show_overview_and_manage_dynamic_menu(): void
     {
+        NavigationItem::resetToDefaults();
+
         $admin = User::firstOrCreate(
             ['email' => 'admin@bridge-tailor.com'],
             ['name' => 'Samuel Bridge-Tailor', 'role' => 'admin', 'password' => bcrypt('password')]
@@ -285,6 +287,8 @@ class DiagnosticPlatformTest extends TestCase
 
     public function test_admin_can_execute_total_removal_and_reset_menu_defaults(): void
     {
+        NavigationItem::resetToDefaults();
+
         $admin = User::firstOrCreate(
             ['email' => 'admin@bridge-tailor.com'],
             ['name' => 'Samuel Bridge-Tailor', 'role' => 'admin', 'password' => bcrypt('password')]

@@ -9,14 +9,16 @@
         <div style="display:flex;flex-direction:column;justify-content:space-between;">
             <div>
                 <div class="eyebrow">{{ $uiText('text.hero_eyebrow') }}</div>
-                <h1 style="font-size:32px;line-height:1.15;color:#ffffff;margin-bottom:10px;">
-                    {{ $uiText('text.hero_title') }}
-                </h1>
-                <p style="font-size:14px;color:#d8d0c8;margin:0 0 16px;max-width:680px;line-height:1.55;">
-                    {{ $uiText('text.hero_subtitle') }}
-                </p>
+                <div style="margin-top:20px;margin-bottom:26px;">
+                    <h1 style="font-size:32px;line-height:1.15;color:#ffffff;margin-bottom:12px;">
+                        {{ $uiText('text.hero_title') }}
+                    </h1>
+                    <p style="font-size:14px;color:#d8d0c8;margin:0;max-width:680px;line-height:1.55;">
+                        {{ $uiText('text.hero_subtitle') }}
+                    </p>
+                </div>
             </div>
-            <div style="display:flex;gap:10px;flex-wrap:wrap;align-items:center;padding-top:8px;border-top:1px solid #443e3a;">
+            <div style="display:flex;gap:10px;flex-wrap:wrap;align-items:center;padding-top:12px;border-top:1px solid #443e3a;">
                 <a href="{{ route('diagnostic.wizard') }}" class="btn btn-amber">{{ $uiText('text.hero_cta_primary') }}</a>
                 @auth
                     @if(auth()->user()->isDeveloper())
