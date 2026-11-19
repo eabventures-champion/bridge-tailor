@@ -33,6 +33,12 @@
                             </button>
                         </div>
                     </div>
+                    <div style="display:flex;align-items:center;margin:10px 0 16px;">
+                        <label for="remember" style="display:inline-flex;align-items:center;gap:8px;font-size:12px;font-weight:600;color:var(--bt-ink);cursor:pointer;margin-bottom:0;text-transform:none;letter-spacing:normal;user-select:none;">
+                            <input type="checkbox" name="remember" id="remember" value="1" {{ old('remember') ? 'checked' : '' }} style="width:16px;height:16px;cursor:pointer;accent-color:var(--bt-amber,#f17e01);margin:0;">
+                            <span>Remember session</span>
+                        </label>
+                    </div>
                     <button type="submit" class="btn btn-amber" style="width:100%;">Sign In →</button>
                 </form>
             </div>
