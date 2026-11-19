@@ -32,10 +32,6 @@
                             Open My Client Workspace
                         </a>
                     @endif
-                @else
-                    <a href="{{ route('login') }}" class="btn btn-outline" style="background:#2c2927;color:#fff;border-color:#8a7f78;">
-                        Client / Consultant Sign In
-                    </a>
                 @endauth
             </div>
         </div>
