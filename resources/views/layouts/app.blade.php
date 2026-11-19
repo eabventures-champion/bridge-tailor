@@ -763,47 +763,52 @@
     </main>
 
     @if($uiVisible('vis.footer_section'))
+    @php
+        $col2Lines = array_filter(array_map('trim', explode("\n", (string) $uiText('text.footer_col2_items', ''))));
+        $col3Lines = array_filter(array_map('trim', explode("\n", (string) $uiText('text.footer_col3_items', ''))));
+        $col4Lines = array_filter(array_map('trim', explode("\n", (string) $uiText('text.footer_col4_items', ''))));
+    @endphp
     <footer class="bt-footer">
         <div class="bt-container bt-footer-grid">
             <div>
                 <div style="font-weight:800;color:#fff;letter-spacing:0.06em;text-transform:uppercase;margin-bottom:6px;">
-                    BRIDGE-TAILOR CONSULTING · ACCRA, GHANA
+                    {{ $uiText('text.footer_col1_title') }}
                 </div>
                 <p style="margin:0 0 8px;line-height:1.5;">
                     {{ $uiText('text.footer_tagline') }}
                 </p>
                 <div style="font-size:11px;color:#9c9288;">
-                    Deterministic Scoring Engine v{{ \App\Models\FrameworkVersion::active()->version() }} · OpenAI Responses API Structured Output Synthesis · Strict Epistemic Tagging
+                    {{ $uiText('text.footer_engine_note') }}
                 </div>
             </div>
             <div>
-                <div style="font-weight:700;color:#fff;text-transform:uppercase;margin-bottom:6px;">Diagnostic Modules</div>
+                <div style="font-weight:700;color:#fff;text-transform:uppercase;margin-bottom:6px;">
+                    {{ $uiText('text.footer_col2_title') }}
+                </div>
                 <div style="display:flex;flex-direction:column;gap:4px;">
-                    <span>01 · Strategy &amp; Governance</span>
-                    <span>02 · Financial Health &amp; Capital</span>
-                    <span>03 · Operational Excellence</span>
-                    <span>04 · Market Access &amp; Growth</span>
-                    <span>05 · Human Capital &amp; Capacity</span>
+                    @foreach($col2Lines as $line)
+                        <span>{{ $line }}</span>
+                    @endforeach
                 </div>
             </div>
             <div>
-                <div style="font-weight:700;color:#fff;text-transform:uppercase;margin-bottom:6px;">Practice Lines</div>
+                <div style="font-weight:700;color:#fff;text-transform:uppercase;margin-bottom:6px;">
+                    {{ $uiText('text.footer_col3_title') }}
+                </div>
                 <div style="display:flex;flex-direction:column;gap:4px;">
-                    <span>Scale Readiness Review</span>
-                    <span>Performance System Setup</span>
-                    <span>Finance Desk Retainer</span>
-                    <span>Capital Preparation Programme</span>
-                    <span>Market Intelligence Report</span>
+                    @foreach($col3Lines as $line)
+                        <span>{{ $line }}</span>
+                    @endforeach
                 </div>
             </div>
             <div>
-                <div style="font-weight:700;color:#fff;text-transform:uppercase;margin-bottom:6px;">Security &amp; Governance</div>
+                <div style="font-weight:700;color:#fff;text-transform:uppercase;margin-bottom:6px;">
+                    {{ $uiText('text.footer_col4_title') }}
+                </div>
                 <div style="display:flex;flex-direction:column;gap:4px;">
-                    <span>■ Server-side API key isolation</span>
-                    <span>■ Role-based access &amp; tenant isolation</span>
-                    <span>■ SHA-256 document verification</span>
-                    <span>■ Consultant Review Mode gate</span>
-                    <span>■ Immutable audit trail</span>
+                    @foreach($col4Lines as $line)
+                        <span>{{ $line }}</span>
+                    @endforeach
                 </div>
             </div>
         </div>

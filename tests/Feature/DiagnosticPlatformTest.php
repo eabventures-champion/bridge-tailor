@@ -319,4 +319,33 @@ class DiagnosticPlatformTest extends TestCase
         $response = $this->get('/');
         $response->assertSee('Overview');
     }
+
+    public function test_admin_can_dynamically_customize_all_footer_sections(): void
+    {
+        $admin = User::firstOrCreate(
+            ['email' => 'admin@bridge-tailor.com'],
+            ['name' => 'Samuel Bridge-Tailor', 'role' => 'admin', 'password' => bcrypt('password')]
+        );
+
+        $this->actingAs($admin)
+            ->post('/admin/text', [
+                'texts' => [
+                    'text.footer_col1_title' => 'BT GLOBAL ADVISORY · ACCRA & LONDON',
+                    'text.footer_col2_title' => 'Core Assessment Frameworks',
+                    'text.footer_col3_title' => 'Strategic Interventions',
+                    'text.footer_col4_title' => 'Compliance & Enterprise Security',
+                    'text.footer_col2_items' => "01 · Governance & Board\n02 · Growth Capital",
+                ],
+            ])
+            ->assertRedirect();
+
+        auth()->logout();
+        $response = $this->get('/');
+        $response->assertSee('BT GLOBAL ADVISORY · ACCRA & LONDON');
+        $response->assertSee('Core Assessment Frameworks');
+        $response->assertSee('Strategic Interventions');
+        $response->assertSee('Compliance & Enterprise Security');
+        $response->assertSee('01 · Governance & Board');
+        $response->assertSee('02 · Growth Capital');
+    }
 }

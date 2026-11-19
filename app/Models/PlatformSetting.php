@@ -92,10 +92,50 @@ class PlatformSetting extends Model
                 'label' => 'Report Conversion Band — Consultation Heading',
                 'value' => 'Request a Bridge Tailor Strategy & Diagnostic Review Session',
             ],
-            'text.footer_tagline' => [
+            'text.footer_col1_title' => [
                 'group' => 'text', 'type' => 'string',
-                'label' => 'Footer — Consulting Tagline & Description',
+                'label' => 'Footer Col 1 — Company Brand & Location Heading',
+                'value' => 'BRIDGE-TAILOR CONSULTING · ACCRA, GHANA',
+            ],
+            'text.footer_tagline' => [
+                'group' => 'text', 'type' => 'textarea',
+                'label' => 'Footer Col 1 — Consulting Tagline & Description',
                 'value' => 'Our drive is to make every business thrive. Boutique management consultancy supporting African SMEs through Corporate Strategy, Performance Management, Finance Access, and Market Access.',
+            ],
+            'text.footer_engine_note' => [
+                'group' => 'text', 'type' => 'string',
+                'label' => 'Footer Col 1 — Diagnostic Engine & API Security Note',
+                'value' => 'Deterministic Scoring Engine v1.0.0 · OpenAI Responses API Structured Output Synthesis · Strict Epistemic Tagging',
+            ],
+            'text.footer_col2_title' => [
+                'group' => 'text', 'type' => 'string',
+                'label' => 'Footer Col 2 — Diagnostic Modules Heading',
+                'value' => 'Diagnostic Modules',
+            ],
+            'text.footer_col2_items' => [
+                'group' => 'text', 'type' => 'textarea',
+                'label' => 'Footer Col 2 — Diagnostic Modules List (One per line)',
+                'value' => "01 · Strategy & Governance\n02 · Financial Health & Capital\n03 · Operational Excellence\n04 · Market Access & Growth\n05 · Human Capital & Capacity",
+            ],
+            'text.footer_col3_title' => [
+                'group' => 'text', 'type' => 'string',
+                'label' => 'Footer Col 3 — Practice Lines Heading',
+                'value' => 'Practice Lines',
+            ],
+            'text.footer_col3_items' => [
+                'group' => 'text', 'type' => 'textarea',
+                'label' => 'Footer Col 3 — Practice Lines List (One per line)',
+                'value' => "Scale Readiness Review\nPerformance System Setup\nFinance Desk Retainer\nCapital Preparation Programme\nMarket Intelligence Report",
+            ],
+            'text.footer_col4_title' => [
+                'group' => 'text', 'type' => 'string',
+                'label' => 'Footer Col 4 — Security & Governance Heading',
+                'value' => 'Security & Governance',
+            ],
+            'text.footer_col4_items' => [
+                'group' => 'text', 'type' => 'textarea',
+                'label' => 'Footer Col 4 — Security & Governance List (One per line)',
+                'value' => "■ Server-side API key isolation\n■ Role-based access & tenant isolation\n■ SHA-256 document verification\n■ Consultant Review Mode gate\n■ Immutable audit trail",
             ],
 
             // Dynamic Component & Card Visibility Toggles ('1' = visible, '0' = hidden)
