@@ -25,6 +25,12 @@
                 <span class="tag tag-amber" style="padding:5px 10px;font-size:11px;">ROLE: {{ strtoupper($user->role) }}</span>
                 @if($user->isDeveloper())
                     <a href="{{ route('developer.console') }}" class="btn btn-amber btn-sm">Open Developer Console →</a>
+                @elseif($user->isAdmin())
+                    @if(\App\Models\PlatformSetting::visible('privilege.admin_console_access', true))
+                        <a href="{{ route('admin.console') }}" class="btn btn-amber btn-sm">Open Admin Console →</a>
+                    @else
+                        <a href="{{ route('consultant.dashboard') }}" class="btn btn-amber btn-sm">Open Consultant Desk →</a>
+                    @endif
                 @elseif($user->isConsultant())
                     <a href="{{ route('consultant.dashboard') }}" class="btn btn-amber btn-sm">Open Consultant Desk →</a>
                 @else

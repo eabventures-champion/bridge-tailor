@@ -1046,6 +1046,15 @@
                             <svg class="bt-nav-arrow" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="9 18 15 12 9 6"></polyline></svg>
                         </a>
                     @endforeach
+
+                    @auth
+                        @if(!$uiVisible('vis.top_utility_bar'))
+                            <form action="{{ route('logout') }}" method="POST" style="display:inline;margin:0;">
+                                @csrf
+                                <button type="submit" class="bt-role-btn" style="padding:7px 14px;font-size:12px;border-radius:6px!important;border:1px solid #cbd5e1;">Sign Out</button>
+                            </form>
+                        @endif
+                    @endauth
                 </nav>
             </div>
         </header>

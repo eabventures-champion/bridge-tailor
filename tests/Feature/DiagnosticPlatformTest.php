@@ -471,4 +471,27 @@ class DiagnosticPlatformTest extends TestCase
         $response->assertSee('bt-stats-grid bt-stats-grid-4', false);
         $response->assertSee('bt-stat-card dark', false);
     }
+
+    public function test_all_user_roles_have_profile_in_navigation(): void
+    {
+        $roles = ['client', 'consultant', 'admin', 'developer'];
+
+        foreach ($roles as $role) {
+            $user = User::where('role', $role)->first();
+            $this->assertNotNull($user, "No user with role '{$role}' found.");
+
+            $this->actingAs($user);
+            $items = NavigationItem::getForCurrentRequest();
+            $labels = $items->pluck('label')->all();
+
+            $this->assertContains('My Profile', $labels, "Role '{$role}' does not have 'My Profile' in its navigation menu.");
+
+            $profileItem = $items->firstWhere('label', 'My Profile');
+            $this->assertEquals(route('profile.show'), $profileItem->resolvedUrl());
+
+            $res = $this->get(route('profile.show'));
+            $res->assertStatus(200);
+            $res->assertSee($user->name);
+        }
+    }
 }
