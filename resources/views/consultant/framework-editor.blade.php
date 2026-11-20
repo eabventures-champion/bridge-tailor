@@ -133,18 +133,18 @@
                         <label style="margin-bottom:0;">Framework Definition JSON (Modules, Criteria, 3-Option Gateway Questions, Symptom Weights, Programmes &amp; Cross-Area Insight Rules)</label>
                     </div>
 
-                    <!-- Interactive Keyword Search & Jump Toolbar -->
-                    <div class="fw-search-panel" style="background:#f8fafc;border:1px solid #e2e8f0;border-radius:12px;padding:12px 16px;margin-bottom:10px;">
-                        <!-- Row 1: Search, Match Status, Nav Arrows & Theme -->
+                    <!-- Interactive Keyword Search, Replace & Jump Toolbar -->
+                    <div class="fw-search-panel" style="background:#f8fafc;border:1px solid #e2e8f0;border-radius:12px;padding:14px 16px;margin-bottom:12px;">
+                        <!-- Row 1: Find Keywords -->
                         <div style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:10px;margin-bottom:10px;">
-                            <div style="display:flex;align-items:center;gap:8px;flex:1;min-width:280px;">
+                            <div style="display:flex;align-items:center;gap:8px;flex:1;min-width:300px;">
                                 <div style="position:relative;flex:1;">
-                                    <input type="text" id="json-search-input" placeholder="🔍 Search keywords, module names, question codes (e.g. Strategy, FH, fc1)..."
+                                    <input type="text" id="json-search-input" placeholder="Search keywords, module names, question codes (e.g. Strategy, FH, fc1)..."
                                            oninput="performSearch()" onkeydown="handleSearchKeyDown(event)"
-                                           style="width:100%;padding:8px 12px 8px 32px;font-size:13px;border:1px solid #cbd5e1;border-radius:8px;background:#fff;outline:none;">
+                                           style="width:100%;padding:9px 12px 9px 34px;font-size:13px;border:1px solid #cbd5e1;border-radius:8px;background:#fff;outline:none;">
                                     <span style="position:absolute;left:10px;top:50%;transform:translateY(-50%);font-size:13px;color:#94a3b8;pointer-events:none;">🔍</span>
                                 </div>
-                                <span id="search-status" class="tag tag-solid" style="padding:6px 10px;border-radius:6px;font-size:11px;white-space:nowrap;">
+                                <span id="search-status" class="tag tag-solid" style="padding:7px 12px;border-radius:6px;font-size:11px;white-space:nowrap;">
                                     Type to search
                                 </span>
                                 <div style="display:flex;gap:4px;">
@@ -153,22 +153,26 @@
                                 </div>
                             </div>
 
-                            <div style="display:flex;align-items:center;gap:6px;">
-                                <button type="button" class="btn btn-outline btn-sm" onclick="toggleReplacePanel()" id="btn-toggle-replace">
-                                    ⇄ Replace
-                                </button>
-                                <button type="button" class="btn btn-outline btn-sm" onclick="toggleEditorTheme()" title="Switch Light/Dark Editor Canvas">
-                                    🌓 Canvas Theme
-                                </button>
-                            </div>
+                            <button type="button" class="btn btn-outline btn-sm" onclick="toggleEditorTheme()" title="Switch Light/Dark Editor Canvas">
+                                🌓 Canvas Theme
+                            </button>
                         </div>
 
-                        <!-- Row 2: Replace Panel (Collapsible) -->
-                        <div id="replace-panel" style="display:none;padding:10px 12px;background:#ffffff;border:1px solid #e2e8f0;border-radius:8px;margin-bottom:10px;align-items:center;gap:8px;flex-wrap:wrap;">
-                            <span style="font-size:11px;font-weight:700;color:#475569;text-transform:uppercase;">Replace With:</span>
-                            <input type="text" id="json-replace-input" placeholder="Replacement text..." style="flex:1;min-width:180px;padding:6px 10px;font-size:12.5px;border:1px solid #cbd5e1;border-radius:6px;">
-                            <button type="button" class="btn btn-outline btn-sm" onclick="replaceCurrentMatch()">Replace</button>
-                            <button type="button" class="btn btn-amber btn-sm" onclick="replaceAllMatches()">Replace All</button>
+                        <!-- Row 2: Search & Replace Feature -->
+                        <div style="display:flex;align-items:center;gap:10px;flex-wrap:wrap;padding:10px 12px;background:#ffffff;border:1px solid #e2e8f0;border-radius:8px;margin-bottom:10px;">
+                            <span style="font-size:11px;font-weight:700;color:#475569;text-transform:uppercase;white-space:nowrap;">⇄ Replace With:</span>
+                            <div style="flex:1;min-width:200px;">
+                                <input type="text" id="json-replace-input" placeholder="Enter replacement text..." onkeydown="handleReplaceKeyDown(event)"
+                                       style="width:100%;padding:7px 12px;font-size:12.5px;border:1px solid #cbd5e1;border-radius:6px;background:#fff;">
+                            </div>
+                            <div style="display:flex;gap:6px;">
+                                <button type="button" class="btn btn-outline btn-sm" onclick="replaceCurrentMatch()" title="Replace current selected match">
+                                    Replace Current
+                                </button>
+                                <button type="button" class="btn btn-amber btn-sm" onclick="replaceAllMatches()" title="Replace all occurrences in JSON">
+                                    Replace All Matches
+                                </button>
+                            </div>
                         </div>
 
                         <!-- Row 3: Quick Jump Chips -->
@@ -466,8 +470,18 @@
         btn.classList.toggle('btn-amber', !isOpen);
     }
 
+    function handleReplaceKeyDown(e) {
+        if (e.key === 'Enter') {
+            e.preventDefault();
+            replaceCurrentMatch();
+        }
+    }
+
     function replaceCurrentMatch() {
-        if (searchMatches.length === 0 || currentMatchIndex === -1) return;
+        if (searchMatches.length === 0 || currentMatchIndex === -1) {
+            alert('Please search for a keyword first to select a match to replace.');
+            return;
+        }
         const textarea = document.getElementById('f_definition_json');
         const replaceText = document.getElementById('json-replace-input').value;
         const match = searchMatches[currentMatchIndex];
