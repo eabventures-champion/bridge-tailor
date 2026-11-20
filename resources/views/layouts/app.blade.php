@@ -1049,9 +1049,9 @@
                 <div style="font-weight:700;color:#fff;text-transform:uppercase;margin-bottom:6px;">
                     {{ $uiText('text.footer_col4_title') }}
                 </div>
-                <div style="display:flex;flex-direction:column;gap:6px;line-height:1.5;">
+                <div style="font-size:11px;color:#9c9288;line-height:1.6;display:flex;flex-direction:column;gap:6px;">
                     @foreach($col4Lines as $line)
-                        <span style="display:block;">{{ $line }}</span>
+                        <p style="margin:0;line-height:1.6;">{{ $line }}</p>
                     @endforeach
                 </div>
             </div>

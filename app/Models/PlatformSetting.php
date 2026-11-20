@@ -211,13 +211,13 @@ class PlatformSetting extends Model
             ],
             'text.footer_col4_title' => [
                 'group' => 'text', 'type' => 'string',
-                'label' => 'Footer Col 4 — Security & Governance Heading',
-                'value' => 'Security & Governance',
+                'label' => 'Footer Col 4 — Disclaimer Heading',
+                'value' => 'Disclaimer',
             ],
             'text.footer_col4_items' => [
                 'group' => 'text', 'type' => 'textarea',
-                'label' => 'Footer Col 4 — Security & Governance List (One per line)',
-                'value' => "■ Server-side API key isolation\n■ Role-based access & tenant isolation\n■ SHA-256 document verification\n■ Consultant Review Mode gate\n■ Immutable audit trail",
+                'label' => 'Footer Col 4 — Disclaimer & Advisory Notice Text',
+                'value' => "Content on this site may be generated or assisted by artificial intelligence and can contain errors. Verify important information independently.",
             ],
 
             // Dynamic Component & Card Visibility Toggles ('1' = visible, '0' = hidden)
@@ -260,6 +260,11 @@ class PlatformSetting extends Model
                 'group' => 'visibility', 'type' => 'boolean',
                 'label' => 'Wizard — "Prefill Sample African SME Profile" Shortcut Button',
                 'value' => '1',
+            ],
+            'vis.wizard_document_extraction_vault' => [
+                'group' => 'visibility', 'type' => 'boolean',
+                'label' => 'Wizard — Step 4: AI Document Extraction Vault Upload Card',
+                'value' => '0',
             ],
             'vis.report_kpi_strip' => [
                 'group' => 'visibility', 'type' => 'boolean',

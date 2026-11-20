@@ -685,13 +685,6 @@
         border-radius: 10px !important;
         text-align: right;
     }
-    .bt-module-banner-score {
-        background: rgba(255, 255, 255, 0.06);
-        border: 1px solid rgba(241, 126, 1, 0.4);
-        padding: 10px 18px;
-        border-radius: 10px;
-        text-align: right;
-    }
 
     /* Question Block */
     .q-block {
@@ -1165,13 +1158,13 @@
                     <!-- Module Banner Card -->
                     <div class="bt-module-banner">
                         <div>
-                            <div class="bt-step-eyebrow" style="color:var(--bt-amber);">MODULE {{ $mKey }}</div>
-                            <h3 style="font-size:20px;color:#fff;margin:2px 0 4px;">{{ $module['name'] }}</h3>
-                            <div style="font-size:12.5px;color:#94a3b8;max-width:640px;line-height:1.45;">{{ $module['description'] }}</div>
+                            <div class="bt-step-eyebrow" style="color:var(--bt-amber);font-weight:700;">MODULE {{ $mKey }}</div>
+                            <h3 style="font-size:20px;color:#0f172a;margin:2px 0 4px;font-weight:700;">{{ $module['name'] }}</h3>
+                            <div style="font-size:12.5px;color:#64748b;max-width:640px;line-height:1.45;">{{ $module['description'] }}</div>
                         </div>
                         <div class="bt-module-banner-score">
-                            <div style="font-size:10.5px;text-transform:uppercase;color:var(--bt-amber);font-weight:700;">Live Module Score</div>
-                            <div id="live-mod-score-{{ $mKey }}" style="font-size:22px;font-weight:800;color:#fff;">— / 100</div>
+                            <div style="font-size:10.5px;text-transform:uppercase;color:var(--bt-amber-deep);font-weight:700;letter-spacing:0.04em;">Live Module Score</div>
+                            <div id="live-mod-score-{{ $mKey }}" style="font-size:22px;font-weight:800;color:#0f172a;">— / 100</div>
                         </div>
                     </div>
 
@@ -1240,17 +1233,26 @@
         <!-- STEP 4: SUPPORTING DOCUMENTS, PRIVACY CONSENT & REPORT        -->
         <!-- ============================================================== -->
         <section id="wiz-step-4" class="bt-step-pane" style="display:none;">
+            @php
+                $showDocVault = $uiVisible('vis.wizard_document_extraction_vault', false);
+            @endphp
+
             <div class="bt-step-header">
                 <div>
                     <div class="bt-step-eyebrow">STEP 04 OF 04 · SUPPORTING EVIDENCE &amp; GOVERNANCE CONTROLS</div>
                     <h1 class="bt-step-title">Supporting Documents, AI Consent &amp; Report Generation</h1>
                     <p class="bt-step-desc">
-                        Optionally upload key corporate documents for verification, review privacy and security safeguards, and generate your comprehensive diagnostic report.
+                        @if($showDocVault)
+                            Optionally upload key corporate documents for verification, review privacy and security safeguards, and generate your comprehensive diagnostic report.
+                        @else
+                            Review privacy and security safeguards, and generate your comprehensive diagnostic report.
+                        @endif
                     </p>
                 </div>
             </div>
 
-            <div class="flat-grid-2" style="margin-bottom:18px;">
+            <div class="{{ $showDocVault ? 'flat-grid-2' : '' }}" style="margin-bottom:18px;{{ !$showDocVault ? 'max-width:760px;margin-left:auto;margin-right:auto;' : '' }}">
+                @if($showDocVault)
                 <div class="bt-card">
                     <div class="bt-step-eyebrow">OPTIONAL · AI DOCUMENT EXTRACTION VAULT</div>
                     <h4 style="font-size:15px;margin:4px 0 8px;color:#0f172a;">Upload Financial Statements, Management Accounts, or Business Plan</h4>
@@ -1279,6 +1281,7 @@
                         </select>
                     </div>
                 </div>
+                @endif
 
                 <div class="bt-card">
                     <div class="bt-step-eyebrow">SECURITY, PRIVACY &amp; EPISTEMIC INTEGRITY</div>
