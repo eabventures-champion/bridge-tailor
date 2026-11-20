@@ -2,35 +2,360 @@
 
 @section('title', 'AI Business Diagnostic Platform')
 
+@push('head')
+<style>
+    /* Hero Slider Container */
+    .bt-hero-slider-section {
+        position: relative;
+        overflow: hidden;
+        min-height: calc(100vh - 90px);
+        min-height: 560px;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        background-color: #f8fafc;
+        border-bottom: 2px solid rgba(226, 232, 240, 0.9);
+    }
+
+    /* Slider Viewport and Track */
+    .bt-slider-viewport {
+        position: absolute;
+        inset: 0;
+        width: 100%;
+        height: 100%;
+        overflow: hidden;
+        z-index: 1;
+        pointer-events: none;
+    }
+    .bt-slider-track {
+        display: flex;
+        width: 100%;
+        height: 100%;
+        position: absolute;
+        top: 0;
+        left: 0;
+        transition: transform 1.1s cubic-bezier(0.25, 1, 0.5, 1);
+        will-change: transform;
+    }
+    .bt-slide {
+        flex: 0 0 100%;
+        width: 100%;
+        height: 100%;
+        position: relative;
+        overflow: hidden;
+    }
+    .bt-slide-img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        object-position: center 30%;
+        filter: brightness(1.02) contrast(1.04);
+        transform: scale(1.02);
+        transition: transform 7s ease-out;
+    }
+    .bt-slide.is-current .bt-slide-img {
+        transform: scale(1.07);
+    }
+
+    /* Cool Premium Business White Overlay - calibrated so sliding images are rich & clearly visible */
+    .bt-hero-white-overlay {
+        position: absolute;
+        inset: 0;
+        z-index: 2;
+        pointer-events: none;
+        background: linear-gradient(to right, 
+            rgba(255, 255, 255, 0.35) 0%, 
+            rgba(255, 255, 255, 0.18) 50%, 
+            rgba(255, 255, 255, 0.05) 100%
+        );
+    }
+
+    /* Content Layer */
+    .bt-hero-container {
+        position: relative;
+        z-index: 5;
+        width: 100%;
+        padding-top: 48px;
+        padding-bottom: 56px;
+    }
+    .bt-hero-content-col {
+        background: rgba(255, 255, 255, 0.88);
+        backdrop-filter: blur(14px);
+        -webkit-backdrop-filter: blur(14px);
+        padding: 38px 44px;
+        border: 1px solid rgba(255, 255, 255, 0.95);
+        box-shadow: 0 16px 40px -12px rgba(15, 23, 42, 0.16) !important;
+        max-width: 760px;
+    }
+    .bt-hero-eyebrow {
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        font-size: 11px;
+        font-weight: 800;
+        text-transform: uppercase;
+        letter-spacing: 0.14em;
+        color: #b85a0a;
+        background: rgba(254, 243, 199, 0.85);
+        border: 1px solid rgba(245, 158, 11, 0.4);
+        padding: 5px 12px;
+        margin-bottom: 16px;
+    }
+    .bt-hero-eyebrow-dot {
+        width: 7px;
+        height: 7px;
+        background-color: #f17e01;
+        border-radius: 50% !important;
+        display: inline-block;
+        box-shadow: 0 0 8px rgba(241, 126, 1, 0.9) !important;
+        animation: btHeroDotPulse 2s infinite ease-in-out;
+    }
+    @keyframes btHeroDotPulse {
+        0%, 100% { opacity: 1; transform: scale(1); }
+        50% { opacity: 0.4; transform: scale(1.35); }
+    }
+    .bt-hero-title {
+        font-family: 'DM Serif Display', Georgia, serif;
+        font-size: 38px;
+        line-height: 1.15;
+        color: #0f172a;
+        letter-spacing: -0.018em;
+        margin: 0 0 16px;
+        font-weight: 400;
+    }
+    .bt-hero-subtitle {
+        font-size: 14.5px;
+        color: #334155;
+        line-height: 1.68;
+        max-width: 700px;
+        margin: 0;
+        font-weight: 400;
+    }
+    .bt-hero-actions {
+        display: flex;
+        gap: 12px;
+        flex-wrap: wrap;
+        align-items: center;
+        padding-top: 20px;
+        border-top: 1px solid rgba(203, 213, 225, 0.85);
+        margin-top: 24px;
+    }
+    .bt-hero-cta {
+        background-color: var(--bt-amber);
+        color: #141210;
+        font-weight: 800;
+        font-size: 13px;
+        letter-spacing: 0.06em;
+        text-transform: uppercase;
+        padding: 12px 24px;
+        border: 1px solid var(--bt-amber);
+        box-shadow: 0 4px 14px rgba(241, 126, 1, 0.28) !important;
+        transition: all 0.25s ease;
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        text-decoration: none;
+    }
+    .bt-hero-cta:hover {
+        background-color: #d96f00;
+        border-color: #d96f00;
+        color: #ffffff;
+        transform: translateY(-2px);
+        box-shadow: 0 6px 20px rgba(217, 111, 0, 0.35) !important;
+    }
+    .bt-hero-btn-secondary {
+        background: rgba(255, 255, 255, 0.95);
+        color: #0f172a;
+        border: 1px solid #cbd5e1;
+        padding: 12px 20px;
+        font-size: 12.5px;
+        font-weight: 700;
+        text-transform: uppercase;
+        letter-spacing: 0.05em;
+        transition: all 0.2s ease;
+        text-decoration: none;
+    }
+    .bt-hero-btn-secondary:hover {
+        background: #ffffff;
+        border-color: #94a3b8;
+        color: #0f172a;
+        transform: translateY(-1px);
+    }
+
+    /* Architecture Box in Cool White Mode */
+    .bt-hero-arch-card {
+        background: rgba(255, 255, 255, 0.94);
+        backdrop-filter: blur(14px);
+        -webkit-backdrop-filter: blur(14px);
+        border: 1px solid rgba(203, 213, 225, 0.9);
+        box-shadow: 0 20px 40px -15px rgba(15, 23, 42, 0.08) !important;
+        padding: 20px 22px;
+        display: flex;
+        flex-direction: column;
+        justify-content: space-between;
+    }
+    .bt-hero-arch-table {
+        border-color: #e2e8f0;
+        font-size: 11.5px;
+    }
+    .bt-hero-arch-table td {
+        border-color: #e2e8f0;
+        padding: 8px 10px;
+    }
+    .bt-hero-arch-table td.bt-arch-th {
+        background: #f8fafc;
+        color: #b85a0a;
+        font-weight: 700;
+        width: 36%;
+        border-color: #e2e8f0;
+    }
+
+    /* Slider Interactive Controls & Progress Indicators */
+    .bt-slider-controls {
+        position: absolute;
+        bottom: 24px;
+        right: 32px;
+        z-index: 10;
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        background: rgba(255, 255, 255, 0.88);
+        backdrop-filter: blur(8px);
+        -webkit-backdrop-filter: blur(8px);
+        padding: 6px 14px;
+        border: 1px solid rgba(226, 232, 240, 0.9);
+        box-shadow: 0 4px 16px rgba(15, 23, 42, 0.06) !important;
+    }
+    .bt-slider-dots {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+    }
+    .bt-slider-dot {
+        width: 10px;
+        height: 10px;
+        border-radius: 50% !important;
+        background: rgba(148, 163, 184, 0.5);
+        border: 1px solid rgba(203, 213, 225, 0.8);
+        padding: 0;
+        cursor: pointer;
+        transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+    .bt-slider-dot:hover {
+        background: rgba(241, 126, 1, 0.7);
+    }
+    .bt-slider-dot.active {
+        width: 28px;
+        border-radius: 6px !important;
+        background: var(--bt-amber);
+        border-color: var(--bt-amber);
+        box-shadow: 0 2px 8px rgba(241, 126, 1, 0.4) !important;
+    }
+    .bt-slider-arrow {
+        width: 28px;
+        height: 28px;
+        border-radius: 50% !important;
+        background: #ffffff;
+        border: 1px solid #cbd5e1;
+        color: #334155;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        cursor: pointer;
+        transition: all 0.2s ease;
+        padding: 0;
+    }
+    .bt-slider-arrow:hover {
+        background: var(--bt-amber);
+        border-color: var(--bt-amber);
+        color: #141210;
+    }
+
+    @media (max-width: 900px) {
+        .bt-hero-slider-section {
+            min-height: auto;
+            padding: 20px 0;
+        }
+        .bt-hero-container {
+            padding-top: 20px;
+            padding-bottom: 60px;
+        }
+        .bt-hero-content-col {
+            padding: 24px 20px;
+            background: rgba(255, 255, 255, 0.92);
+        }
+        .bt-hero-title {
+            font-size: 26px;
+        }
+        .bt-slider-controls {
+            right: 50%;
+            transform: translateX(50%);
+            bottom: 12px;
+        }
+    }
+</style>
+@endpush
+
 @section('content')
-<!-- Section 1: Solid Espresso Hero Band -->
-<section class="sec-espresso" style="flex:1 0 auto;display:flex;flex-direction:column;justify-content:center;">
-    <div class="bt-container {{ $uiVisible('vis.landing_architecture_box') ? 'bt-hero-grid' : '' }}" style="width:100%;">
-        <div style="display:flex;flex-direction:column;justify-content:space-between;height:100%;">
+<!-- Section 1: Cool Premium Business White Hero with Sliding Background Images -->
+<section class="bt-hero-slider-section" id="btHeroSection">
+    <!-- Sliding Background Track -->
+    <div class="bt-slider-viewport" aria-hidden="true">
+        <div class="bt-slider-track" id="btHeroSliderTrack">
+            <div class="bt-slide is-current" data-slide-index="0">
+                <img src="{{ asset('images/slider/slide-1.jpg') }}" alt="African Business Executive Consulting" class="bt-slide-img">
+            </div>
+            <div class="bt-slide" data-slide-index="1">
+                <img src="{{ asset('images/slider/slide-2.jpg') }}" alt="Executive Strategy Boardroom Meeting" class="bt-slide-img">
+            </div>
+            <div class="bt-slide" data-slide-index="2">
+                <img src="{{ asset('images/slider/slide-3.jpg') }}" alt="Corporate Advisory and Diagnostic Analytics" class="bt-slide-img">
+            </div>
+            <div class="bt-slide" data-slide-index="3">
+                <img src="{{ asset('images/slider/slide-4.jpg') }}" alt="African Enterprise Performance Advisory" class="bt-slide-img">
+            </div>
+            <div class="bt-slide" data-slide-index="4">
+                <img src="{{ asset('images/slider/slide-5.jpg') }}" alt="Modern Executive Corporate Headquarters" class="bt-slide-img">
+            </div>
+        </div>
+    </div>
+
+    <!-- Cool Premium White Business Overlay (High-Key Corporate Ambience like Image 1) -->
+    <div class="bt-hero-white-overlay" aria-hidden="true"></div>
+
+    <!-- Hero Content Layer -->
+    <div class="bt-container bt-hero-container {{ $uiVisible('vis.landing_architecture_box') ? 'bt-hero-grid' : '' }}">
+        <div class="bt-hero-content-col">
             <div>
-                <div class="eyebrow">{{ $uiText('text.hero_eyebrow') }}</div>
-                <div style="margin-top:20px;margin-bottom:26px;">
-                    <h1 style="font-size:32px;line-height:1.15;color:#ffffff;margin-bottom:12px;">
+                <div class="bt-hero-eyebrow">
+                    <span class="bt-hero-eyebrow-dot"></span>
+                    <span>{{ $uiText('text.hero_eyebrow') }}</span>
+                </div>
+                <div style="margin-top:14px;margin-bottom:24px;">
+                    <h1 class="bt-hero-title">
                         {{ $uiText('text.hero_title') }}
                     </h1>
-                    <p style="font-size:14px;color:#d8d0c8;margin:0;max-width:680px;line-height:1.55;">
+                    <p class="bt-hero-subtitle">
                         {{ $uiText('text.hero_subtitle') }}
                     </p>
                 </div>
             </div>
-            <div style="display:flex;gap:10px;flex-wrap:wrap;align-items:center;padding-top:12px;border-top:1px solid #443e3a;">
-                <a href="{{ route('diagnostic.wizard') }}" class="btn btn-amber">{{ $uiText('text.hero_cta_primary') }}</a>
+            <div class="bt-hero-actions">
+                <a href="{{ route('diagnostic.wizard') }}" class="btn btn-amber bt-hero-cta">
+                    <span>{{ $uiText('text.hero_cta_primary') }}</span>
+                    <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="margin-left:4px;"><line x1="5" y1="12" x2="19" y2="12"></line><polyline points="12 5 19 12 12 19"></polyline></svg>
+                </a>
                 @auth
                     @if(auth()->user()->isDeveloper())
-                        <a href="{{ route('developer.console') }}" class="btn btn-outline" style="background:#141210;color:var(--bt-amber);border-color:var(--bt-amber);">
+                        <a href="{{ route('developer.console') }}" class="btn bt-hero-btn-secondary" style="color:var(--bt-amber-deep);border-color:var(--bt-amber);">
                             Open Developer Master Console
                         </a>
                     @elseif(auth()->user()->isConsultant())
-                        <a href="{{ route('consultant.dashboard') }}" class="btn btn-outline" style="background:#141210;color:#cac4c4;border-color:#443e3a;">
+                        <a href="{{ route('consultant.dashboard') }}" class="btn bt-hero-btn-secondary">
                             Open Consultant Review Desk
                         </a>
                     @else
-                        <a href="{{ route('portal.index') }}" class="btn btn-outline" style="background:#2c2927;color:#fff;border-color:#8a7f78;">
+                        <a href="{{ route('portal.index') }}" class="btn bt-hero-btn-secondary">
                             Open My Client Workspace
                         </a>
                     @endif
@@ -40,34 +365,51 @@
 
         <!-- Right column: Deterministic + AI Architecture Summary Box -->
         @if($uiVisible('vis.landing_architecture_box'))
-        <div class="flat-box-dark" style="display:flex;flex-direction:column;justify-content:space-between;">
+        <div class="bt-hero-arch-card">
             <div>
-                <div class="eyebrow">CONTROLLED DIAGNOSTIC ARCHITECTURE</div>
-                <h3 style="font-size:15px;color:#fff;margin-bottom:8px;">Deterministic Scores + AI Structured Synthesis</h3>
-                <p style="font-size:12px;color:#c7beb5;margin:0 0 12px;">
+                <div class="eyebrow" style="color:var(--bt-amber-deep);">CONTROLLED DIAGNOSTIC ARCHITECTURE</div>
+                <h3 style="font-size:16px;color:#0f172a;margin-bottom:8px;font-weight:700;">Deterministic Scores + AI Structured Synthesis</h3>
+                <p style="font-size:12.5px;color:#475569;margin:0 0 14px;line-height:1.5;">
                     Numerical scores are calculated strictly by Bridge Tailor’s controlled scoring engine (50% weighted symptom pain + 50% gateway evidence verification). The AI interprets findings using OpenAI Structured Outputs and tags every statement by epistemic source.
                 </p>
             </div>
-            <table class="bt-table" style="border-color:#443e3a;font-size:11.5px;">
+            <table class="bt-table bt-hero-arch-table">
                 <tr>
-                    <td style="background:#141210;color:#f17e01;font-weight:700;border-color:#443e3a;width:36%;">Scoring Engine</td>
-                    <td style="background:#1c1917;color:#e6dfd8;border-color:#443e3a;">Controlled 0–100 index + Feel vs. Evidence blind-spot gap (≥15 pts)</td>
+                    <td class="bt-arch-th">Scoring Engine</td>
+                    <td>Controlled 0–100 index + Feel vs. Evidence blind-spot gap (≥15 pts)</td>
                 </tr>
                 <tr>
-                    <td style="background:#141210;color:#f17e01;font-weight:700;border-color:#443e3a;">Sequencing Gate</td>
-                    <td style="background:#1c1917;color:#e6dfd8;border-color:#443e3a;">Financial Control gates Capital Raising (shaky books block funding)</td>
+                    <td class="bt-arch-th">Sequencing Gate</td>
+                    <td>Financial Control gates Capital Raising (shaky books block funding)</td>
                 </tr>
                 <tr>
-                    <td style="background:#141210;color:#f17e01;font-weight:700;border-color:#443e3a;">Epistemic Guardrail</td>
-                    <td style="background:#1c1917;color:#e6dfd8;border-color:#443e3a;">Distinguishes Verified Facts, Client-Provided data &amp; Assumptions</td>
+                    <td class="bt-arch-th">Epistemic Guardrail</td>
+                    <td>Distinguishes Verified Facts, Client-Provided data &amp; Assumptions</td>
                 </tr>
                 <tr>
-                    <td style="background:#141210;color:#f17e01;font-weight:700;border-color:#443e3a;">Consultant Review</td>
-                    <td style="background:#1c1917;color:#e6dfd8;border-color:#443e3a;">AI drafts initial report → Consultant amends, approves &amp; publishes</td>
+                    <td class="bt-arch-th">Consultant Review</td>
+                    <td>AI drafts initial report → Consultant amends, approves &amp; publishes</td>
                 </tr>
             </table>
         </div>
         @endif
+    </div>
+
+    <!-- Sliding Controls & Indicators -->
+    <div class="bt-slider-controls">
+        <button type="button" class="bt-slider-arrow bt-slider-prev" id="btSliderPrev" aria-label="Previous Slide">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"></polyline></svg>
+        </button>
+        <div class="bt-slider-dots" role="tablist" aria-label="Hero Slides">
+            <button type="button" class="bt-slider-dot active" data-slide="0" aria-label="Slide 1" aria-current="true"></button>
+            <button type="button" class="bt-slider-dot" data-slide="1" aria-label="Slide 2"></button>
+            <button type="button" class="bt-slider-dot" data-slide="2" aria-label="Slide 3"></button>
+            <button type="button" class="bt-slider-dot" data-slide="3" aria-label="Slide 4"></button>
+            <button type="button" class="bt-slider-dot" data-slide="4" aria-label="Slide 5"></button>
+        </div>
+        <button type="button" class="bt-slider-arrow bt-slider-next" id="btSliderNext" aria-label="Next Slide">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"></polyline></svg>
+        </button>
     </div>
 </section>
 
@@ -265,4 +607,139 @@ add_shortcode('bridge_tailor_diagnostic', function ($atts) {
     </div>
 </section>
 @endif
+
+@push('scripts')
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        const track = document.getElementById('btHeroSliderTrack');
+        if (!track) return;
+
+        const slides = track.querySelectorAll('.bt-slide');
+        const dots = document.querySelectorAll('.bt-slider-dot');
+        const prevBtn = document.getElementById('btSliderPrev');
+        const nextBtn = document.getElementById('btSliderNext');
+        const heroSection = document.getElementById('btHeroSection');
+
+        if (slides.length <= 1) return;
+
+        let currentIndex = 0;
+        const totalSlides = slides.length;
+        let autoSlideTimer = null;
+        const slideDelay = 5500; // 5.5 seconds per slide
+
+        function updateSlide(newIndex) {
+            if (newIndex < 0) {
+                newIndex = totalSlides - 1;
+            } else if (newIndex >= totalSlides) {
+                newIndex = 0;
+            }
+
+            currentIndex = newIndex;
+
+            // Slide horizontally with transform
+            track.style.transform = 'translateX(-' + (currentIndex * 100) + '%)';
+
+            // Update zoom class for Ken Burns effect
+            slides.forEach(function (slide, idx) {
+                if (idx === currentIndex) {
+                    slide.classList.add('is-current');
+                } else {
+                    slide.classList.remove('is-current');
+                }
+            });
+
+            // Update dots
+            dots.forEach(function (dot, idx) {
+                if (idx === currentIndex) {
+                    dot.classList.add('active');
+                    dot.setAttribute('aria-current', 'true');
+                } else {
+                    dot.classList.remove('active');
+                    dot.removeAttribute('aria-current');
+                }
+            });
+        }
+
+        function nextSlide() {
+            updateSlide(currentIndex + 1);
+        }
+
+        function prevSlide() {
+            updateSlide(currentIndex - 1);
+        }
+
+        function startAutoSlide() {
+            stopAutoSlide();
+            autoSlideTimer = setInterval(nextSlide, slideDelay);
+        }
+
+        function stopAutoSlide() {
+            if (autoSlideTimer) {
+                clearInterval(autoSlideTimer);
+                autoSlideTimer = null;
+            }
+        }
+
+        // Dot click handlers
+        dots.forEach(function (dot) {
+            dot.addEventListener('click', function () {
+                const targetIdx = parseInt(this.getAttribute('data-slide'), 10);
+                updateSlide(targetIdx);
+                startAutoSlide();
+            });
+        });
+
+        // Arrow controls
+        if (prevBtn) {
+            prevBtn.addEventListener('click', function (e) {
+                e.preventDefault();
+                prevSlide();
+                startAutoSlide();
+            });
+        }
+
+        if (nextBtn) {
+            nextBtn.addEventListener('click', function (e) {
+                e.preventDefault();
+                nextSlide();
+                startAutoSlide();
+            });
+        }
+
+        // Pause on mouse hover, resume on mouse leave
+        if (heroSection) {
+            heroSection.addEventListener('mouseenter', stopAutoSlide);
+            heroSection.addEventListener('mouseleave', startAutoSlide);
+        }
+
+        // Touch swipe support for mobile
+        let touchStartX = 0;
+        let touchEndX = 0;
+
+        heroSection.addEventListener('touchstart', function (e) {
+            touchStartX = e.changedTouches[0].screenX;
+        }, { passive: true });
+
+        heroSection.addEventListener('touchend', function (e) {
+            touchEndX = e.changedTouches[0].screenX;
+            handleGesture();
+        }, { passive: true });
+
+        function handleGesture() {
+            const swipeThreshold = 45;
+            if (touchEndX < touchStartX - swipeThreshold) {
+                nextSlide();
+                startAutoSlide();
+            } else if (touchEndX > touchStartX + swipeThreshold) {
+                prevSlide();
+                startAutoSlide();
+            }
+        }
+
+        // Initialize
+        updateSlide(0);
+        startAutoSlide();
+    });
+</script>
+@endpush
 @endsection

@@ -686,10 +686,81 @@
                 color: var(--bt-amber);
             }
         }
+
+        /* Cool Premium Business White Theme for Landing Page (Matching Teleios / Executive Ambience) */
+        body.page-landing-light {
+            background-color: #f8fafc;
+        }
+        .page-landing-light .bt-top-fixed {
+            background-color: rgba(255, 255, 255, 0.96);
+            backdrop-filter: blur(14px);
+            -webkit-backdrop-filter: blur(14px);
+            box-shadow: 0 2px 14px rgba(15, 23, 42, 0.05) !important;
+            border-bottom: none;
+        }
+        .page-landing-light .bt-utility {
+            background-color: #f8fafc;
+            color: #475569;
+            border-bottom: 1px solid #e2e8f0;
+        }
+        .page-landing-light .bt-utility strong {
+            color: #0f172a !important;
+        }
+        .page-landing-light .bt-role-btn {
+            background-color: #ffffff;
+            color: #1e293b;
+            border-color: #cbd5e1;
+        }
+        .page-landing-light .bt-role-btn.active,
+        .page-landing-light .bt-role-btn:hover {
+            background-color: var(--bt-amber);
+            color: var(--bt-ink);
+            border-color: var(--bt-amber);
+        }
+        .page-landing-light .bt-header {
+            background-color: rgba(255, 255, 255, 0.96);
+            color: var(--bt-ink);
+            border-bottom: 3px solid var(--bt-amber);
+        }
+        .page-landing-light .bt-brand-name {
+            color: #0f172a;
+        }
+        .page-landing-light .bt-brand-sub {
+            color: #64748b;
+        }
+        .page-landing-light .bt-nav a {
+            color: #334155;
+        }
+        .page-landing-light .bt-nav a:hover,
+        .page-landing-light .bt-nav a.active {
+            background-color: #f1f5f9;
+            color: #0f172a;
+            border-color: #cbd5e1;
+        }
+        .page-landing-light .bt-nav a.bt-nav-cta {
+            background-color: var(--bt-amber);
+            color: var(--bt-ink);
+            border-color: var(--bt-amber);
+        }
+        .page-landing-light .bt-nav a.bt-nav-cta:hover {
+            background-color: #d96f00;
+            color: #ffffff;
+        }
+        .page-landing-light .bt-menu-toggle {
+            background-color: #ffffff;
+            color: #0f172a;
+            border-color: #cbd5e1;
+        }
+        @media (max-width: 720px) {
+            .page-landing-light .bt-nav {
+                background-color: #ffffff;
+                border-top-color: #e2e8f0;
+            }
+        }
     </style>
     @stack('head')
 </head>
-<body>
+<body class="@yield('body_class') {{ request()->routeIs('diagnostic.landing') ? 'page-landing-light' : '' }}">
     <div class="bt-top-fixed">
         <!-- Top Utility Bar: Brand Contact & Authenticated User Status -->
         @if($uiVisible('vis.top_utility_bar'))
