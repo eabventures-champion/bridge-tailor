@@ -28,6 +28,7 @@
             --bt-danger-pale: #F7E4E1;
             --bt-success: #255C3E;
             --bt-success-pale: #E2F0E8;
+            --bt-header-height: 86px;
         }
         * {
             box-sizing: border-box;
@@ -599,7 +600,16 @@
             }
         }
 
+        @media (max-width: 900px) {
+            :root {
+                --bt-header-height: 60px;
+            }
+        }
+
         @media (max-width: 720px) {
+            :root {
+                --bt-header-height: 56px;
+            }
             .bt-container {
                 padding: 16px 12px;
             }
@@ -920,6 +930,18 @@
             </div>
         </header>
     </div>
+    <script>
+        (function() {
+            var fh = document.querySelector('.bt-top-fixed');
+            if (fh) {
+                var h = fh.offsetHeight;
+                if (h > 0) {
+                    document.documentElement.style.setProperty('--bt-header-height', h + 'px');
+                    document.body.style.paddingTop = h + 'px';
+                }
+            }
+        })();
+    </script>
 
     @if(session('status'))
         <div class="flash-banner">
@@ -998,7 +1020,14 @@
         function syncFixedHeaderOffset() {
             const fixedHeader = document.querySelector('.bt-top-fixed');
             if (fixedHeader) {
-                document.body.style.paddingTop = fixedHeader.offsetHeight + 'px';
+                const nav = document.getElementById('bt-main-nav');
+                const isNavOpen = nav && nav.classList.contains('open');
+                let baseHeight = fixedHeader.offsetHeight;
+                if (isNavOpen && nav) {
+                    baseHeight = Math.max(54, baseHeight - nav.offsetHeight);
+                }
+                document.documentElement.style.setProperty('--bt-header-height', baseHeight + 'px');
+                document.body.style.paddingTop = baseHeight + 'px';
             }
         }
         window.addEventListener('resize', syncFixedHeaderOffset);

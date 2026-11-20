@@ -8,8 +8,11 @@
     .bt-hero-slider-section {
         position: relative;
         overflow: hidden;
-        min-height: calc(100vh - 90px);
         min-height: 560px;
+        min-height: calc(100vh - var(--bt-header-height, 90px));
+        min-height: calc(100dvh - var(--bt-header-height, 90px));
+        height: calc(100vh - var(--bt-header-height, 90px));
+        height: calc(100dvh - var(--bt-header-height, 90px));
         display: flex;
         flex-direction: column;
         justify-content: center;
@@ -302,9 +305,10 @@
 
     @media (max-width: 900px) {
         .bt-hero-slider-section {
-            min-height: calc(100vh - 65px);
-            min-height: calc(100dvh - 65px);
-            min-height: 520px;
+            min-height: calc(100vh - var(--bt-header-height, 60px));
+            min-height: calc(100dvh - var(--bt-header-height, 60px));
+            height: calc(100vh - var(--bt-header-height, 60px));
+            height: calc(100dvh - var(--bt-header-height, 60px));
         }
         .bt-slide {
             align-items: flex-end;
@@ -394,9 +398,10 @@
 
     @media (max-width: 640px) {
         .bt-hero-slider-section {
-            min-height: calc(100vh - 60px);
-            min-height: calc(100dvh - 60px);
-            min-height: 500px;
+            min-height: calc(100vh - var(--bt-header-height, 56px));
+            min-height: calc(100dvh - var(--bt-header-height, 56px));
+            height: calc(100vh - var(--bt-header-height, 56px));
+            height: calc(100dvh - var(--bt-header-height, 56px));
         }
         .bt-slide {
             align-items: flex-end;
