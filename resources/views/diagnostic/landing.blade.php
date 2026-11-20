@@ -191,65 +191,54 @@
         border-color: #e2e8f0;
     }
 
-    /* Slider Interactive Controls & Progress Indicators */
+    /* Slider Interactive Controls & Progress Indicators - Vertical Dots Only */
     .bt-slider-controls {
         position: absolute;
-        bottom: 24px;
-        right: 32px;
+        right: 28px;
+        top: 50%;
+        transform: translateY(-50%);
+        bottom: auto;
         z-index: 20;
         display: flex;
+        flex-direction: column;
         align-items: center;
-        gap: 12px;
-        background: rgba(255, 255, 255, 0.85);
+        gap: 10px;
+        background: rgba(255, 255, 255, 0.70);
         backdrop-filter: blur(8px);
         -webkit-backdrop-filter: blur(8px);
-        padding: 6px 14px;
+        padding: 10px 7px;
         border: 1px solid rgba(226, 232, 240, 0.9);
-        box-shadow: 0 4px 16px rgba(15, 23, 42, 0.06) !important;
+        box-shadow: 0 4px 16px rgba(15, 23, 42, 0.08) !important;
+    }
+    .bt-slider-arrow {
+        display: none !important;
     }
     .bt-slider-dots {
         display: flex;
+        flex-direction: column;
         align-items: center;
         gap: 8px;
     }
     .bt-slider-dot {
-        width: 10px;
-        height: 10px;
+        width: 8px;
+        height: 8px;
         border-radius: 50% !important;
-        background: rgba(148, 163, 184, 0.5);
-        border: 1px solid rgba(203, 213, 225, 0.8);
+        background: rgba(148, 163, 184, 0.55);
+        border: 1px solid rgba(203, 213, 225, 0.85);
         padding: 0;
         cursor: pointer;
         transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
     }
     .bt-slider-dot:hover {
-        background: rgba(241, 126, 1, 0.7);
+        background: rgba(241, 126, 1, 0.75);
     }
     .bt-slider-dot.active {
-        width: 28px;
-        border-radius: 6px !important;
+        width: 8px;
+        height: 24px;
+        border-radius: 4px !important;
         background: var(--bt-amber);
         border-color: var(--bt-amber);
         box-shadow: 0 2px 8px rgba(241, 126, 1, 0.4) !important;
-    }
-    .bt-slider-arrow {
-        width: 28px;
-        height: 28px;
-        border-radius: 50% !important;
-        background: #ffffff;
-        border: 1px solid #cbd5e1;
-        color: #334155;
-        display: inline-flex;
-        align-items: center;
-        justify-content: center;
-        cursor: pointer;
-        transition: all 0.2s ease;
-        padding: 0;
-    }
-    .bt-slider-arrow:hover {
-        background: var(--bt-amber);
-        border-color: var(--bt-amber);
-        color: #141210;
     }
 
     @media (max-width: 900px) {
@@ -324,29 +313,27 @@
             font-size: 11.5px;
         }
         .bt-slider-controls {
-            left: 50%;
-            right: auto;
-            transform: translateX(-50%);
-            bottom: 10px;
-            max-width: calc(100% - 32px);
-            padding: 4px 10px;
-            gap: 8px;
-            background: rgba(255, 255, 255, 0.85);
+            right: 14px;
+            left: auto;
+            top: 50%;
+            bottom: auto;
+            transform: translateY(-50%);
+            max-width: none;
+            padding: 8px 6px;
+            gap: 7px;
+            background: rgba(255, 255, 255, 0.70);
             backdrop-filter: blur(6px);
             -webkit-backdrop-filter: blur(6px);
             border: 1px solid rgba(226, 232, 240, 0.85);
-            box-shadow: 0 4px 14px rgba(15, 23, 42, 0.10) !important;
-        }
-        .bt-slider-arrow {
-            width: 28px;
-            height: 28px;
+            box-shadow: 0 4px 14px rgba(15, 23, 42, 0.08) !important;
         }
         .bt-slider-dot {
             width: 8px;
             height: 8px;
         }
         .bt-slider-dot.active {
-            width: 20px;
+            width: 8px;
+            height: 22px;
         }
     }
 
@@ -360,7 +347,7 @@
             align-items: flex-end;
         }
         .bt-slide-inner {
-            padding: 12px 12px 52px;
+            padding: 12px 12px 18px;
         }
         .bt-hero-transparent-card {
             padding: 14px 14px 12px;
@@ -389,20 +376,22 @@
             letter-spacing: 0.04em;
         }
         .bt-slider-controls {
-            bottom: 8px;
-            padding: 3px 8px;
+            right: 8px;
+            left: auto;
+            top: 50%;
+            bottom: auto;
+            transform: translateY(-50%);
+            padding: 6px 5px;
             gap: 6px;
-        }
-        .bt-slider-arrow {
-            width: 26px;
-            height: 26px;
+            background: rgba(255, 255, 255, 0.65);
         }
         .bt-slider-dot {
-            width: 7px;
-            height: 7px;
+            width: 6px;
+            height: 6px;
         }
         .bt-slider-dot.active {
-            width: 18px;
+            width: 6px;
+            height: 18px;
         }
     }
 
