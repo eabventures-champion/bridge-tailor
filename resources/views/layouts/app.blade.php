@@ -994,9 +994,16 @@
     @if($uiVisible('vis.footer_section'))
     @php
         $showPracticeLines = $uiVisible('vis.footer_practice_lines');
-        $col2Lines = array_filter(array_map('trim', explode("\n", (string) $uiText('text.footer_col2_items', ''))));
-        $col3Lines = array_filter(array_map('trim', explode("\n", (string) $uiText('text.footer_col3_items', ''))));
-        $col4Lines = array_filter(array_map('trim', explode("\n", (string) $uiText('text.footer_col4_items', ''))));
+        $parseFooterLines = function($val) {
+            $raw = (string) $val;
+            if (!str_contains($raw, "\n") && preg_match('/\d{2}\s*·/', $raw)) {
+                $raw = preg_replace('/(?<!^)\s*(\d{2}\s*·)/', "\n$1", $raw);
+            }
+            return array_filter(array_map('trim', preg_split('/\r\n|\r|\n/', $raw)));
+        };
+        $col2Lines = $parseFooterLines($uiText('text.footer_col2_items', ''));
+        $col3Lines = $parseFooterLines($uiText('text.footer_col3_items', ''));
+        $col4Lines = $parseFooterLines($uiText('text.footer_col4_items', ''));
     @endphp
     <footer class="bt-footer">
         <div class="bt-container bt-footer-grid {{ $showPracticeLines ? 'has-col3' : '' }}">
@@ -1015,9 +1022,9 @@
                 <div style="font-weight:700;color:#fff;text-transform:uppercase;margin-bottom:6px;">
                     {{ $uiText('text.footer_col2_title') }}
                 </div>
-                <div style="display:flex;flex-direction:column;gap:4px;">
+                <div style="display:flex;flex-direction:column;gap:6px;line-height:1.5;">
                     @foreach($col2Lines as $line)
-                        <span>{{ $line }}</span>
+                        <span style="display:block;">{{ $line }}</span>
                     @endforeach
                 </div>
             </div>
@@ -1026,9 +1033,9 @@
                 <div style="font-weight:700;color:#fff;text-transform:uppercase;margin-bottom:6px;">
                     {{ $uiText('text.footer_col3_title') }}
                 </div>
-                <div style="display:flex;flex-direction:column;gap:4px;">
+                <div style="display:flex;flex-direction:column;gap:6px;line-height:1.5;">
                     @foreach($col3Lines as $line)
-                        <span>{{ $line }}</span>
+                        <span style="display:block;">{{ $line }}</span>
                     @endforeach
                 </div>
             </div>
@@ -1037,9 +1044,9 @@
                 <div style="font-weight:700;color:#fff;text-transform:uppercase;margin-bottom:6px;">
                     {{ $uiText('text.footer_col4_title') }}
                 </div>
-                <div style="display:flex;flex-direction:column;gap:4px;">
+                <div style="display:flex;flex-direction:column;gap:6px;line-height:1.5;">
                     @foreach($col4Lines as $line)
-                        <span>{{ $line }}</span>
+                        <span style="display:block;">{{ $line }}</span>
                     @endforeach
                 </div>
             </div>

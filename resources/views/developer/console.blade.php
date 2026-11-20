@@ -421,8 +421,8 @@
                                         <span style="font-size:10.5px;font-weight:700;color:var(--bt-umber);text-transform:uppercase;">Or upload replacement file:</span>
                                         <input type="file" name="slide_uploads[{{ $key }}]" accept="image/*,.svg" style="font-size:11px;padding:3px 6px;">
                                     </div>
-                                @elseif(strlen((string) $item['current']) > 110)
-                                    <textarea name="texts[{{ $key }}]" rows="3" placeholder="{{ $item['placeholder'] ?? '' }}">{{ $item['current'] }}</textarea>
+                                @elseif(($item['type'] ?? '') === 'textarea' || str_contains($key, '_items') || str_contains($key, 'tagline') || str_contains($key, 'note') || strlen((string) $item['current']) > 90)
+                                    <textarea name="texts[{{ $key }}]" rows="5" placeholder="{{ $item['placeholder'] ?? '' }}">{{ $item['current'] }}</textarea>
                                 @else
                                     <input type="text" name="texts[{{ $key }}]" value="{{ $item['current'] }}" placeholder="{{ $item['placeholder'] ?? '' }}">
                                 @endif
