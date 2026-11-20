@@ -35,7 +35,7 @@
         background-color: #0f172a;
         display: flex;
         flex-direction: column;
-        justify-content: space-between;
+        justify-content: flex-end;
         padding: 44px 40px;
         overflow: hidden;
         min-height: 560px;
@@ -64,33 +64,7 @@
             rgba(15, 23, 42, 0.94) 100%
         );
     }
-    .bt-auth-visual-top {
-        position: relative;
-        z-index: 5;
-    }
-    .bt-auth-badge {
-        display: inline-flex;
-        align-items: center;
-        gap: 6px;
-        background: rgba(255, 255, 255, 0.16);
-        backdrop-filter: blur(8px);
-        -webkit-backdrop-filter: blur(8px);
-        border: 1px solid rgba(255, 255, 255, 0.28);
-        border-radius: 20px !important;
-        padding: 6px 14px;
-        font-size: 11px;
-        font-weight: 700;
-        letter-spacing: 0.08em;
-        text-transform: uppercase;
-        color: #ffffff;
-        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15) !important;
-    }
-    .bt-auth-badge-dot {
-        width: 6px;
-        height: 6px;
-        border-radius: 50% !important;
-        background-color: var(--bt-amber);
-    }
+
     .bt-auth-visual-bottom {
         position: relative;
         z-index: 5;
@@ -406,13 +380,6 @@
             <div class="bt-auth-visual">
                 <img src="{{ asset('images/slider/slide-1.jpg') }}" alt="Welcome to Bridge-Tailor" class="bt-auth-visual-img">
                 <div class="bt-auth-visual-tint" aria-hidden="true"></div>
-
-                <div class="bt-auth-visual-top">
-                    <div class="bt-auth-badge">
-                        <span class="bt-auth-badge-dot"></span>
-                        <span>Bridge-Tailor Intelligence</span>
-                    </div>
-                </div>
 
                 <div class="bt-auth-visual-bottom">
                     <h2 class="bt-auth-visual-title">Welcome to Bridge-Tailor</h2>
