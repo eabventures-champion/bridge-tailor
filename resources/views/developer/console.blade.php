@@ -356,12 +356,12 @@
 <!-- Section 3: Solid White Band — Dynamic Text & Copy CMS Editor -->
 <section class="sec-white" id="dev-text">
     <div class="bt-container">
-        <form action="{{ route($routePrefix . '.text.update') }}" method="POST">
+        <form action="{{ route($routePrefix . '.text.update') }}" method="POST" enctype="multipart/form-data">
             @csrf
             <div class="sec-header">
                 <div>
                     <div class="eyebrow">02 · DYNAMIC PLATFORM TEXT &amp; HEADLINE CMS</div>
-                    <h2 style="font-size:23px;">Dynamically Edit Platform Headlines, Labels, Callouts &amp; Copy</h2>
+                    <h2 style="font-size:23px;">Dynamically Edit Platform Headlines, Labels, Callouts, Slider Images &amp; Copy</h2>
                 </div>
                 <button type="submit" class="btn btn-amber">Save All Text Overrides →</button>
             </div>
@@ -371,10 +371,23 @@
                     <div class="flat-box" style="background:var(--bt-slate);">
                         <div class="field" style="margin-bottom:0;">
                             <label>{{ $item['label'] }} <span style="font-weight:400;opacity:0.7;">({{ $key }})</span></label>
-                            @if(strlen((string) $item['current']) > 110)
-                                <textarea name="texts[{{ $key }}]" rows="3">{{ $item['current'] }}</textarea>
+                            @if(str_contains($key, 'slide_') && str_contains($key, '_image'))
+                                <div style="display:flex;gap:10px;align-items:center;margin-bottom:6px;">
+                                    @php
+                                        $currImg = $item['current'] ?? '';
+                                        $previewUrl = str_starts_with($currImg, 'http') ? $currImg : asset(ltrim($currImg, '/'));
+                                    @endphp
+                                    <img src="{{ $previewUrl }}" alt="Slide Preview" style="height:44px;width:72px;object-fit:cover;border:1px solid #cbd5e1;background:#e2e8f0;flex-shrink:0;">
+                                    <input type="text" name="texts[{{ $key }}]" value="{{ $item['current'] }}" placeholder="{{ $item['placeholder'] ?? 'e.g. images/slider/slide-1.jpg or https://...' }}" style="flex:1;">
+                                </div>
+                                <div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap;">
+                                    <span style="font-size:10.5px;font-weight:700;color:var(--bt-umber);text-transform:uppercase;">Or upload replacement file:</span>
+                                    <input type="file" name="slide_uploads[{{ $key }}]" accept="image/*" style="font-size:11px;padding:3px 6px;">
+                                </div>
+                            @elseif(strlen((string) $item['current']) > 110)
+                                <textarea name="texts[{{ $key }}]" rows="3" placeholder="{{ $item['placeholder'] ?? '' }}">{{ $item['current'] }}</textarea>
                             @else
-                                <input type="text" name="texts[{{ $key }}]" value="{{ $item['current'] }}">
+                                <input type="text" name="texts[{{ $key }}]" value="{{ $item['current'] }}" placeholder="{{ $item['placeholder'] ?? '' }}">
                             @endif
                         </div>
                     </div>

@@ -363,4 +363,25 @@ class DiagnosticPlatformTest extends TestCase
         $response = $this->get('/');
         $response->assertSee('Strategic Interventions');
     }
+
+    public function test_admin_can_dynamically_change_hero_slider_images(): void
+    {
+        $admin = User::where('role', 'admin')->first();
+
+        // Admin updates slide 1 and slide 2 images dynamically
+        $this->actingAs($admin)
+            ->post('/admin/text', [
+                'texts' => [
+                    'text.hero_slide_1_image' => 'https://images.unsplash.com/custom-boardroom-exec.jpg',
+                    'text.hero_slide_2_image' => 'images/slider/custom-local-slide.jpg',
+                ],
+            ])
+            ->assertRedirect();
+
+        auth()->logout();
+        $response = $this->get('/');
+        $response->assertStatus(200);
+        $response->assertSee('https://images.unsplash.com/custom-boardroom-exec.jpg');
+        $response->assertSee('images/slider/custom-local-slide.jpg');
+    }
 }

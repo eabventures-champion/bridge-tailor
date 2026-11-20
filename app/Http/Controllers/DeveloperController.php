@@ -121,6 +121,24 @@ class DeveloperController extends Controller
         $inputs = $request->input('texts', []);
         $defaults = PlatformSetting::defaults();
 
+        // Handle direct file uploads for slide images if uploaded
+        if ($request->hasFile('slide_uploads')) {
+            $uploads = $request->file('slide_uploads', []);
+            foreach ($uploads as $key => $file) {
+                if ($file && $file->isValid() && isset($defaults[$key])) {
+                    $ext = $file->getClientOriginalExtension() ?: 'jpg';
+                    $cleanKey = str_replace('.', '_', $key);
+                    $filename = $cleanKey . '_' . time() . '.' . $ext;
+                    $destPath = public_path('images/slider');
+                    if (! file_exists($destPath)) {
+                        mkdir($destPath, 0755, true);
+                    }
+                    $file->move($destPath, $filename);
+                    $inputs[$key] = 'images/slider/' . $filename;
+                }
+            }
+        }
+
         foreach ($inputs as $key => $val) {
             if (! isset($defaults[$key]) || $defaults[$key]['group'] !== 'text') {
                 continue;

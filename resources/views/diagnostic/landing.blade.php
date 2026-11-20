@@ -270,26 +270,36 @@
 @endpush
 
 @section('content')
+@php
+    $resolveSlideUrl = function($settingKey, $defaultPath) use ($uiText) {
+        $val = trim((string) $uiText($settingKey, $defaultPath));
+        if (empty($val)) {
+            $val = $defaultPath;
+        }
+        if (str_starts_with($val, 'http://') || str_starts_with($val, 'https://') || str_starts_with($val, '//')) {
+            return $val;
+        }
+        return asset(ltrim($val, '/'));
+    };
+
+    $slideImages = [
+        $resolveSlideUrl('text.hero_slide_1_image', 'images/slider/slide-1.jpg'),
+        $resolveSlideUrl('text.hero_slide_2_image', 'images/slider/slide-2.jpg'),
+        $resolveSlideUrl('text.hero_slide_3_image', 'images/slider/slide-3.jpg'),
+        $resolveSlideUrl('text.hero_slide_4_image', 'images/slider/slide-4.jpg'),
+        $resolveSlideUrl('text.hero_slide_5_image', 'images/slider/slide-5.jpg'),
+    ];
+@endphp
 <!-- Section 1: Cool Premium Business White Hero with Sliding Background Images -->
 <section class="bt-hero-slider-section" id="btHeroSection">
     <!-- Sliding Background Track -->
     <div class="bt-slider-viewport" aria-hidden="true">
         <div class="bt-slider-track" id="btHeroSliderTrack">
-            <div class="bt-slide is-current" data-slide-index="0">
-                <img src="{{ asset('images/slider/slide-1.jpg') }}" alt="African Business Executive Consulting" class="bt-slide-img">
-            </div>
-            <div class="bt-slide" data-slide-index="1">
-                <img src="{{ asset('images/slider/slide-2.jpg') }}" alt="Executive Strategy Boardroom Meeting" class="bt-slide-img">
-            </div>
-            <div class="bt-slide" data-slide-index="2">
-                <img src="{{ asset('images/slider/slide-3.jpg') }}" alt="Corporate Advisory and Diagnostic Analytics" class="bt-slide-img">
-            </div>
-            <div class="bt-slide" data-slide-index="3">
-                <img src="{{ asset('images/slider/slide-4.jpg') }}" alt="African Enterprise Performance Advisory" class="bt-slide-img">
-            </div>
-            <div class="bt-slide" data-slide-index="4">
-                <img src="{{ asset('images/slider/slide-5.jpg') }}" alt="Modern Executive Corporate Headquarters" class="bt-slide-img">
-            </div>
+            @foreach($slideImages as $idx => $imgUrl)
+                <div class="bt-slide {{ $idx === 0 ? 'is-current' : '' }}" data-slide-index="{{ $idx }}">
+                    <img src="{{ $imgUrl }}" alt="Hero Background Slide {{ $idx + 1 }}" class="bt-slide-img">
+                </div>
+            @endforeach
         </div>
     </div>
 
@@ -370,11 +380,9 @@
             <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"></polyline></svg>
         </button>
         <div class="bt-slider-dots" role="tablist" aria-label="Hero Slides">
-            <button type="button" class="bt-slider-dot active" data-slide="0" aria-label="Slide 1" aria-current="true"></button>
-            <button type="button" class="bt-slider-dot" data-slide="1" aria-label="Slide 2"></button>
-            <button type="button" class="bt-slider-dot" data-slide="2" aria-label="Slide 3"></button>
-            <button type="button" class="bt-slider-dot" data-slide="3" aria-label="Slide 4"></button>
-            <button type="button" class="bt-slider-dot" data-slide="4" aria-label="Slide 5"></button>
+            @foreach($slideImages as $idx => $imgUrl)
+                <button type="button" class="bt-slider-dot {{ $idx === 0 ? 'active' : '' }}" data-slide="{{ $idx }}" aria-label="Slide {{ $idx + 1 }}" {{ $idx === 0 ? 'aria-current="true"' : '' }}></button>
+            @endforeach
         </div>
         <button type="button" class="bt-slider-arrow bt-slider-next" id="btSliderNext" aria-label="Next Slide">
             <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"></polyline></svg>
