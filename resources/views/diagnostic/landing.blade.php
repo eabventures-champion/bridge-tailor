@@ -61,16 +61,17 @@
         transform: scale(1.07);
     }
 
-    /* Subtle light wash so the background image remains vibrant and visible */
+    /* Subtle dark contrast wash so solid white text is 100% crisp and readable (matching akantant.com) */
     .bt-slide-tint {
         position: absolute;
         inset: 0;
         z-index: 2;
         pointer-events: none;
         background: linear-gradient(to right, 
-            rgba(255, 255, 255, 0.35) 0%, 
-            rgba(255, 255, 255, 0.15) 50%, 
-            rgba(255, 255, 255, 0.05) 100%
+            rgba(12, 14, 18, 0.84) 0%, 
+            rgba(12, 14, 18, 0.62) 42%, 
+            rgba(12, 14, 18, 0.22) 75%, 
+            rgba(12, 14, 18, 0.05) 100%
         );
     }
 
@@ -82,44 +83,97 @@
         padding: 48px 0;
     }
 
-    /* Transparent Glass Card - Both card and background image are clearly visible */
+    /* Solid Text Directly On Image - No Card Box (Matching akantant.com) */
     .bt-hero-transparent-card {
-        background: rgba(255, 255, 255, 0.40);
-        backdrop-filter: blur(8px);
-        -webkit-backdrop-filter: blur(8px);
-        border: 1px solid rgba(255, 255, 255, 0.65);
-        box-shadow: 0 12px 32px 0 rgba(15, 23, 42, 0.10) !important;
-        padding: 36px 42px;
-        max-width: 680px;
+        background: transparent !important;
+        backdrop-filter: none !important;
+        -webkit-backdrop-filter: none !important;
+        border: none !important;
+        box-shadow: none !important;
+        padding: 0 !important;
+        max-width: 660px;
         position: relative;
     }
+
+    /* Animation Keyframes for Incoming Description & Title */
+    @keyframes heroDescSlideIn {
+        0% {
+            opacity: 0;
+            transform: translateY(30px);
+        }
+        100% {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    }
+
+    @keyframes heroTitleSlideIn {
+        0% {
+            opacity: 0;
+            transform: translateY(22px);
+        }
+        100% {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    }
+
+    @keyframes heroActionsSlideIn {
+        0% {
+            opacity: 0;
+            transform: translateY(18px);
+        }
+        100% {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    }
+
     .bt-hero-title {
         font-family: 'DM Serif Display', Georgia, serif;
-        font-size: 38px;
+        font-size: 42px;
         line-height: 1.15;
-        color: #0f172a;
-        letter-spacing: -0.018em;
-        margin: 0 0 16px;
+        color: #ffffff;
+        letter-spacing: -0.015em;
+        margin: 0 0 18px;
         font-weight: 400;
-        text-shadow: 0 1px 2px rgba(255, 255, 255, 0.8);
+        text-shadow: 0 2px 10px rgba(0, 0, 0, 0.60);
+        opacity: 0;
+        transform: translateY(22px);
     }
     .bt-hero-subtitle {
-        font-size: 14.5px;
-        color: #1e293b;
-        line-height: 1.68;
+        font-size: 15.5px;
+        color: #f1f5f9;
+        line-height: 1.72;
         margin: 0;
-        font-weight: 500;
-        text-shadow: 0 1px 1px rgba(255, 255, 255, 0.6);
+        font-weight: 400;
+        text-shadow: 0 1px 8px rgba(0, 0, 0, 0.65);
+        opacity: 0;
+        transform: translateY(30px);
     }
     .bt-hero-actions {
         display: flex;
         gap: 12px;
         flex-wrap: wrap;
         align-items: center;
-        padding-top: 20px;
-        border-top: 1px solid rgba(255, 255, 255, 0.60);
-        margin-top: 24px;
+        padding-top: 22px;
+        border-top: 1px solid rgba(255, 255, 255, 0.22);
+        margin-top: 26px;
+        opacity: 0;
+        transform: translateY(18px);
     }
+
+    /* Trigger smooth staggered entrance animations when slide becomes active */
+    .bt-slide.is-current .bt-hero-title {
+        animation: heroTitleSlideIn 0.85s cubic-bezier(0.16, 1, 0.3, 1) 0.18s forwards;
+    }
+    .bt-slide.is-current .bt-hero-subtitle {
+        animation: heroDescSlideIn 0.95s cubic-bezier(0.16, 1, 0.3, 1) 0.35s forwards;
+    }
+    .bt-slide.is-current .bt-hero-actions {
+        animation: heroActionsSlideIn 0.85s cubic-bezier(0.16, 1, 0.3, 1) 0.52s forwards;
+    }
+
     .bt-hero-cta {
         background-color: var(--bt-amber);
         color: #141210;
@@ -127,9 +181,9 @@
         font-size: 13px;
         letter-spacing: 0.06em;
         text-transform: uppercase;
-        padding: 12px 24px;
+        padding: 13px 26px;
         border: 1px solid var(--bt-amber);
-        box-shadow: 0 4px 14px rgba(241, 126, 1, 0.32) !important;
+        box-shadow: 0 4px 18px rgba(241, 126, 1, 0.40) !important;
         transition: all 0.25s ease;
         display: inline-flex;
         align-items: center;
@@ -137,17 +191,17 @@
         text-decoration: none;
     }
     .bt-hero-cta:hover {
-        background-color: #d96f00;
-        border-color: #d96f00;
-        color: #ffffff;
+        background-color: #ffa033;
+        border-color: #ffa033;
+        color: #141210;
         transform: translateY(-2px);
-        box-shadow: 0 6px 20px rgba(217, 111, 0, 0.38) !important;
+        box-shadow: 0 6px 24px rgba(241, 126, 1, 0.55) !important;
     }
     .bt-hero-btn-secondary {
-        background: rgba(255, 255, 255, 0.80);
-        color: #0f172a;
-        border: 1px solid rgba(255, 255, 255, 0.9);
-        padding: 12px 20px;
+        background: rgba(255, 255, 255, 0.15);
+        color: #ffffff;
+        border: 1px solid rgba(255, 255, 255, 0.65);
+        padding: 13px 22px;
         font-size: 12.5px;
         font-weight: 700;
         text-transform: uppercase;
@@ -158,7 +212,7 @@
     }
     .bt-hero-btn-secondary:hover {
         background: #ffffff;
-        border-color: #cbd5e1;
+        border-color: #ffffff;
         color: #0f172a;
         transform: translateY(-1px);
     }
@@ -203,12 +257,12 @@
         flex-direction: column;
         align-items: center;
         gap: 10px;
-        background: rgba(255, 255, 255, 0.70);
+        background: rgba(15, 23, 42, 0.55);
         backdrop-filter: blur(8px);
         -webkit-backdrop-filter: blur(8px);
         padding: 10px 7px;
-        border: 1px solid rgba(226, 232, 240, 0.9);
-        box-shadow: 0 4px 16px rgba(15, 23, 42, 0.08) !important;
+        border: 1px solid rgba(255, 255, 255, 0.25);
+        box-shadow: 0 4px 18px rgba(0, 0, 0, 0.25) !important;
     }
     .bt-slider-arrow {
         display: none !important;
@@ -223,14 +277,14 @@
         width: 8px;
         height: 8px;
         border-radius: 50% !important;
-        background: rgba(148, 163, 184, 0.55);
-        border: 1px solid rgba(203, 213, 225, 0.85);
+        background: rgba(255, 255, 255, 0.45);
+        border: 1px solid rgba(255, 255, 255, 0.7);
         padding: 0;
         cursor: pointer;
         transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
     }
     .bt-slider-dot:hover {
-        background: rgba(241, 126, 1, 0.75);
+        background: rgba(241, 126, 1, 0.85);
     }
     .bt-slider-dot.active {
         width: 8px;
@@ -238,7 +292,7 @@
         border-radius: 4px !important;
         background: var(--bt-amber);
         border-color: var(--bt-amber);
-        box-shadow: 0 2px 8px rgba(241, 126, 1, 0.4) !important;
+        box-shadow: 0 2px 10px rgba(241, 126, 1, 0.6) !important;
     }
 
     @media (max-width: 900px) {
@@ -251,57 +305,47 @@
             align-items: flex-end;
         }
         .bt-slide-img {
-            object-position: center 12%;
+            object-position: center 15%;
         }
         .bt-slide-tint {
-            background: linear-gradient(to bottom,
-                rgba(255, 255, 255, 0.02) 0%,
-                rgba(255, 255, 255, 0.08) 45%,
-                rgba(255, 255, 255, 0.38) 75%,
-                rgba(255, 255, 255, 0.65) 100%
+            background: linear-gradient(to top,
+                rgba(10, 12, 16, 0.92) 0%,
+                rgba(10, 12, 16, 0.72) 55%,
+                rgba(10, 12, 16, 0.18) 100%
             );
         }
         .bt-slide-inner {
-            padding: 16px 14px 58px;
+            padding: 20px 16px 44px;
         }
         .bt-hero-transparent-card {
-            padding: 18px 18px 16px;
-            background: rgba(255, 255, 255, 0.38);
-            backdrop-filter: blur(8px);
-            -webkit-backdrop-filter: blur(8px);
-            border: 1px solid rgba(255, 255, 255, 0.65);
-            box-shadow: 0 8px 24px rgba(15, 23, 42, 0.08) !important;
             max-width: 100%;
         }
         .bt-hero-title {
-            font-size: 24px;
+            font-size: 26px;
             line-height: 1.2;
             margin-bottom: 8px;
-            color: #0f172a;
-            font-weight: 700;
-            text-shadow: 0 1px 2px rgba(255, 255, 255, 0.95), 0 0 10px rgba(255, 255, 255, 0.9);
+            color: #ffffff;
+            text-shadow: 0 2px 8px rgba(0, 0, 0, 0.8);
         }
         .bt-hero-subtitle {
-            font-size: 13px;
-            line-height: 1.5;
-            color: #0f172a;
-            font-weight: 600;
-            margin: 0;
-            text-shadow: 0 1px 2px rgba(255, 255, 255, 0.95), 0 0 8px rgba(255, 255, 255, 0.85);
+            font-size: 13.5px;
+            line-height: 1.55;
+            color: #f1f5f9;
+            text-shadow: 0 1px 6px rgba(0, 0, 0, 0.8);
         }
         .bt-hero-actions {
             flex-direction: column;
             align-items: stretch;
             gap: 8px;
-            margin-top: 12px;
+            margin-top: 14px;
             padding-top: 12px;
-            border-top: 1px solid rgba(255, 255, 255, 0.55);
+            border-top: 1px solid rgba(255, 255, 255, 0.2);
         }
         .bt-hero-cta {
             width: 100%;
             justify-content: center;
             text-align: center;
-            padding: 10px 16px;
+            padding: 11px 16px;
             font-size: 12px;
             font-weight: 800;
         }
@@ -309,11 +353,14 @@
             width: 100%;
             justify-content: center;
             text-align: center;
-            padding: 9px 14px;
+            padding: 10px 14px;
             font-size: 11.5px;
+            background: rgba(255, 255, 255, 0.15);
+            border-color: rgba(255, 255, 255, 0.5);
+            color: #ffffff;
         }
         .bt-slider-controls {
-            right: 14px;
+            right: 12px;
             left: auto;
             top: 50%;
             bottom: auto;
@@ -321,11 +368,10 @@
             max-width: none;
             padding: 8px 6px;
             gap: 7px;
-            background: rgba(255, 255, 255, 0.70);
+            background: rgba(15, 23, 42, 0.55);
             backdrop-filter: blur(6px);
             -webkit-backdrop-filter: blur(6px);
-            border: 1px solid rgba(226, 232, 240, 0.85);
-            box-shadow: 0 4px 14px rgba(15, 23, 42, 0.08) !important;
+            border: 1px solid rgba(255, 255, 255, 0.25);
         }
         .bt-slider-dot {
             width: 8px;
@@ -347,32 +393,25 @@
             align-items: flex-end;
         }
         .bt-slide-inner {
-            padding: 12px 12px 18px;
-        }
-        .bt-hero-transparent-card {
-            padding: 14px 14px 12px;
-            background: rgba(255, 255, 255, 0.35);
-            backdrop-filter: blur(8px);
-            -webkit-backdrop-filter: blur(8px);
-            border: 1px solid rgba(255, 255, 255, 0.60);
+            padding: 16px 14px 36px;
         }
         .bt-hero-title {
-            font-size: 20px;
-            line-height: 1.2;
+            font-size: 21px;
+            line-height: 1.22;
             margin-bottom: 6px;
         }
         .bt-hero-subtitle {
             font-size: 12px;
-            line-height: 1.45;
+            line-height: 1.48;
         }
         .bt-hero-actions {
             margin-top: 10px;
-            padding-top: 8px;
+            padding-top: 10px;
             gap: 6px;
         }
         .bt-hero-cta {
-            font-size: 11px;
-            padding: 9px 12px;
+            font-size: 11.5px;
+            padding: 10px 14px;
             letter-spacing: 0.04em;
         }
         .bt-slider-controls {
@@ -381,9 +420,9 @@
             top: 50%;
             bottom: auto;
             transform: translateY(-50%);
-            padding: 6px 5px;
+            padding: 6px 4px;
             gap: 6px;
-            background: rgba(255, 255, 255, 0.65);
+            background: rgba(15, 23, 42, 0.55);
         }
         .bt-slider-dot {
             width: 6px;
@@ -402,9 +441,6 @@
         .bt-hero-subtitle {
             font-size: 11px;
             line-height: 1.4;
-        }
-        .bt-hero-transparent-card {
-            padding: 12px 10px 10px;
         }
     }
 </style>
