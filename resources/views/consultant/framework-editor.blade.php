@@ -129,8 +129,64 @@
                 </div>
 
                 <div class="field">
-                    <label>Framework Definition JSON (Modules, Criteria, 3-Option Gateway Questions, Symptom Weights, Programmes &amp; Cross-Area Insight Rules)</label>
-                    <textarea name="definition_json" id="f_definition_json" rows="22" oninput="onJsonEdited()" style="font-family:Consolas,monospace;font-size:11.5px;line-height:1.4;background:#141210;color:#f2f5f7;padding:12px;">{{ old('definition_json', json_encode($fw->definition, JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE)) }}</textarea>
+                    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:6px;">
+                        <label style="margin-bottom:0;">Framework Definition JSON (Modules, Criteria, 3-Option Gateway Questions, Symptom Weights, Programmes &amp; Cross-Area Insight Rules)</label>
+                    </div>
+
+                    <!-- Interactive Keyword Search & Jump Toolbar -->
+                    <div class="fw-search-panel" style="background:#f8fafc;border:1px solid #e2e8f0;border-radius:12px;padding:12px 16px;margin-bottom:10px;">
+                        <!-- Row 1: Search, Match Status, Nav Arrows & Theme -->
+                        <div style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:10px;margin-bottom:10px;">
+                            <div style="display:flex;align-items:center;gap:8px;flex:1;min-width:280px;">
+                                <div style="position:relative;flex:1;">
+                                    <input type="text" id="json-search-input" placeholder="🔍 Search keywords, module names, question codes (e.g. Strategy, FH, fc1)..."
+                                           oninput="performSearch()" onkeydown="handleSearchKeyDown(event)"
+                                           style="width:100%;padding:8px 12px 8px 32px;font-size:13px;border:1px solid #cbd5e1;border-radius:8px;background:#fff;outline:none;">
+                                    <span style="position:absolute;left:10px;top:50%;transform:translateY(-50%);font-size:13px;color:#94a3b8;pointer-events:none;">🔍</span>
+                                </div>
+                                <span id="search-status" class="tag tag-solid" style="padding:6px 10px;border-radius:6px;font-size:11px;white-space:nowrap;">
+                                    Type to search
+                                </span>
+                                <div style="display:flex;gap:4px;">
+                                    <button type="button" class="btn btn-outline btn-sm" onclick="findPrevMatch()" title="Previous Match (Shift+Enter)">↑ Prev</button>
+                                    <button type="button" class="btn btn-outline btn-sm" onclick="findNextMatch()" title="Next Match (Enter)">↓ Next</button>
+                                </div>
+                            </div>
+
+                            <div style="display:flex;align-items:center;gap:6px;">
+                                <button type="button" class="btn btn-outline btn-sm" onclick="toggleReplacePanel()" id="btn-toggle-replace">
+                                    ⇄ Replace
+                                </button>
+                                <button type="button" class="btn btn-outline btn-sm" onclick="toggleEditorTheme()" title="Switch Light/Dark Editor Canvas">
+                                    🌓 Canvas Theme
+                                </button>
+                            </div>
+                        </div>
+
+                        <!-- Row 2: Replace Panel (Collapsible) -->
+                        <div id="replace-panel" style="display:none;padding:10px 12px;background:#ffffff;border:1px solid #e2e8f0;border-radius:8px;margin-bottom:10px;align-items:center;gap:8px;flex-wrap:wrap;">
+                            <span style="font-size:11px;font-weight:700;color:#475569;text-transform:uppercase;">Replace With:</span>
+                            <input type="text" id="json-replace-input" placeholder="Replacement text..." style="flex:1;min-width:180px;padding:6px 10px;font-size:12.5px;border:1px solid #cbd5e1;border-radius:6px;">
+                            <button type="button" class="btn btn-outline btn-sm" onclick="replaceCurrentMatch()">Replace</button>
+                            <button type="button" class="btn btn-amber btn-sm" onclick="replaceAllMatches()">Replace All</button>
+                        </div>
+
+                        <!-- Row 3: Quick Jump Chips -->
+                        <div style="display:flex;align-items:center;gap:6px;flex-wrap:wrap;">
+                            <span style="font-size:10.5px;font-weight:800;color:var(--bt-amber-deep);text-transform:uppercase;margin-right:2px;">Quick Jumps:</span>
+                            <button type="button" class="btn btn-outline btn-sm" style="padding:3px 8px;font-size:10.5px;border-radius:6px;" onclick="jumpToSection('&quot;modules&quot;:')">🏢 Modules</button>
+                            <button type="button" class="btn btn-outline btn-sm" style="padding:3px 8px;font-size:10.5px;border-radius:6px;" onclick="jumpToSection('&quot;SG&quot;:')">1. SG Strategy</button>
+                            <button type="button" class="btn btn-outline btn-sm" style="padding:3px 8px;font-size:10.5px;border-radius:6px;" onclick="jumpToSection('&quot;FH&quot;:')">2. FH Finance</button>
+                            <button type="button" class="btn btn-outline btn-sm" style="padding:3px 8px;font-size:10.5px;border-radius:6px;" onclick="jumpToSection('&quot;OE&quot;:')">3. OE Operations</button>
+                            <button type="button" class="btn btn-outline btn-sm" style="padding:3px 8px;font-size:10.5px;border-radius:6px;" onclick="jumpToSection('&quot;MG&quot;:')">4. MG Market</button>
+                            <button type="button" class="btn btn-outline btn-sm" style="padding:3px 8px;font-size:10.5px;border-radius:6px;" onclick="jumpToSection('&quot;HC&quot;:')">5. HC Human Capital</button>
+                            <button type="button" class="btn btn-outline btn-sm" style="padding:3px 8px;font-size:10.5px;border-radius:6px;" onclick="jumpToSection('&quot;symptoms&quot;:')">🚩 Symptoms</button>
+                            <button type="button" class="btn btn-outline btn-sm" style="padding:3px 8px;font-size:10.5px;border-radius:6px;" onclick="jumpToSection('&quot;programmes&quot;:')">🎯 Programmes</button>
+                            <button type="button" class="btn btn-outline btn-sm" style="padding:3px 8px;font-size:10.5px;border-radius:6px;" onclick="jumpToSection('&quot;scoring&quot;:')">📊 Scoring</button>
+                        </div>
+                    </div>
+
+                    <textarea name="definition_json" id="f_definition_json" rows="24" oninput="onJsonEdited()" style="font-family:Consolas, Monaco, 'Courier New', monospace;font-size:12px;line-height:1.45;background:#1e293b;color:#f8fafc;border:1.5px solid #334155;border-radius:12px;padding:14px;">{{ old('definition_json', json_encode($fw->definition, JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE)) }}</textarea>
                 </div>
 
                 <div style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:10px;">
@@ -295,6 +351,170 @@
     const ACTIVE_VERSION = @json($activeFw->version());
     const NEXT_SUGGESTED_VERSION = @json($nextSuggestedVersion);
     let selectedMode = 'minor_edit';
+
+    // Search & Keyword Navigation State
+    let searchMatches = [];
+    let currentMatchIndex = -1;
+
+    function performSearch() {
+        const query = document.getElementById('json-search-input').value;
+        const textarea = document.getElementById('f_definition_json');
+        const text = textarea.value;
+        searchMatches = [];
+        currentMatchIndex = -1;
+
+        if (!query || query.trim() === '') {
+            updateSearchUI();
+            return;
+        }
+
+        const lowerQuery = query.toLowerCase();
+        const lowerText = text.toLowerCase();
+        let pos = lowerText.indexOf(lowerQuery);
+
+        while (pos !== -1) {
+            searchMatches.push({ start: pos, end: pos + query.length });
+            pos = lowerText.indexOf(lowerQuery, pos + 1);
+        }
+
+        if (searchMatches.length > 0) {
+            currentMatchIndex = 0;
+            highlightMatch(currentMatchIndex);
+        } else {
+            updateSearchUI();
+        }
+    }
+
+    function highlightMatch(index) {
+        if (index < 0 || index >= searchMatches.length) return;
+        const textarea = document.getElementById('f_definition_json');
+        const match = searchMatches[index];
+
+        textarea.focus();
+        textarea.setSelectionRange(match.start, match.end);
+
+        // Compute exact line number
+        const textUpToMatch = textarea.value.substring(0, match.start);
+        const lineNum = textUpToMatch.split('\n').length;
+
+        // Smoothly scroll to the matched position in the textarea
+        const totalLines = textarea.value.split('\n').length;
+        const approxLineHeight = textarea.scrollHeight / Math.max(totalLines, 1);
+        textarea.scrollTop = Math.max(0, (lineNum * approxLineHeight) - 160);
+
+        updateSearchUI(lineNum);
+    }
+
+    function findNextMatch() {
+        if (searchMatches.length === 0) {
+            performSearch();
+            return;
+        }
+        currentMatchIndex = (currentMatchIndex + 1) % searchMatches.length;
+        highlightMatch(currentMatchIndex);
+    }
+
+    function findPrevMatch() {
+        if (searchMatches.length === 0) {
+            performSearch();
+            return;
+        }
+        currentMatchIndex = (currentMatchIndex - 1 + searchMatches.length) % searchMatches.length;
+        highlightMatch(currentMatchIndex);
+    }
+
+    function handleSearchKeyDown(e) {
+        if (e.key === 'Enter') {
+            e.preventDefault();
+            if (e.shiftKey) {
+                findPrevMatch();
+            } else {
+                findNextMatch();
+            }
+        }
+    }
+
+    function jumpToSection(keyword) {
+        const searchInput = document.getElementById('json-search-input');
+        searchInput.value = keyword;
+        performSearch();
+    }
+
+    function updateSearchUI(lineNum = null) {
+        const statusEl = document.getElementById('search-status');
+        const query = document.getElementById('json-search-input').value;
+        if (!query || query.trim() === '') {
+            statusEl.textContent = 'Type to search';
+            statusEl.className = 'tag tag-solid';
+            return;
+        }
+        if (searchMatches.length === 0) {
+            statusEl.textContent = '0 matches';
+            statusEl.className = 'tag tag-critical';
+        } else {
+            const lineText = lineNum ? ` · Line ${lineNum}` : '';
+            statusEl.textContent = `${currentMatchIndex + 1} of ${searchMatches.length}${lineText}`;
+            statusEl.className = 'tag tag-amber';
+        }
+    }
+
+    function toggleReplacePanel() {
+        const panel = document.getElementById('replace-panel');
+        const btn = document.getElementById('btn-toggle-replace');
+        const isOpen = panel.style.display === 'flex';
+        panel.style.display = isOpen ? 'none' : 'flex';
+        btn.classList.toggle('btn-amber', !isOpen);
+    }
+
+    function replaceCurrentMatch() {
+        if (searchMatches.length === 0 || currentMatchIndex === -1) return;
+        const textarea = document.getElementById('f_definition_json');
+        const replaceText = document.getElementById('json-replace-input').value;
+        const match = searchMatches[currentMatchIndex];
+
+        const before = textarea.value.substring(0, match.start);
+        const after = textarea.value.substring(match.end);
+        textarea.value = before + replaceText + after;
+
+        onJsonEdited();
+        performSearch();
+    }
+
+    function replaceAllMatches() {
+        const query = document.getElementById('json-search-input').value;
+        const replaceText = document.getElementById('json-replace-input').value;
+        if (!query) return;
+
+        const count = searchMatches.length;
+        if (count === 0) {
+            alert('No matches found to replace.');
+            return;
+        }
+
+        if (!confirm(`Replace all ${count} occurrences of "${query}" with "${replaceText}"?`)) {
+            return;
+        }
+
+        const textarea = document.getElementById('f_definition_json');
+        textarea.value = textarea.value.split(query).join(replaceText);
+        onJsonEdited();
+        performSearch();
+    }
+
+    function toggleEditorTheme() {
+        const textarea = document.getElementById('f_definition_json');
+        if (textarea.classList.contains('light-theme')) {
+            textarea.classList.remove('light-theme');
+            textarea.style.backgroundColor = '#1e293b';
+            textarea.style.color = '#f8fafc';
+            textarea.style.borderColor = '#334155';
+        } else {
+            textarea.classList.add('light-theme');
+            textarea.style.backgroundColor = '#ffffff';
+            textarea.style.color = '#0f172a';
+            textarea.style.borderColor = '#cbd5e1';
+        }
+    }
 
     function onJsonEdited() {
         const badge = document.getElementById('json-change-badge');
