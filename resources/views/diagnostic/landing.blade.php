@@ -87,33 +87,6 @@
         box-shadow: 0 16px 40px -12px rgba(15, 23, 42, 0.16) !important;
         max-width: 760px;
     }
-    .bt-hero-eyebrow {
-        display: inline-flex;
-        align-items: center;
-        gap: 8px;
-        font-size: 11px;
-        font-weight: 800;
-        text-transform: uppercase;
-        letter-spacing: 0.14em;
-        color: #b85a0a;
-        background: rgba(254, 243, 199, 0.85);
-        border: 1px solid rgba(245, 158, 11, 0.4);
-        padding: 5px 12px;
-        margin-bottom: 16px;
-    }
-    .bt-hero-eyebrow-dot {
-        width: 7px;
-        height: 7px;
-        background-color: #f17e01;
-        border-radius: 50% !important;
-        display: inline-block;
-        box-shadow: 0 0 8px rgba(241, 126, 1, 0.9) !important;
-        animation: btHeroDotPulse 2s infinite ease-in-out;
-    }
-    @keyframes btHeroDotPulse {
-        0%, 100% { opacity: 1; transform: scale(1); }
-        50% { opacity: 0.4; transform: scale(1.35); }
-    }
     .bt-hero-title {
         font-family: 'DM Serif Display', Georgia, serif;
         font-size: 38px;
@@ -327,11 +300,7 @@
     <div class="bt-container bt-hero-container {{ $uiVisible('vis.landing_architecture_box') ? 'bt-hero-grid' : '' }}">
         <div class="bt-hero-content-col">
             <div>
-                <div class="bt-hero-eyebrow">
-                    <span class="bt-hero-eyebrow-dot"></span>
-                    <span>{{ $uiText('text.hero_eyebrow') }}</span>
-                </div>
-                <div style="margin-top:14px;margin-bottom:24px;">
+                <div style="margin-bottom:24px;">
                     <h1 class="bt-hero-title">
                         {{ $uiText('text.hero_title') }}
                     </h1>
