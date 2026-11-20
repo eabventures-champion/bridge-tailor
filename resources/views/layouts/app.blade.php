@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <meta name="csrf-token" content="{{ csrf_token() }}">
     <title>@yield('title', 'AI Business Diagnostic Platform') — Bridge-Tailor Consulting</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -810,14 +810,19 @@
                 white-space: normal;
                 text-align: center;
             }
-            /* Prevent iOS zoom on focus while keeping compact padding */
-            .field input[type="text"],
-            .field input[type="email"],
-            .field input[type="password"],
-            .field input[type="date"],
-            .field select,
-            .field textarea {
-                font-size: 16px;
+            /* Prevent iOS / mobile zoom on focus across all inputs while keeping compact padding */
+            input[type="text"],
+            input[type="email"],
+            input[type="password"],
+            input[type="date"],
+            input[type="search"],
+            input[type="tel"],
+            input[type="number"],
+            .field input,
+            .bt-auth-form input,
+            select,
+            textarea {
+                font-size: 16px !important;
             }
             /* Mobile Stacked Key-Value Table Presentation (Zero Horizontal Overflow) */
             .bt-table,

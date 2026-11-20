@@ -186,13 +186,13 @@
     .bt-auth-form input[type="email"],
     .bt-auth-form input[type="password"] {
         width: 100%;
-        padding: 10px 14px;
-        font-size: 13.5px;
+        padding: 11px 14px;
+        font-size: 15px;
         font-family: inherit;
         color: #0f172a;
         background-color: #ffffff;
         border: 1px solid #cbd5e1;
-        border-radius: 6px !important;
+        border-radius: 8px !important;
         transition: border-color 0.2s ease, box-shadow 0.2s ease;
         outline: none;
     }
@@ -349,9 +349,20 @@
             padding: 30px 24px;
         }
     }
+    @media (max-width: 768px) {
+        .bt-auth-section {
+            min-height: auto !important;
+            padding: 24px 14px 44px !important;
+        }
+        .bt-auth-form input[type="text"],
+        .bt-auth-form input[type="email"],
+        .bt-auth-form input[type="password"] {
+            font-size: 16px !important; /* Prevents mobile browser auto-zoom and page bounce on focus */
+        }
+    }
     @media (max-width: 480px) {
         .bt-auth-section {
-            padding: 20px 12px;
+            padding: 16px 12px 36px !important;
         }
         .bt-auth-visual {
             min-height: 200px;
