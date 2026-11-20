@@ -178,7 +178,8 @@
             position: relative;
             background-color: rgba(255, 255, 255, 0.98);
             color: var(--bt-ink);
-            border-bottom: 3px solid var(--bt-amber);
+            border-bottom: 1px solid #e2e8f0;
+            box-shadow: 0 1px 3px rgba(15, 23, 42, 0.04);
         }
         .bt-header-inner {
             max-width: 1280px;
