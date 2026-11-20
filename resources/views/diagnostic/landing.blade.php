@@ -483,25 +483,25 @@
             'image' => $resolveSlideUrl('text.hero_slide_2_image', 'images/slider/slide-2.jpg'),
             'title' => $uiText('text.hero_slide_2_title', 'Corporate Strategy & Board Governance'),
             'desc'  => $uiText('text.hero_slide_2_desc', 'Align board oversight, capital readiness, and management execution to unlock institutional investment and enterprise growth across African markets.'),
-            'cta'   => 'Assess Governance & Strategy →',
+            'cta'   => 'Assess Governance & Strategy',
         ],
         [
             'image' => $resolveSlideUrl('text.hero_slide_3_image', 'images/slider/slide-3.jpg'),
             'title' => $uiText('text.hero_slide_3_title', 'Financial Health & Capital Access'),
             'desc'  => $uiText('text.hero_slide_3_desc', 'Deterministic financial gateway analysis that ensures bookkeeping integrity, financial controls, and compliance before approaching investors.'),
-            'cta'   => 'Evaluate Financial Health →',
+            'cta'   => 'Evaluate Financial Health',
         ],
         [
             'image' => $resolveSlideUrl('text.hero_slide_4_image', 'images/slider/slide-4.jpg'),
             'title' => $uiText('text.hero_slide_4_title', 'Operational Excellence & Market Expansion'),
             'desc'  => $uiText('text.hero_slide_4_desc', 'Expose operational blind spots, streamline local supply chains, and build scalable systems tailored for rapid regional growth.'),
-            'cta'   => 'Test Operational Resilience →',
+            'cta'   => 'Test Operational Resilience',
         ],
         [
             'image' => $resolveSlideUrl('text.hero_slide_5_image', 'images/slider/slide-5.jpg'),
             'title' => $uiText('text.hero_slide_5_title', 'Actionable Diagnostic Intervention Roadmap'),
             'desc'  => $uiText('text.hero_slide_5_desc', 'Convert diagnostic evidence directly into prioritized 30, 90, and 180-day consulting roadmaps approved by expert advisory partners.'),
-            'cta'   => 'Start Diagnostic Assessment →',
+            'cta'   => 'Start Diagnostic Assessment',
         ],
     ];
 @endphp
@@ -521,7 +521,7 @@
                                 <p class="bt-hero-subtitle">{{ $slide['desc'] }}</p>
                                 <div class="bt-hero-actions">
                                     <a href="{{ route('diagnostic.wizard') }}" class="btn btn-amber bt-hero-cta">
-                                        <span>{{ $slide['cta'] }}</span>
+                                        <span>{{ preg_replace('/(\s*(->|→|&rarr;|\&rarr;))+\s*$/u', '', (string)$slide['cta']) }}</span>
                                         <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="margin-left:4px;"><line x1="5" y1="12" x2="19" y2="12"></line><polyline points="12 5 19 12 12 19"></polyline></svg>
                                     </a>
                                     @auth
