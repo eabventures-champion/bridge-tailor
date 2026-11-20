@@ -254,130 +254,168 @@
 
     @media (max-width: 900px) {
         .bt-hero-slider-section {
-            min-height: calc(100vh - 75px);
-            min-height: calc(100dvh - 75px);
-            min-height: 540px;
+            min-height: calc(100vh - 65px);
+            min-height: calc(100dvh - 65px);
+            min-height: 520px;
+        }
+        .bt-slide {
+            align-items: flex-end;
+        }
+        .bt-slide-img {
+            object-position: center 12%;
         }
         .bt-slide-tint {
             background: linear-gradient(to bottom,
-                rgba(255, 255, 255, 0.45) 0%,
-                rgba(255, 255, 255, 0.18) 50%,
-                rgba(255, 255, 255, 0.45) 100%
+                rgba(255, 255, 255, 0.02) 0%,
+                rgba(255, 255, 255, 0.08) 45%,
+                rgba(255, 255, 255, 0.38) 75%,
+                rgba(255, 255, 255, 0.65) 100%
             );
         }
         .bt-slide-inner {
-            padding: 28px 16px 80px;
+            padding: 16px 14px 58px;
         }
         .bt-hero-transparent-card {
-            padding: 24px 20px;
-            background: rgba(255, 255, 255, 0.68);
-            backdrop-filter: blur(10px);
-            -webkit-backdrop-filter: blur(10px);
-            border: 1px solid rgba(255, 255, 255, 0.85);
+            padding: 18px 18px 16px;
+            background: rgba(255, 255, 255, 0.38);
+            backdrop-filter: blur(8px);
+            -webkit-backdrop-filter: blur(8px);
+            border: 1px solid rgba(255, 255, 255, 0.65);
+            box-shadow: 0 8px 24px rgba(15, 23, 42, 0.08) !important;
             max-width: 100%;
         }
         .bt-hero-title {
-            font-size: 26px;
+            font-size: 24px;
             line-height: 1.2;
-            margin-bottom: 12px;
+            margin-bottom: 8px;
+            color: #0f172a;
+            font-weight: 700;
+            text-shadow: 0 1px 2px rgba(255, 255, 255, 0.95), 0 0 10px rgba(255, 255, 255, 0.9);
         }
         .bt-hero-subtitle {
-            font-size: 13.5px;
-            line-height: 1.58;
+            font-size: 13px;
+            line-height: 1.5;
+            color: #0f172a;
+            font-weight: 600;
+            margin: 0;
+            text-shadow: 0 1px 2px rgba(255, 255, 255, 0.95), 0 0 8px rgba(255, 255, 255, 0.85);
         }
         .bt-hero-actions {
             flex-direction: column;
             align-items: stretch;
-            gap: 10px;
-            margin-top: 18px;
-            padding-top: 16px;
+            gap: 8px;
+            margin-top: 12px;
+            padding-top: 12px;
+            border-top: 1px solid rgba(255, 255, 255, 0.55);
         }
         .bt-hero-cta {
             width: 100%;
             justify-content: center;
             text-align: center;
-            padding: 12px 18px;
-            font-size: 12.5px;
+            padding: 10px 16px;
+            font-size: 12px;
+            font-weight: 800;
         }
         .bt-hero-btn-secondary {
             width: 100%;
             justify-content: center;
             text-align: center;
-            padding: 11px 16px;
-            font-size: 12px;
+            padding: 9px 14px;
+            font-size: 11.5px;
         }
         .bt-slider-controls {
             left: 50%;
             right: auto;
             transform: translateX(-50%);
-            bottom: 14px;
-            max-width: calc(100% - 32px);
-            padding: 5px 12px;
-            gap: 10px;
-            box-shadow: 0 4px 16px rgba(15, 23, 42, 0.12) !important;
-        }
-    }
-
-    @media (max-width: 640px) {
-        .bt-hero-slider-section {
-            min-height: calc(100vh - 70px);
-            min-height: calc(100dvh - 70px);
-            min-height: 500px;
-        }
-        .bt-slide-inner {
-            padding: 16px 12px 75px;
-        }
-        .bt-hero-transparent-card {
-            padding: 18px 16px;
-            background: rgba(255, 255, 255, 0.72);
-        }
-        .bt-hero-title {
-            font-size: 22px;
-            line-height: 1.22;
-            margin-bottom: 8px;
-        }
-        .bt-hero-subtitle {
-            font-size: 12.5px;
-            line-height: 1.52;
-        }
-        .bt-hero-actions {
-            margin-top: 14px;
-            padding-top: 12px;
-            gap: 8px;
-        }
-        .bt-hero-cta {
-            font-size: 11.5px;
-            padding: 11px 14px;
-            letter-spacing: 0.04em;
-        }
-        .bt-slider-controls {
             bottom: 10px;
+            max-width: calc(100% - 32px);
             padding: 4px 10px;
-            gap: 6px;
+            gap: 8px;
+            background: rgba(255, 255, 255, 0.85);
+            backdrop-filter: blur(6px);
+            -webkit-backdrop-filter: blur(6px);
+            border: 1px solid rgba(226, 232, 240, 0.85);
+            box-shadow: 0 4px 14px rgba(15, 23, 42, 0.10) !important;
         }
         .bt-slider-arrow {
-            width: 32px;
-            height: 32px;
+            width: 28px;
+            height: 28px;
         }
         .bt-slider-dot {
             width: 8px;
             height: 8px;
         }
         .bt-slider-dot.active {
-            width: 22px;
+            width: 20px;
+        }
+    }
+
+    @media (max-width: 640px) {
+        .bt-hero-slider-section {
+            min-height: calc(100vh - 60px);
+            min-height: calc(100dvh - 60px);
+            min-height: 500px;
+        }
+        .bt-slide {
+            align-items: flex-end;
+        }
+        .bt-slide-inner {
+            padding: 12px 12px 52px;
+        }
+        .bt-hero-transparent-card {
+            padding: 14px 14px 12px;
+            background: rgba(255, 255, 255, 0.35);
+            backdrop-filter: blur(8px);
+            -webkit-backdrop-filter: blur(8px);
+            border: 1px solid rgba(255, 255, 255, 0.60);
+        }
+        .bt-hero-title {
+            font-size: 20px;
+            line-height: 1.2;
+            margin-bottom: 6px;
+        }
+        .bt-hero-subtitle {
+            font-size: 12px;
+            line-height: 1.45;
+        }
+        .bt-hero-actions {
+            margin-top: 10px;
+            padding-top: 8px;
+            gap: 6px;
+        }
+        .bt-hero-cta {
+            font-size: 11px;
+            padding: 9px 12px;
+            letter-spacing: 0.04em;
+        }
+        .bt-slider-controls {
+            bottom: 8px;
+            padding: 3px 8px;
+            gap: 6px;
+        }
+        .bt-slider-arrow {
+            width: 26px;
+            height: 26px;
+        }
+        .bt-slider-dot {
+            width: 7px;
+            height: 7px;
+        }
+        .bt-slider-dot.active {
+            width: 18px;
         }
     }
 
     @media (max-width: 380px) {
         .bt-hero-title {
-            font-size: 19.5px;
+            font-size: 18px;
         }
         .bt-hero-subtitle {
-            font-size: 11.5px;
-            line-height: 1.48;
+            font-size: 11px;
+            line-height: 1.4;
         }
         .bt-hero-transparent-card {
-            padding: 15px 12px;
+            padding: 12px 10px 10px;
         }
     }
 </style>
