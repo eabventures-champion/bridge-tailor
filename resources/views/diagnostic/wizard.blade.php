@@ -704,7 +704,7 @@
                     </div>
                     <div class="bt-wiz-stat-chip highlight">
                         <span>Progress:</span>
-                        <strong id="bt-wiz-progress-pct">25%</strong>
+                        <strong id="bt-wiz-progress-pct">0%</strong>
                     </div>
                     <div class="bt-wiz-stat-chip" id="bt-draft-status" style="display:none;background:#f0fdf4;border:1px solid #bbf7d0;color:#166534;font-size:11.5px;font-weight:700;">
                         <span>💾</span>
@@ -720,7 +720,7 @@
 
             <!-- Dynamic Slim Progress Line -->
             <div class="bt-wiz-progress-track">
-                <div id="bt-wiz-progress-bar" class="bt-wiz-progress-fill" style="width: 25%;"></div>
+                <div id="bt-wiz-progress-bar" class="bt-wiz-progress-fill" style="width: 0%;"></div>
             </div>
 
             <!-- 4 Clickable Step Tabs -->
@@ -1580,17 +1580,22 @@
         const ansEl = document.getElementById('rail-answer-count');
         if (ansEl) ansEl.textContent = `${totalAnswered} / ${totalApplicable}`;
 
-        // Compute smooth overall percentage
-        let progressPct = 25;
+        // Compute progress based on completed steps (0% initial, 25% after Step 1, 50% after Step 2, up to 75% across Step 3 evidence, 100% on Step 4)
+        let progressPct = 0;
         if (currentStep === 1) {
-            progressPct = 25;
+            // Initial step: 0% until Step 1 is completed
+            progressPct = 0;
         } else if (currentStep === 2) {
-            progressPct = 25 + Math.min(25, symCount * 4);
+            // Step 1 completed (1 of 4 completed = 25%)
+            progressPct = 25;
         } else if (currentStep === 3) {
+            // Steps 1 & 2 completed (50% base), progressing up to 75% across answered evidence checks
             const qRatio = totalApplicable > 0 ? (totalAnswered / totalApplicable) : 0;
-            progressPct = Math.min(95, Math.round(50 + (qRatio * 45)));
+            progressPct = Math.min(75, Math.round(50 + (qRatio * 25)));
         } else if (currentStep === 4) {
-            progressPct = 100;
+            // Steps 1, 2 & 3 completed (75% base), reaches 100% when ready to generate report
+            const consentChecked = document.querySelector('input[name="ai_consent"]')?.checked ?? true;
+            progressPct = consentChecked ? 100 : 75;
         }
         const pBar = document.getElementById('bt-wiz-progress-bar');
         if (pBar) pBar.style.width = progressPct + '%';
