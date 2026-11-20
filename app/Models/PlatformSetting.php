@@ -69,11 +69,31 @@ class PlatformSetting extends Model
                 'placeholder' => 'e.g. images/slider/slide-2.jpg or https://images.unsplash.com/...',
                 'value' => 'images/slider/slide-2.jpg',
             ],
+            'text.hero_slide_2_title' => [
+                'group' => 'text', 'type' => 'string',
+                'label' => 'Landing Hero Slider — Slide 2 Title',
+                'value' => 'Corporate Strategy & Board Governance',
+            ],
+            'text.hero_slide_2_desc' => [
+                'group' => 'text', 'type' => 'textarea',
+                'label' => 'Landing Hero Slider — Slide 2 Description',
+                'value' => 'Align board oversight, capital readiness, and management execution to unlock institutional investment and enterprise growth across African markets.',
+            ],
             'text.hero_slide_3_image' => [
                 'group' => 'text', 'type' => 'string',
                 'label' => 'Landing Hero Slider — Slide 3 Image (URL or Local Path)',
                 'placeholder' => 'e.g. images/slider/slide-3.jpg or https://images.unsplash.com/...',
                 'value' => 'images/slider/slide-3.jpg',
+            ],
+            'text.hero_slide_3_title' => [
+                'group' => 'text', 'type' => 'string',
+                'label' => 'Landing Hero Slider — Slide 3 Title',
+                'value' => 'Financial Health & Capital Access',
+            ],
+            'text.hero_slide_3_desc' => [
+                'group' => 'text', 'type' => 'textarea',
+                'label' => 'Landing Hero Slider — Slide 3 Description',
+                'value' => 'Deterministic financial gateway analysis that ensures bookkeeping integrity, financial controls, and compliance before approaching investors.',
             ],
             'text.hero_slide_4_image' => [
                 'group' => 'text', 'type' => 'string',
@@ -81,11 +101,31 @@ class PlatformSetting extends Model
                 'placeholder' => 'e.g. images/slider/slide-4.jpg or https://images.unsplash.com/...',
                 'value' => 'images/slider/slide-4.jpg',
             ],
+            'text.hero_slide_4_title' => [
+                'group' => 'text', 'type' => 'string',
+                'label' => 'Landing Hero Slider — Slide 4 Title',
+                'value' => 'Operational Excellence & Market Expansion',
+            ],
+            'text.hero_slide_4_desc' => [
+                'group' => 'text', 'type' => 'textarea',
+                'label' => 'Landing Hero Slider — Slide 4 Description',
+                'value' => 'Expose operational blind spots, streamline local supply chains, and build scalable systems tailored for rapid regional growth.',
+            ],
             'text.hero_slide_5_image' => [
                 'group' => 'text', 'type' => 'string',
                 'label' => 'Landing Hero Slider — Slide 5 Image (URL or Local Path)',
                 'placeholder' => 'e.g. images/slider/slide-5.jpg or https://images.unsplash.com/...',
                 'value' => 'images/slider/slide-5.jpg',
+            ],
+            'text.hero_slide_5_title' => [
+                'group' => 'text', 'type' => 'string',
+                'label' => 'Landing Hero Slider — Slide 5 Title',
+                'value' => 'Actionable Diagnostic Intervention Roadmap',
+            ],
+            'text.hero_slide_5_desc' => [
+                'group' => 'text', 'type' => 'textarea',
+                'label' => 'Landing Hero Slider — Slide 5 Description',
+                'value' => 'Convert diagnostic evidence directly into prioritized 30, 90, and 180-day consulting roadmaps approved by expert advisory partners.',
             ],
             'text.capabilities_title' => [
                 'group' => 'text', 'type' => 'string',

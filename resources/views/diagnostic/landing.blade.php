@@ -25,7 +25,6 @@
         height: 100%;
         overflow: hidden;
         z-index: 1;
-        pointer-events: none;
     }
     .bt-slider-track {
         display: flex;
@@ -43,8 +42,12 @@
         height: 100%;
         position: relative;
         overflow: hidden;
+        display: flex;
+        align-items: center;
     }
     .bt-slide-img {
+        position: absolute;
+        inset: 0;
         width: 100%;
         height: 100%;
         object-fit: cover;
@@ -52,40 +55,43 @@
         filter: brightness(1.02) contrast(1.04);
         transform: scale(1.02);
         transition: transform 7s ease-out;
+        z-index: 1;
     }
     .bt-slide.is-current .bt-slide-img {
         transform: scale(1.07);
     }
 
-    /* Cool Premium Business White Overlay - calibrated so sliding images are rich & clearly visible */
-    .bt-hero-white-overlay {
+    /* Subtle light wash so the background image remains vibrant and visible */
+    .bt-slide-tint {
         position: absolute;
         inset: 0;
         z-index: 2;
         pointer-events: none;
         background: linear-gradient(to right, 
             rgba(255, 255, 255, 0.35) 0%, 
-            rgba(255, 255, 255, 0.18) 50%, 
+            rgba(255, 255, 255, 0.15) 50%, 
             rgba(255, 255, 255, 0.05) 100%
         );
     }
 
-    /* Content Layer */
-    .bt-hero-container {
+    /* Slide Inner Content Container */
+    .bt-slide-inner {
         position: relative;
         z-index: 5;
         width: 100%;
-        padding-top: 48px;
-        padding-bottom: 56px;
+        padding: 48px 0;
     }
-    .bt-hero-content-col {
-        background: rgba(255, 255, 255, 0.88);
-        backdrop-filter: blur(14px);
-        -webkit-backdrop-filter: blur(14px);
-        padding: 38px 44px;
-        border: 1px solid rgba(255, 255, 255, 0.95);
-        box-shadow: 0 16px 40px -12px rgba(15, 23, 42, 0.16) !important;
-        max-width: 760px;
+
+    /* Transparent Glass Card - Both card and background image are clearly visible */
+    .bt-hero-transparent-card {
+        background: rgba(255, 255, 255, 0.40);
+        backdrop-filter: blur(8px);
+        -webkit-backdrop-filter: blur(8px);
+        border: 1px solid rgba(255, 255, 255, 0.65);
+        box-shadow: 0 12px 32px 0 rgba(15, 23, 42, 0.10) !important;
+        padding: 36px 42px;
+        max-width: 680px;
+        position: relative;
     }
     .bt-hero-title {
         font-family: 'DM Serif Display', Georgia, serif;
@@ -95,14 +101,15 @@
         letter-spacing: -0.018em;
         margin: 0 0 16px;
         font-weight: 400;
+        text-shadow: 0 1px 2px rgba(255, 255, 255, 0.8);
     }
     .bt-hero-subtitle {
         font-size: 14.5px;
-        color: #334155;
+        color: #1e293b;
         line-height: 1.68;
-        max-width: 700px;
         margin: 0;
-        font-weight: 400;
+        font-weight: 500;
+        text-shadow: 0 1px 1px rgba(255, 255, 255, 0.6);
     }
     .bt-hero-actions {
         display: flex;
@@ -110,7 +117,7 @@
         flex-wrap: wrap;
         align-items: center;
         padding-top: 20px;
-        border-top: 1px solid rgba(203, 213, 225, 0.85);
+        border-top: 1px solid rgba(255, 255, 255, 0.60);
         margin-top: 24px;
     }
     .bt-hero-cta {
@@ -122,7 +129,7 @@
         text-transform: uppercase;
         padding: 12px 24px;
         border: 1px solid var(--bt-amber);
-        box-shadow: 0 4px 14px rgba(241, 126, 1, 0.28) !important;
+        box-shadow: 0 4px 14px rgba(241, 126, 1, 0.32) !important;
         transition: all 0.25s ease;
         display: inline-flex;
         align-items: center;
@@ -134,12 +141,12 @@
         border-color: #d96f00;
         color: #ffffff;
         transform: translateY(-2px);
-        box-shadow: 0 6px 20px rgba(217, 111, 0, 0.35) !important;
+        box-shadow: 0 6px 20px rgba(217, 111, 0, 0.38) !important;
     }
     .bt-hero-btn-secondary {
-        background: rgba(255, 255, 255, 0.95);
+        background: rgba(255, 255, 255, 0.80);
         color: #0f172a;
-        border: 1px solid #cbd5e1;
+        border: 1px solid rgba(255, 255, 255, 0.9);
         padding: 12px 20px;
         font-size: 12.5px;
         font-weight: 700;
@@ -147,20 +154,21 @@
         letter-spacing: 0.05em;
         transition: all 0.2s ease;
         text-decoration: none;
+        backdrop-filter: blur(4px);
     }
     .bt-hero-btn-secondary:hover {
         background: #ffffff;
-        border-color: #94a3b8;
+        border-color: #cbd5e1;
         color: #0f172a;
         transform: translateY(-1px);
     }
 
     /* Architecture Box in Cool White Mode */
     .bt-hero-arch-card {
-        background: rgba(255, 255, 255, 0.94);
+        background: rgba(255, 255, 255, 0.85);
         backdrop-filter: blur(14px);
         -webkit-backdrop-filter: blur(14px);
-        border: 1px solid rgba(203, 213, 225, 0.9);
+        border: 1px solid rgba(255, 255, 255, 0.9);
         box-shadow: 0 20px 40px -15px rgba(15, 23, 42, 0.08) !important;
         padding: 20px 22px;
         display: flex;
@@ -176,7 +184,7 @@
         padding: 8px 10px;
     }
     .bt-hero-arch-table td.bt-arch-th {
-        background: #f8fafc;
+        background: rgba(248, 250, 252, 0.85);
         color: #b85a0a;
         font-weight: 700;
         width: 36%;
@@ -188,11 +196,11 @@
         position: absolute;
         bottom: 24px;
         right: 32px;
-        z-index: 10;
+        z-index: 20;
         display: flex;
         align-items: center;
         gap: 12px;
-        background: rgba(255, 255, 255, 0.88);
+        background: rgba(255, 255, 255, 0.85);
         backdrop-filter: blur(8px);
         -webkit-backdrop-filter: blur(8px);
         padding: 6px 14px;
@@ -247,15 +255,13 @@
     @media (max-width: 900px) {
         .bt-hero-slider-section {
             min-height: auto;
-            padding: 20px 0;
         }
-        .bt-hero-container {
-            padding-top: 20px;
-            padding-bottom: 60px;
+        .bt-slide-inner {
+            padding: 24px 0 64px;
         }
-        .bt-hero-content-col {
-            padding: 24px 20px;
-            background: rgba(255, 255, 255, 0.92);
+        .bt-hero-transparent-card {
+            padding: 22px 20px;
+            background: rgba(255, 255, 255, 0.55);
         }
         .bt-hero-title {
             font-size: 26px;
@@ -282,96 +288,110 @@
         return asset(ltrim($val, '/'));
     };
 
-    $slideImages = [
-        $resolveSlideUrl('text.hero_slide_1_image', 'images/slider/slide-1.jpg'),
-        $resolveSlideUrl('text.hero_slide_2_image', 'images/slider/slide-2.jpg'),
-        $resolveSlideUrl('text.hero_slide_3_image', 'images/slider/slide-3.jpg'),
-        $resolveSlideUrl('text.hero_slide_4_image', 'images/slider/slide-4.jpg'),
-        $resolveSlideUrl('text.hero_slide_5_image', 'images/slider/slide-5.jpg'),
+    $slidesData = [
+        [
+            'image' => $resolveSlideUrl('text.hero_slide_1_image', 'images/slider/slide-1.jpg'),
+            'title' => $uiText('text.hero_title'),
+            'desc'  => $uiText('text.hero_subtitle'),
+            'cta'   => $uiText('text.hero_cta_primary'),
+        ],
+        [
+            'image' => $resolveSlideUrl('text.hero_slide_2_image', 'images/slider/slide-2.jpg'),
+            'title' => $uiText('text.hero_slide_2_title', 'Corporate Strategy & Board Governance'),
+            'desc'  => $uiText('text.hero_slide_2_desc', 'Align board oversight, capital readiness, and management execution to unlock institutional investment and enterprise growth across African markets.'),
+            'cta'   => 'Assess Governance & Strategy →',
+        ],
+        [
+            'image' => $resolveSlideUrl('text.hero_slide_3_image', 'images/slider/slide-3.jpg'),
+            'title' => $uiText('text.hero_slide_3_title', 'Financial Health & Capital Access'),
+            'desc'  => $uiText('text.hero_slide_3_desc', 'Deterministic financial gateway analysis that ensures bookkeeping integrity, financial controls, and compliance before approaching investors.'),
+            'cta'   => 'Evaluate Financial Health →',
+        ],
+        [
+            'image' => $resolveSlideUrl('text.hero_slide_4_image', 'images/slider/slide-4.jpg'),
+            'title' => $uiText('text.hero_slide_4_title', 'Operational Excellence & Market Expansion'),
+            'desc'  => $uiText('text.hero_slide_4_desc', 'Expose operational blind spots, streamline local supply chains, and build scalable systems tailored for rapid regional growth.'),
+            'cta'   => 'Test Operational Resilience →',
+        ],
+        [
+            'image' => $resolveSlideUrl('text.hero_slide_5_image', 'images/slider/slide-5.jpg'),
+            'title' => $uiText('text.hero_slide_5_title', 'Actionable Diagnostic Intervention Roadmap'),
+            'desc'  => $uiText('text.hero_slide_5_desc', 'Convert diagnostic evidence directly into prioritized 30, 90, and 180-day consulting roadmaps approved by expert advisory partners.'),
+            'cta'   => 'Start Diagnostic Assessment →',
+        ],
     ];
 @endphp
-<!-- Section 1: Cool Premium Business White Hero with Sliding Background Images -->
+<!-- Section 1: Cool Premium Business White Hero with Embedded Transparent Slide Cards -->
 <section class="bt-hero-slider-section" id="btHeroSection">
-    <!-- Sliding Background Track -->
-    <div class="bt-slider-viewport" aria-hidden="true">
+    <!-- Sliding Background Track with Embedded Transparent Cards -->
+    <div class="bt-slider-viewport">
         <div class="bt-slider-track" id="btHeroSliderTrack">
-            @foreach($slideImages as $idx => $imgUrl)
+            @foreach($slidesData as $idx => $slide)
                 <div class="bt-slide {{ $idx === 0 ? 'is-current' : '' }}" data-slide-index="{{ $idx }}">
-                    <img src="{{ $imgUrl }}" alt="Hero Background Slide {{ $idx + 1 }}" class="bt-slide-img">
+                    <img src="{{ $slide['image'] }}" alt="{{ $slide['title'] }}" class="bt-slide-img">
+                    <div class="bt-slide-tint" aria-hidden="true"></div>
+                    <div class="bt-slide-inner">
+                        <div class="bt-container {{ $uiVisible('vis.landing_architecture_box') ? 'bt-hero-grid' : '' }}">
+                            <div class="bt-hero-transparent-card">
+                                <h1 class="bt-hero-title">{{ $slide['title'] }}</h1>
+                                <p class="bt-hero-subtitle">{{ $slide['desc'] }}</p>
+                                <div class="bt-hero-actions">
+                                    <a href="{{ route('diagnostic.wizard') }}" class="btn btn-amber bt-hero-cta">
+                                        <span>{{ $slide['cta'] }}</span>
+                                        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="margin-left:4px;"><line x1="5" y1="12" x2="19" y2="12"></line><polyline points="12 5 19 12 12 19"></polyline></svg>
+                                    </a>
+                                    @auth
+                                        @if(auth()->user()->isDeveloper())
+                                            <a href="{{ route('developer.console') }}" class="btn bt-hero-btn-secondary" style="color:var(--bt-amber-deep);border-color:var(--bt-amber);">
+                                                Open Developer Master Console
+                                            </a>
+                                        @elseif(auth()->user()->isConsultant())
+                                            <a href="{{ route('consultant.dashboard') }}" class="btn bt-hero-btn-secondary">
+                                                Open Consultant Review Desk
+                                            </a>
+                                        @else
+                                            <a href="{{ route('portal.index') }}" class="btn bt-hero-btn-secondary">
+                                                Open My Client Workspace
+                                            </a>
+                                        @endif
+                                    @endauth
+                                </div>
+                            </div>
+
+                            @if($uiVisible('vis.landing_architecture_box') && $idx === 0)
+                            <div class="bt-hero-arch-card">
+                                <div>
+                                    <div class="eyebrow" style="color:var(--bt-amber-deep);">CONTROLLED DIAGNOSTIC ARCHITECTURE</div>
+                                    <h3 style="font-size:16px;color:#0f172a;margin-bottom:8px;font-weight:700;">Deterministic Scores + AI Structured Synthesis</h3>
+                                    <p style="font-size:12.5px;color:#475569;margin:0 0 14px;line-height:1.5;">
+                                        Numerical scores are calculated strictly by Bridge Tailor’s controlled scoring engine (50% weighted symptom pain + 50% gateway evidence verification). The AI interprets findings using OpenAI Structured Outputs and tags every statement by epistemic source.
+                                    </p>
+                                </div>
+                                <table class="bt-table bt-hero-arch-table">
+                                    <tr>
+                                        <td class="bt-arch-th">Scoring Engine</td>
+                                        <td>Controlled 0–100 index + Feel vs. Evidence blind-spot gap (≥15 pts)</td>
+                                    </tr>
+                                    <tr>
+                                        <td class="bt-arch-th">Sequencing Gate</td>
+                                        <td>Financial Control gates Capital Raising (shaky books block funding)</td>
+                                    </tr>
+                                    <tr>
+                                        <td class="bt-arch-th">Epistemic Guardrail</td>
+                                        <td>Distinguishes Verified Facts, Client-Provided data &amp; Assumptions</td>
+                                    </tr>
+                                    <tr>
+                                        <td class="bt-arch-th">Consultant Review</td>
+                                        <td>AI drafts initial report → Consultant amends, approves &amp; publishes</td>
+                                    </tr>
+                                </table>
+                            </div>
+                            @endif
+                        </div>
+                    </div>
                 </div>
             @endforeach
         </div>
-    </div>
-
-    <!-- Cool Premium White Business Overlay (High-Key Corporate Ambience like Image 1) -->
-    <div class="bt-hero-white-overlay" aria-hidden="true"></div>
-
-    <!-- Hero Content Layer -->
-    <div class="bt-container bt-hero-container {{ $uiVisible('vis.landing_architecture_box') ? 'bt-hero-grid' : '' }}">
-        <div class="bt-hero-content-col">
-            <div>
-                <div style="margin-bottom:24px;">
-                    <h1 class="bt-hero-title">
-                        {{ $uiText('text.hero_title') }}
-                    </h1>
-                    <p class="bt-hero-subtitle">
-                        {{ $uiText('text.hero_subtitle') }}
-                    </p>
-                </div>
-            </div>
-            <div class="bt-hero-actions">
-                <a href="{{ route('diagnostic.wizard') }}" class="btn btn-amber bt-hero-cta">
-                    <span>{{ $uiText('text.hero_cta_primary') }}</span>
-                    <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="margin-left:4px;"><line x1="5" y1="12" x2="19" y2="12"></line><polyline points="12 5 19 12 12 19"></polyline></svg>
-                </a>
-                @auth
-                    @if(auth()->user()->isDeveloper())
-                        <a href="{{ route('developer.console') }}" class="btn bt-hero-btn-secondary" style="color:var(--bt-amber-deep);border-color:var(--bt-amber);">
-                            Open Developer Master Console
-                        </a>
-                    @elseif(auth()->user()->isConsultant())
-                        <a href="{{ route('consultant.dashboard') }}" class="btn bt-hero-btn-secondary">
-                            Open Consultant Review Desk
-                        </a>
-                    @else
-                        <a href="{{ route('portal.index') }}" class="btn bt-hero-btn-secondary">
-                            Open My Client Workspace
-                        </a>
-                    @endif
-                @endauth
-            </div>
-        </div>
-
-        <!-- Right column: Deterministic + AI Architecture Summary Box -->
-        @if($uiVisible('vis.landing_architecture_box'))
-        <div class="bt-hero-arch-card">
-            <div>
-                <div class="eyebrow" style="color:var(--bt-amber-deep);">CONTROLLED DIAGNOSTIC ARCHITECTURE</div>
-                <h3 style="font-size:16px;color:#0f172a;margin-bottom:8px;font-weight:700;">Deterministic Scores + AI Structured Synthesis</h3>
-                <p style="font-size:12.5px;color:#475569;margin:0 0 14px;line-height:1.5;">
-                    Numerical scores are calculated strictly by Bridge Tailor’s controlled scoring engine (50% weighted symptom pain + 50% gateway evidence verification). The AI interprets findings using OpenAI Structured Outputs and tags every statement by epistemic source.
-                </p>
-            </div>
-            <table class="bt-table bt-hero-arch-table">
-                <tr>
-                    <td class="bt-arch-th">Scoring Engine</td>
-                    <td>Controlled 0–100 index + Feel vs. Evidence blind-spot gap (≥15 pts)</td>
-                </tr>
-                <tr>
-                    <td class="bt-arch-th">Sequencing Gate</td>
-                    <td>Financial Control gates Capital Raising (shaky books block funding)</td>
-                </tr>
-                <tr>
-                    <td class="bt-arch-th">Epistemic Guardrail</td>
-                    <td>Distinguishes Verified Facts, Client-Provided data &amp; Assumptions</td>
-                </tr>
-                <tr>
-                    <td class="bt-arch-th">Consultant Review</td>
-                    <td>AI drafts initial report → Consultant amends, approves &amp; publishes</td>
-                </tr>
-            </table>
-        </div>
-        @endif
     </div>
 
     <!-- Sliding Controls & Indicators -->
@@ -380,7 +400,7 @@
             <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"></polyline></svg>
         </button>
         <div class="bt-slider-dots" role="tablist" aria-label="Hero Slides">
-            @foreach($slideImages as $idx => $imgUrl)
+            @foreach($slidesData as $idx => $slide)
                 <button type="button" class="bt-slider-dot {{ $idx === 0 ? 'active' : '' }}" data-slide="{{ $idx }}" aria-label="Slide {{ $idx + 1 }}" {{ $idx === 0 ? 'aria-current="true"' : '' }}></button>
             @endforeach
         </div>
