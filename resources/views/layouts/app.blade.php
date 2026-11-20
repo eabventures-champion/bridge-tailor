@@ -32,8 +32,37 @@
         }
         * {
             box-sizing: border-box;
-            border-radius: 0 !important;
-            box-shadow: none !important;
+        }
+
+        /* Project-wide rounded cards, containers, buttons, and form controls */
+        .card,
+        .bt-card,
+        .flat-box,
+        .flat-box-dark {
+            border-radius: 12px !important;
+        }
+        .btn {
+            border-radius: 8px !important;
+        }
+        .field input,
+        .field select,
+        .field textarea,
+        input[type="text"],
+        input[type="email"],
+        input[type="password"],
+        input[type="date"],
+        input[type="file"],
+        select,
+        textarea {
+            border-radius: 8px !important;
+        }
+        .tag,
+        .badge {
+            border-radius: 6px !important;
+        }
+        .bt-table {
+            border-radius: 10px !important;
+            overflow: hidden;
         }
         html {
             height: 100%;
@@ -236,7 +265,7 @@
             transform: translateY(-1px);
         }
         /* Solid Section Bands */
-        .sec-espresso { background-color: var(--bt-espresso); color: var(--bt-white); border-bottom: 1px solid #3f3a37; }
+        .sec-espresso { background-color: #1e293b; color: var(--bt-white); border-bottom: 1px solid #334155; }
         .sec-cream    { background-color: var(--bt-cream);    color: var(--bt-ink);   border-bottom: 1px solid var(--bt-border); }
         .sec-slate    { background-color: var(--bt-slate);    color: var(--bt-ink);   border-bottom: 1px solid var(--bt-border); }
         .sec-white    { background-color: var(--bt-white);    color: var(--bt-ink);   border-bottom: 1px solid var(--bt-border); }
@@ -290,14 +319,16 @@
             font-weight: 700;
             text-transform: uppercase;
             letter-spacing: 0.05em;
-            border: 1px solid var(--bt-ink);
-            background-color: var(--bt-ink);
+            border: 1px solid #334155;
+            background-color: #1e293b;
             color: var(--bt-white);
+            border-radius: 8px !important;
             cursor: pointer;
+            transition: all 0.2s ease;
         }
         .btn:hover {
-            background-color: var(--bt-umber);
-            border-color: var(--bt-umber);
+            background-color: #0f172a;
+            border-color: #0f172a;
         }
         .btn:disabled {
             opacity: 0.35;
@@ -307,6 +338,7 @@
             background-color: var(--bt-amber);
             border-color: var(--bt-amber);
             color: var(--bt-ink);
+            border-radius: 8px !important;
         }
         .btn-amber:hover {
             background-color: #d96f00;
@@ -315,56 +347,65 @@
         }
         .btn-outline {
             background-color: var(--bt-white);
-            border: 1px solid var(--bt-ink);
-            color: var(--bt-ink);
+            border: 1.5px solid #cbd5e1;
+            color: #334155;
+            border-radius: 8px !important;
         }
         .btn-outline:hover {
-            background-color: var(--bt-cream);
+            background-color: #f8fafc;
+            border-color: var(--bt-amber);
+            color: var(--bt-amber-deep);
         }
         .btn-sm {
             padding: 5px 10px;
             font-size: 11px;
+            border-radius: 6px !important;
         }
         /* Compact Tables & Flat Grids */
         .bt-table {
             width: 100%;
             border-collapse: collapse;
             background-color: var(--bt-white);
-            border: 1px solid var(--bt-border);
+            border: 1px solid #e2e8f0;
+            border-radius: 10px !important;
+            overflow: hidden;
             font-size: 12.5px;
         }
         .bt-table th {
-            background-color: var(--bt-espresso);
-            color: var(--bt-white);
+            background-color: #f8fafc;
+            color: #334155;
             text-align: left;
-            padding: 8px 11px;
-            font-size: 10.5px;
+            padding: 10px 12px;
+            font-size: 11px;
             font-weight: 700;
             text-transform: uppercase;
             letter-spacing: 0.06em;
-            border: 1px solid #3f3a37;
+            border: 1px solid #e2e8f0;
         }
         .bt-table td {
             padding: 8px 11px;
-            border: 1px solid var(--bt-border);
+            border: 1px solid #e2e8f0;
             vertical-align: top;
         }
         .bt-table tr:nth-child(even) td {
             background-color: #faf8f5;
         }
-        /* Flat bordered boxes (no rounded raised cards) */
+        /* Rounded cards & containers */
         .flat-box {
-            border: 1px solid var(--bt-border);
+            border: 1px solid #e2e8f0;
             background-color: var(--bt-white);
-            padding: 14px 16px;
+            padding: 18px 20px;
+            border-radius: 14px !important;
             min-width: 0;
             max-width: 100%;
+            box-shadow: 0 2px 12px rgba(15, 23, 42, 0.04);
         }
         .flat-box-dark {
-            border: 1px solid #4a433f;
-            background-color: #221f1d;
+            border: 1px solid #334155;
+            background-color: #1e293b;
             color: var(--bt-white);
-            padding: 14px 16px;
+            padding: 18px 20px;
+            border-radius: 14px !important;
             min-width: 0;
             max-width: 100%;
         }

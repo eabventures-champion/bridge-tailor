@@ -107,21 +107,23 @@
         transition: width 0.4s cubic-bezier(0.4, 0, 0.2, 1);
     }
 
-    /* 4 Interactive Step Tabs */
+    /* 4 Interactive Step Tabs - Rounded Cards */
     .bt-wiz-steps-row {
         display: grid;
         grid-template-columns: repeat(4, 1fr);
         background: #ffffff;
+        gap: 10px;
+        padding: 10px 14px;
+        border-radius: 0 0 16px 16px;
     }
     .bt-wiz-step-item {
         display: flex;
         align-items: center;
         gap: 12px;
-        padding: 16px 20px;
-        background: transparent;
-        border: none;
-        border-bottom: 3px solid transparent;
-        border-right: 1px solid #f1f5f9;
+        padding: 12px 14px;
+        background: #f8fafc;
+        border: 1px solid #e2e8f0;
+        border-radius: 12px !important;
         cursor: pointer;
         text-align: left;
         font-family: inherit;
@@ -129,17 +131,21 @@
         position: relative;
     }
     .bt-wiz-step-item:last-child {
-        border-right: none;
+        border-right: 1px solid #e2e8f0;
     }
     .bt-wiz-step-item:hover {
-        background: #f8fafc;
+        background: #f1f5f9;
+        border-color: #cbd5e1;
+        transform: translateY(-1px);
     }
     .bt-wiz-step-item.active {
-        background: #ffffff;
-        border-bottom-color: var(--bt-amber, #f17e01);
+        background: #fff7ed;
+        border-color: var(--bt-amber, #f17e01);
+        box-shadow: 0 4px 12px rgba(241, 126, 1, 0.12) !important;
     }
     .bt-wiz-step-item.completed {
-        background: #fafafa;
+        background: #f0fdf4;
+        border-color: #bbf7d0;
     }
 
     .bt-wiz-step-num {
@@ -508,17 +514,18 @@
         background: #fff7ed;
     }
     .mod-subnav-btn.current {
-        background: #0f172a;
-        border-color: #0f172a;
-        color: #ffffff;
-        box-shadow: 0 2px 8px rgba(15, 23, 42, 0.15);
+        background: var(--bt-amber, #f17e01) !important;
+        border-color: var(--bt-amber, #f17e01) !important;
+        color: #141210 !important;
+        font-weight: 800;
+        box-shadow: 0 4px 14px rgba(241, 126, 1, 0.28) !important;
     }
 
-    /* Module Hero Banner inside Step 3 */
+    /* Module Hero Banner inside Step 3 - Crisp Rounded Light Card */
     .bt-module-banner {
-        background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%);
-        color: #ffffff;
-        border-radius: 12px;
+        background: #ffffff;
+        color: #0f172a;
+        border-radius: 14px !important;
         padding: 20px 24px;
         margin-bottom: 18px;
         display: flex;
@@ -526,7 +533,15 @@
         align-items: center;
         flex-wrap: wrap;
         gap: 14px;
-        border: 1px solid rgba(255, 255, 255, 0.08);
+        border: 1.5px solid var(--bt-amber, #f17e01);
+        box-shadow: 0 4px 18px rgba(241, 126, 1, 0.08);
+    }
+    .bt-module-banner-score {
+        background: #fff7ed;
+        border: 1px solid #fed7aa;
+        padding: 10px 18px;
+        border-radius: 10px !important;
+        text-align: right;
     }
     .bt-module-banner-score {
         background: rgba(255, 255, 255, 0.06);
@@ -676,7 +691,6 @@
             <!-- Meta & Real-Time Stats Strip -->
             <div class="bt-wiz-meta-strip">
                 <div class="bt-wiz-meta-left">
-                    <span class="bt-wiz-pill-badge">AI Diagnostic Platform</span>
                     <span class="bt-wiz-meta-text">Deterministic Business Health Evaluation &amp; Intervention Sequencing</span>
                 </div>
                 <div class="bt-wiz-meta-stats">
@@ -772,7 +786,7 @@
                         Provide enterprise details and operating scope. The diagnostic engine dynamically adapts its question branching, stage baselines, and peer benchmarks.
                     </p>
                 </div>
-                @if($uiVisible('vis.wizard_demo_prefill_button'))
+                @if($uiVisible('vis.wizard_demo_prefill_button') && (app()->environment('local') || in_array(request()->getHost(), ['localhost', '127.0.0.1'])))
                 <button type="button" class="bt-prefill-btn" onclick="fillDemoBusiness()">
                     <span>⚡</span>
                     <span>Prefill Sample African SME Profile</span>
