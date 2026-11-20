@@ -706,6 +706,13 @@
                         <span>Progress:</span>
                         <strong id="bt-wiz-progress-pct">25%</strong>
                     </div>
+                    <div class="bt-wiz-stat-chip" id="bt-draft-status" style="display:none;background:#f0fdf4;border:1px solid #bbf7d0;color:#166534;font-size:11.5px;font-weight:700;">
+                        <span>💾</span>
+                        <span id="bt-draft-status-text">Draft saved live</span>
+                    </div>
+                    <button type="button" id="bt-reset-draft-link" onclick="clearDraft()" title="Reset all form fields and start fresh" style="display:none;background:none;border:none;color:#94a3b8;font-size:11px;font-weight:700;cursor:pointer;padding:3px 6px;text-decoration:underline;">
+                        Reset Form
+                    </button>
                     <!-- Hidden element to maintain full JS backward compatibility -->
                     <span id="rail-gate-note" style="display:none;">Active</span>
                 </div>
@@ -786,12 +793,17 @@
                         Provide enterprise details and operating scope. The diagnostic engine dynamically adapts its question branching, stage baselines, and peer benchmarks.
                     </p>
                 </div>
-                @if($uiVisible('vis.wizard_demo_prefill_button') && (app()->environment('local') || in_array(request()->getHost(), ['localhost', '127.0.0.1'])))
-                <button type="button" class="bt-prefill-btn" onclick="fillDemoBusiness()">
-                    <span>⚡</span>
-                    <span>Prefill Sample African SME Profile</span>
-                </button>
-                @endif
+                <div style="display:flex;gap:8px;align-items:center;flex-wrap:wrap;">
+                    <button type="button" id="bt-reset-btn-step1" class="btn btn-outline btn-sm" onclick="clearDraft()" style="display:none;font-size:12px;color:#64748b;border-color:#cbd5e1;padding:8px 14px;border-radius:8px;">
+                        ↺ Reset Form
+                    </button>
+                    @if($uiVisible('vis.wizard_demo_prefill_button') && (app()->environment('local') || in_array(request()->getHost(), ['localhost', '127.0.0.1'])))
+                    <button type="button" class="bt-prefill-btn" onclick="fillDemoBusiness()">
+                        <span>⚡</span>
+                        <span>Prefill Sample African SME Profile</span>
+                    </button>
+                    @endif
+                </div>
             </div>
 
             <div class="flat-grid-2" style="margin-bottom:18px;">
@@ -1180,6 +1192,11 @@
     const selectedSymptoms = {}; // id => pain 1..5
     const selectedAnswers = {};  // code => 0..2
 
+    // Client-side persistent live auto-save
+    const companyUlid = document.querySelector('input[name="existing_company_ulid"]')?.value || 'new';
+    const DRAFT_KEY = 'bt_diagnostic_draft_' + companyUlid;
+    let saveTimeout = null;
+
     const painDescriptions = {
         1: 'Minor Friction',
         2: 'Noticeable Inefficiency',
@@ -1200,6 +1217,204 @@
         }
     }
 
+    function updateDraftIndicator(status = 'saved') {
+        const chip = document.getElementById('bt-draft-status');
+        const chipText = document.getElementById('bt-draft-status-text');
+        const resetLink = document.getElementById('bt-reset-draft-link');
+        const resetBtn1 = document.getElementById('bt-reset-btn-step1');
+
+        if (chip) chip.style.display = 'inline-flex';
+        if (resetLink) resetLink.style.display = 'inline-block';
+        if (resetBtn1) resetBtn1.style.display = 'inline-flex';
+
+        if (chipText) {
+            if (status === 'saving') {
+                chipText.textContent = 'Saving draft...';
+            } else if (status === 'restored') {
+                chipText.textContent = 'Restored live draft';
+            } else {
+                chipText.textContent = 'Draft saved live';
+            }
+        }
+    }
+
+    function saveDraft(debounceMs = 250) {
+        if (saveTimeout) clearTimeout(saveTimeout);
+        updateDraftIndicator('saving');
+
+        saveTimeout = setTimeout(() => {
+            try {
+                const scopedBoxes = document.querySelectorAll('.scope-checkbox:checked');
+                const scopedModules = Array.from(scopedBoxes).map(cb => cb.value);
+                const modeRadio = document.querySelector('input[name="mode"]:checked');
+                const customIssueEl = document.querySelector('textarea[name="custom_issue"]');
+                const catEl = document.querySelector('select[name="category"]');
+                const retEl = document.querySelector('select[name="retention_policy"]');
+                const consentEl = document.querySelector('input[name="ai_consent"]');
+
+                const draft = {
+                    currentStep,
+                    activeModIndex,
+                    contact_name: document.getElementById('f_contact_name')?.value ?? '',
+                    company_name: document.getElementById('f_company_name')?.value ?? '',
+                    contact_email: document.getElementById('f_contact_email')?.value ?? '',
+                    contact_phone: document.getElementById('f_contact_phone')?.value ?? '',
+                    country: document.getElementById('f_country')?.value ?? '',
+                    city: document.getElementById('f_city')?.value ?? '',
+                    stage: document.getElementById('f_stage')?.value ?? 'growth',
+                    sector: document.getElementById('f_sector')?.value ?? 'general',
+                    size_band: document.getElementById('f_size_band')?.value ?? '21-50',
+                    revenue_band: document.getElementById('f_revenue_band')?.value ?? '3to6',
+                    objectives: document.getElementById('f_objectives')?.value ?? '',
+                    challenges: document.getElementById('f_challenges')?.value ?? '',
+                    mode: modeRadio ? modeRadio.value : 'comprehensive',
+                    modules_in_scope: scopedModules,
+                    selectedSymptoms: { ...selectedSymptoms },
+                    selectedAnswers: { ...selectedAnswers },
+                    custom_issue: customIssueEl ? customIssueEl.value : '',
+                    category: catEl ? catEl.value : '',
+                    retention_policy: retEl ? retEl.value : '',
+                    ai_consent: consentEl ? consentEl.checked : true,
+                    savedAt: new Date().toISOString()
+                };
+
+                const hasContent = (draft.contact_name && draft.contact_name.trim() !== '') ||
+                                   (draft.company_name && draft.company_name.trim() !== '') ||
+                                   (draft.contact_email && draft.contact_email.trim() !== '') ||
+                                   (draft.objectives && draft.objectives.trim() !== '') ||
+                                   (draft.challenges && draft.challenges.trim() !== '') ||
+                                   (draft.custom_issue && draft.custom_issue.trim() !== '') ||
+                                   Object.keys(selectedSymptoms).length > 0 ||
+                                   Object.keys(selectedAnswers).length > 0;
+
+                if (hasContent) {
+                    localStorage.setItem(DRAFT_KEY, JSON.stringify(draft));
+                    updateDraftIndicator('saved');
+                }
+            } catch (e) {
+                console.warn('Auto-save error:', e);
+            }
+        }, debounceMs);
+    }
+
+    function restoreDraft() {
+        try {
+            const raw = localStorage.getItem(DRAFT_KEY);
+            if (!raw) return false;
+            const draft = JSON.parse(raw);
+            if (!draft || typeof draft !== 'object') return false;
+
+            // 1. Contact & Profile fields
+            if (draft.contact_name !== undefined && document.getElementById('f_contact_name')) document.getElementById('f_contact_name').value = draft.contact_name;
+            if (draft.company_name !== undefined && document.getElementById('f_company_name')) document.getElementById('f_company_name').value = draft.company_name;
+            if (draft.contact_email !== undefined && document.getElementById('f_contact_email')) document.getElementById('f_contact_email').value = draft.contact_email;
+            if (draft.contact_phone !== undefined && document.getElementById('f_contact_phone')) document.getElementById('f_contact_phone').value = draft.contact_phone;
+            if (draft.country !== undefined && document.getElementById('f_country')) document.getElementById('f_country').value = draft.country;
+            if (draft.city !== undefined && document.getElementById('f_city')) document.getElementById('f_city').value = draft.city;
+            if (draft.stage !== undefined && document.getElementById('f_stage')) document.getElementById('f_stage').value = draft.stage;
+            if (draft.sector !== undefined && document.getElementById('f_sector')) document.getElementById('f_sector').value = draft.sector;
+            if (draft.size_band !== undefined && document.getElementById('f_size_band')) document.getElementById('f_size_band').value = draft.size_band;
+            if (draft.revenue_band !== undefined && document.getElementById('f_revenue_band')) document.getElementById('f_revenue_band').value = draft.revenue_band;
+            if (draft.objectives !== undefined && document.getElementById('f_objectives')) document.getElementById('f_objectives').value = draft.objectives;
+            if (draft.challenges !== undefined && document.getElementById('f_challenges')) document.getElementById('f_challenges').value = draft.challenges;
+
+            const customIssueEl = document.querySelector('textarea[name="custom_issue"]');
+            if (customIssueEl && draft.custom_issue !== undefined) customIssueEl.value = draft.custom_issue;
+
+            const catEl = document.querySelector('select[name="category"]');
+            if (catEl && draft.category !== undefined) catEl.value = draft.category;
+
+            const retEl = document.querySelector('select[name="retention_policy"]');
+            if (retEl && draft.retention_policy !== undefined) retEl.value = draft.retention_policy;
+
+            const consentEl = document.querySelector('input[name="ai_consent"]');
+            if (consentEl && draft.ai_consent !== undefined) consentEl.checked = !!draft.ai_consent;
+
+            // 2. Mode & Scope
+            if (draft.mode) {
+                const modeRadio = document.querySelector(`input[name="mode"][value="${draft.mode}"]`);
+                if (modeRadio) modeRadio.checked = true;
+            }
+            if (Array.isArray(draft.modules_in_scope) && draft.modules_in_scope.length > 0) {
+                document.querySelectorAll('.scope-checkbox').forEach(cb => {
+                    const isChecked = draft.modules_in_scope.includes(cb.value);
+                    cb.checked = isChecked;
+                    const card = document.getElementById('scope-card-' + cb.value);
+                    if (card) card.classList.toggle('active', isChecked);
+                });
+            }
+
+            // 3. Symptoms & Pain Ratings
+            if (draft.selectedSymptoms && typeof draft.selectedSymptoms === 'object') {
+                Object.entries(draft.selectedSymptoms).forEach(([id, pain]) => {
+                    selectedSymptoms[id] = pain;
+                    const box = document.getElementById('sym-box-' + id);
+                    const painBar = document.getElementById('sym-pain-' + id);
+                    const input = document.getElementById('sym-input-' + id);
+
+                    if (box) box.classList.add('selected');
+                    if (painBar) painBar.style.display = 'flex';
+                    if (input) {
+                        input.disabled = false;
+                        input.value = pain;
+                    }
+                    renderPainPips(id, pain);
+                });
+            }
+
+            // 4. Evidence answers
+            if (draft.selectedAnswers && typeof draft.selectedAnswers === 'object') {
+                Object.entries(draft.selectedAnswers).forEach(([code, optIdx]) => {
+                    selectedAnswers[code] = optIdx;
+                    const input = document.getElementById('ans-input-' + code);
+                    if (input) {
+                        input.disabled = false;
+                        input.value = optIdx;
+                    }
+                    for (let i = 0; i < 3; i++) {
+                        const btn = document.querySelector(`[data-opt-btn="${code}-${i}"]`);
+                        if (btn) {
+                            btn.classList.remove('selected-0', 'selected-1', 'selected-2');
+                            if (i === optIdx) {
+                                btn.classList.add('selected-' + optIdx);
+                            }
+                        }
+                    }
+                });
+            }
+
+            // 5. Active module index
+            if (typeof draft.activeModIndex === 'number') {
+                activeModIndex = draft.activeModIndex;
+            }
+
+            onScopeChange();
+            updateVisibilityAndCounts();
+
+            // 6. Navigate to active step
+            if (draft.currentStep && draft.currentStep > 1) {
+                gotoStep(draft.currentStep, true);
+            }
+
+            updateDraftIndicator('restored');
+            showToast('💾 Restored your in-progress diagnostic from auto-save.');
+            return true;
+        } catch (e) {
+            console.warn('Error restoring draft:', e);
+            return false;
+        }
+    }
+
+    function clearDraft(confirmFirst = true) {
+        if (confirmFirst && !confirm('Are you sure you want to clear your saved draft and reset the form? All entered answers and company information will be cleared.')) {
+            return;
+        }
+        try {
+            localStorage.removeItem(DRAFT_KEY);
+        } catch (e) {}
+        window.location.reload();
+    }
+
     function getScopedModules() {
         const boxes = document.querySelectorAll('.scope-checkbox:checked');
         const list = Array.from(boxes).map(cb => cb.value);
@@ -1215,6 +1430,7 @@
             });
         }
         onScopeChange();
+        saveDraft(50);
     }
 
     function onScopeChange() {
@@ -1228,10 +1444,12 @@
             }
         });
         updateVisibilityAndCounts();
+        saveDraft(100);
     }
 
     function onProfileChange() {
         updateVisibilityAndCounts();
+        saveDraft(100);
     }
 
     function toggleSymptom(id) {
@@ -1254,6 +1472,7 @@
             renderPainPips(id, 3);
         }
         updateVisibilityAndCounts();
+        saveDraft(50);
     }
 
     function setSymptomPain(id, pain) {
@@ -1263,6 +1482,7 @@
         input.value = pain;
         renderPainPips(id, pain);
         updateVisibilityAndCounts();
+        saveDraft(50);
     }
 
     function renderPainPips(id, pain) {
@@ -1294,6 +1514,7 @@
             }
         }
         updateVisibilityAndCounts();
+        saveDraft(50);
     }
 
     function isQuestionApplicable(qEl) {
@@ -1432,6 +1653,7 @@
     function showActiveModulePane() {
         renderModuleSubnav();
         window.scrollTo({ top: 120, behavior: 'smooth' });
+        saveDraft(100);
     }
 
     function nextModuleOrStep() {
@@ -1453,11 +1675,11 @@
         }
     }
 
-    function gotoStep(step) {
-        if (step > 1) {
-            const name = document.getElementById('f_contact_name').value.trim();
-            const comp = document.getElementById('f_company_name').value.trim();
-            const email = document.getElementById('f_contact_email').value.trim();
+    function gotoStep(step, skipValidation = false) {
+        if (step > 1 && !skipValidation) {
+            const name = document.getElementById('f_contact_name')?.value?.trim();
+            const comp = document.getElementById('f_company_name')?.value?.trim();
+            const email = document.getElementById('f_contact_email')?.value?.trim();
             if (!name || !comp || !email) {
                 alert('Please complete your Name, Company Name, and Business Email in Step 01 before proceeding.');
                 return;
@@ -1475,7 +1697,10 @@
             }
         }
         updateVisibilityAndCounts();
-        window.scrollTo({ top: 0, behavior: 'smooth' });
+        if (!skipValidation) {
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+        saveDraft(50);
     }
 
     function fillDemoBusiness() {
@@ -1507,19 +1732,32 @@
             if (qEl) selectAnswer(code, idx, qEl.getAttribute('data-q-module'));
         });
         updateVisibilityAndCounts();
+        saveDraft(0);
         showToast('⚡ Sample African SME profile loaded! You can now freely navigate all 4 steps.');
     }
 
     document.addEventListener('DOMContentLoaded', () => {
-        updateVisibilityAndCounts();
-
-        // Add loading state to submit button
         const form = document.getElementById('diagnostic-form');
         const submitBtn = document.getElementById('btn-submit-diag');
-        if (form && submitBtn) {
+
+        // Restore any saved draft from client storage
+        const restored = restoreDraft();
+        if (!restored) {
+            updateVisibilityAndCounts();
+        }
+
+        // Live auto-save on any form input or selection change
+        if (form) {
+            form.addEventListener('input', () => saveDraft(300));
+            form.addEventListener('change', () => saveDraft(50));
             form.addEventListener('submit', () => {
-                submitBtn.disabled = true;
-                submitBtn.innerHTML = 'Computing Scores &amp; Generating Report... Please Wait';
+                try {
+                    localStorage.removeItem(DRAFT_KEY);
+                } catch (e) {}
+                if (submitBtn) {
+                    submitBtn.disabled = true;
+                    submitBtn.innerHTML = 'Computing Scores &amp; Generating Report... Please Wait';
+                }
             });
         }
     });
