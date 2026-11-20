@@ -183,6 +183,7 @@
         text-transform: uppercase;
         padding: 13px 26px;
         border: 1px solid var(--bt-amber);
+        border-radius: 6px !important;
         box-shadow: 0 4px 18px rgba(241, 126, 1, 0.40) !important;
         transition: all 0.25s ease;
         display: inline-flex;
@@ -201,6 +202,7 @@
         background: rgba(255, 255, 255, 0.15);
         color: #ffffff;
         border: 1px solid rgba(255, 255, 255, 0.65);
+        border-radius: 6px !important;
         padding: 13px 22px;
         font-size: 12.5px;
         font-weight: 700;
