@@ -198,6 +198,9 @@
             text-transform: uppercase;
             letter-spacing: 0.04em;
         }
+        .bt-nav-arrow {
+            display: none !important;
+        }
         .bt-nav a:hover, .bt-nav a.active {
             background-color: var(--bt-amber);
             color: var(--bt-ink);
@@ -641,7 +644,7 @@
                             visibility 0.35s ease;
                 padding: 0 12px;
                 margin: 0;
-                gap: 6px;
+                gap: 0;
                 border-top: 1px solid transparent;
             }
             .bt-nav.open {
@@ -651,27 +654,69 @@
                 visibility: visible;
                 transform: translateY(0);
                 overflow-y: auto;
-                padding-top: 10px;
-                padding-bottom: 12px;
+                padding-top: 6px;
+                padding-bottom: 10px;
                 margin-top: 6px;
                 border-top: 1px solid #443e3a;
             }
             .page-landing-light .bt-nav.open {
                 border-top-color: #e2e8f0;
             }
-            .bt-nav a, .bt-nav a.bt-nav-cta {
-                margin-left: 0;
-                width: 100%;
-                text-align: left;
-                padding: 10px 14px;
-                font-size: 12px;
+            .bt-nav a,
+            .bt-nav a.bt-nav-cta {
+                display: flex !important;
+                align-items: center !important;
+                justify-content: space-between !important;
+                margin-left: 0 !important;
+                width: 100% !important;
+                text-align: left !important;
+                padding: 13px 8px !important;
+                font-size: 13px !important;
+                font-weight: 600 !important;
+                letter-spacing: 0.05em !important;
+                text-transform: uppercase !important;
+                background: transparent !important;
+                border: none !important;
+                border-bottom: 1px solid rgba(255, 255, 255, 0.08) !important;
+                border-radius: 0 !important;
+                box-shadow: none !important;
+                color: #e6dfd8 !important;
                 opacity: 0;
                 transform: translateY(-4px);
-                transition: opacity 0.25s ease 0.08s, transform 0.25s ease 0.08s, background-color 0.2s ease, color 0.2s ease;
+                transition: opacity 0.25s ease 0.08s,
+                            transform 0.25s ease 0.08s,
+                            color 0.2s ease,
+                            background-color 0.2s ease,
+                            padding-left 0.2s ease;
             }
             .bt-nav.open a {
                 opacity: 1;
                 transform: translateY(0);
+            }
+            .bt-nav a:last-child {
+                border-bottom: none !important;
+            }
+            .bt-nav a:hover,
+            .bt-nav a:active,
+            .bt-nav a.active {
+                background: transparent !important;
+                color: var(--bt-amber) !important;
+                border-radius: 0 !important;
+                box-shadow: none !important;
+                padding-left: 12px !important;
+            }
+            .bt-nav-arrow {
+                display: inline-flex !important;
+                align-items: center;
+                justify-content: center;
+                color: var(--bt-amber);
+                opacity: 0.75;
+                transition: transform 0.2s ease, opacity 0.2s ease;
+            }
+            .bt-nav a:hover .bt-nav-arrow,
+            .bt-nav a:active .bt-nav-arrow {
+                transform: translateX(3px);
+                opacity: 1;
             }
             h1 {
                 font-size: 22px !important;
@@ -843,15 +888,37 @@
             .page-landing-light .bt-nav {
                 background-color: #ffffff;
                 border-top-color: #e2e8f0;
-                box-shadow: 0 10px 25px -5px rgba(15, 23, 42, 0.08) !important;
+                box-shadow: 0 14px 30px -4px rgba(15, 23, 42, 0.12) !important;
+                border-radius: 0 0 10px 10px;
+                padding: 6px 14px 12px;
             }
-            .page-landing-light .bt-nav a {
-                color: #1e293b;
-                border-bottom: 1px solid #f1f5f9;
-                padding: 11px 14px;
+            .page-landing-light .bt-nav a,
+            .page-landing-light .bt-nav a.bt-nav-cta {
+                color: #0f172a !important;
+                background: transparent !important;
+                border: none !important;
+                border-bottom: 1px solid #f1f5f9 !important;
+                border-radius: 0 !important;
+                box-shadow: none !important;
+                padding: 13px 4px !important;
+                font-weight: 600 !important;
             }
-            .page-landing-light .bt-nav a:last-child {
-                border-bottom: none;
+            .page-landing-light .bt-nav a:last-child,
+            .page-landing-light .bt-nav a.bt-nav-cta:last-child {
+                border-bottom: none !important;
+            }
+            .page-landing-light .bt-nav a:hover,
+            .page-landing-light .bt-nav a:active,
+            .page-landing-light .bt-nav a.active {
+                color: var(--bt-amber-deep) !important;
+                background: rgba(241, 126, 1, 0.04) !important;
+                border-radius: 0 !important;
+                box-shadow: none !important;
+                padding-left: 10px !important;
+                transform: none !important;
+            }
+            .page-landing-light .bt-nav-arrow {
+                color: var(--bt-amber-deep);
             }
         }
         @media (max-width: 480px) {
@@ -923,7 +990,8 @@
                         <a href="{{ $navItem->resolvedUrl() }}"
                            target="{{ $navItem->target ?: '_self' }}"
                            class="{{ $navItem->is_cta ? 'bt-nav-cta' : '' }} {{ $navItem->isCurrent() ? 'active' : '' }}">
-                            {{ $navItem->label }}
+                            <span>{{ $navItem->label }}</span>
+                            <svg class="bt-nav-arrow" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="9 18 15 12 9 6"></polyline></svg>
                         </a>
                     @endforeach
                 </nav>
