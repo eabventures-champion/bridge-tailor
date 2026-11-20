@@ -455,7 +455,10 @@ class DiagnosticPlatformTest extends TestCase
     public function test_consultant_dashboard_does_not_render_audit_trail_or_removed_buttons(): void
     {
         $consultant = User::where('role', 'consultant')->first();
+        $admin = User::where('role', 'admin')->first();
+        $developer = User::where('role', 'developer')->first();
 
+        // 1. Consultant view: No audit trail, no removed buttons
         $response = $this->actingAs($consultant)->get('/consultant');
         $response->assertStatus(200);
 
@@ -463,13 +466,24 @@ class DiagnosticPlatformTest extends TestCase
         $response->assertDontSee('+ Run Consultant-Assisted Diagnostic');
         $response->assertDontSee('Configure Diagnostic Framework &amp; Questions', false);
 
-        // The Audit Trail section and table must be absent
+        // The Audit Trail section and table must be absent for standard consultants
         $response->assertDontSee('SECURITY &amp; GOVERNANCE AUDIT TRAIL', false);
         $response->assertDontSee('Immutable Audit Log of Report Generation');
 
         // Modern stats card classes should be present
         $response->assertSee('bt-stats-grid bt-stats-grid-4', false);
         $response->assertSee('bt-stat-card dark', false);
+
+        // 2. Admin & Developer view: Audit trail IS visible
+        $adminRes = $this->actingAs($admin)->get('/consultant');
+        $adminRes->assertStatus(200);
+        $adminRes->assertSee('SECURITY &amp; GOVERNANCE AUDIT TRAIL', false);
+        $adminRes->assertSee('Immutable Audit Log of Report Generation');
+
+        $devRes = $this->actingAs($developer)->get('/consultant');
+        $devRes->assertStatus(200);
+        $devRes->assertSee('SECURITY &amp; GOVERNANCE AUDIT TRAIL', false);
+        $devRes->assertSee('Immutable Audit Log of Report Generation');
     }
 
     public function test_all_user_roles_have_profile_in_navigation(): void

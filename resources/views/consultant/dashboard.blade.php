@@ -8,7 +8,7 @@
     <div class="bt-container">
         <div style="margin-bottom:18px;">
             <div class="eyebrow">BRIDGE-TAILOR CONSULTANT DESK · CLIENT MANAGEMENT &amp; REVIEW QUEUE</div>
-            <h1 style="font-size:28px;color:#fff;">Diagnostic Assessments &amp; CRM Pipeline</h1>
+            <h1 style="font-size:28px;color:#fff;">Diagnostic Assessments, CRM Pipeline{{ (auth()->user()?->isAdmin() || auth()->user()?->isDeveloper()) ? ' & Audit Trail' : '' }}</h1>
         </div>
 
         <div class="bt-stats-grid bt-stats-grid-4">
@@ -163,4 +163,48 @@
         </table>
     </div>
 </section>
+
+@if(auth()->user()?->isAdmin() || auth()->user()?->isDeveloper())
+<!-- Section 4: Solid Slate Band — Security & Governance Audit Trail (Admin & Developer Only) -->
+<section class="sec-slate">
+    <div class="bt-container">
+        <div class="sec-header">
+            <div>
+                <div class="eyebrow">SECURITY &amp; GOVERNANCE AUDIT TRAIL</div>
+                <div style="display:flex;align-items:center;gap:10px;flex-wrap:wrap;">
+                    <h2 style="font-size:22px;margin:0;">Immutable Audit Log of Report Generation &amp; Consultant Amendments</h2>
+                    <span class="tag tag-solid" style="background:#1e3a8a;color:#93c5fd;border-color:#3b82f6;">ADMIN &amp; DEVELOPER ACCESS ONLY</span>
+                </div>
+            </div>
+        </div>
+
+        <table class="bt-table">
+            <thead>
+                <tr>
+                    <th>Timestamp</th>
+                    <th>Event</th>
+                    <th>Actor</th>
+                    <th>Company</th>
+                    <th>IP Address</th>
+                    <th>Metadata</th>
+                </tr>
+            </thead>
+            <tbody>
+                @forelse($auditLogs as $log)
+                    <tr>
+                        <td style="font-size:11px;white-space:nowrap;">{{ $log->created_at->format('d M Y H:i:s') }}</td>
+                        <td><code style="font-weight:700;color:var(--bt-amber-dark);">{{ $log->event }}</code></td>
+                        <td>{{ $log->actor_label }}</td>
+                        <td>{{ $log->company?->name ?? 'System' }}</td>
+                        <td style="font-size:11px;">{{ $log->ip_address }}</td>
+                        <td style="font-size:11px;"><code>{{ json_encode($log->metadata) }}</code></td>
+                    </tr>
+                @empty
+                    <tr><td colspan="6">No audit log entries recorded yet.</td></tr>
+                @endforelse
+            </tbody>
+        </table>
+    </div>
+</section>
+@endif
 @endsection
