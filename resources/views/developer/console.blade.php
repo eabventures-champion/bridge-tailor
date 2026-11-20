@@ -404,13 +404,13 @@
                         <div class="flat-box" style="background:var(--bt-slate);">
                             <div class="field" style="margin-bottom:0;">
                                 <label>{{ $item['label'] }} <span style="font-weight:400;opacity:0.7;">({{ $key }})</span></label>
-                                @if(str_contains($key, 'slide_') && str_contains($key, '_image'))
+                                @if((str_contains($key, 'slide_') && str_contains($key, '_image')) || str_contains($key, 'login_welcome_image'))
                                     <div style="display:flex;gap:10px;align-items:center;margin-bottom:6px;">
                                         @php
                                             $currImg = $item['current'] ?? '';
                                             $previewUrl = str_starts_with($currImg, 'http') ? $currImg : asset(ltrim($currImg, '/'));
                                         @endphp
-                                        <img src="{{ $previewUrl }}" alt="Slide Preview" style="height:44px;width:72px;object-fit:cover;border:1px solid #cbd5e1;background:#e2e8f0;flex-shrink:0;">
+                                        <img src="{{ $previewUrl }}" alt="Preview" style="height:44px;width:72px;object-fit:cover;border:1px solid #cbd5e1;background:#e2e8f0;flex-shrink:0;">
                                         <input type="text" name="texts[{{ $key }}]" value="{{ $item['current'] }}" placeholder="{{ $item['placeholder'] ?? 'e.g. images/slider/slide-1.jpg or https://...' }}" style="flex:1;">
                                     </div>
                                     <div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap;">

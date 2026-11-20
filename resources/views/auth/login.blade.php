@@ -373,12 +373,24 @@
 @endpush
 
 @section('content')
+@php
+    $loginWelcomeImage = trim((string) $uiText('text.login_welcome_image', 'images/slider/slide-1.jpg'));
+    if (empty($loginWelcomeImage)) {
+        $loginWelcomeImage = 'images/slider/slide-1.jpg';
+    }
+    $loginImgUrl = (str_starts_with($loginWelcomeImage, 'http://') || str_starts_with($loginWelcomeImage, 'https://') || str_starts_with($loginWelcomeImage, '//'))
+        ? $loginWelcomeImage
+        : asset(ltrim($loginWelcomeImage, '/'));
+@endphp
 <section class="bt-auth-section">
     <div class="bt-auth-container">
         <div class="bt-auth-card">
             <!-- Left Side: Welcoming Visual Panel with Inspiring Image -->
             <div class="bt-auth-visual">
-                <img src="{{ asset('images/slider/slide-1.jpg') }}" alt="Welcome to Bridge-Tailor" class="bt-auth-visual-img">
+                <img src="{{ $loginImgUrl }}"
+                     alt="Welcome to Bridge-Tailor"
+                     class="bt-auth-visual-img"
+                     onerror="this.onerror=null;this.src='https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?auto=format&fit=crop&w=1200&q=80';">
                 <div class="bt-auth-visual-tint" aria-hidden="true"></div>
 
                 <div class="bt-auth-visual-bottom">

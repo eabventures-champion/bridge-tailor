@@ -63,6 +63,12 @@ class PlatformSetting extends Model
                 'placeholder' => 'e.g. images/slider/slide-1.jpg or https://images.unsplash.com/...',
                 'value' => 'images/slider/slide-1.jpg',
             ],
+            'text.login_welcome_image' => [
+                'group' => 'text', 'type' => 'string',
+                'label' => 'Login & Register — Welcome Visual Image (URL or Local Path)',
+                'placeholder' => 'e.g. images/slider/slide-1.jpg or https://images.unsplash.com/...',
+                'value' => 'images/slider/slide-1.jpg',
+            ],
             'text.hero_slide_2_image' => [
                 'group' => 'text', 'type' => 'string',
                 'label' => 'Landing Hero Slider — Slide 2 Image (URL or Local Path)',
