@@ -482,19 +482,49 @@
         .bt-footer-grid.has-col3 {
             grid-template-columns: 2fr 1fr 1fr 1.3fr;
         }
-        /* Mobile menu toggle button */
+        /* Mobile menu toggle button - Minimalist Hamburger (No Box) */
         .bt-menu-toggle {
             display: none;
-            background-color: var(--bt-ink);
-            color: var(--bt-white);
-            border: 1px solid var(--bt-amber);
-            padding: 7px 11px;
-            font-family: inherit;
-            font-size: 11px;
-            font-weight: 800;
-            text-transform: uppercase;
-            letter-spacing: 0.05em;
+            background: transparent !important;
+            border: none !important;
+            box-shadow: none !important;
+            padding: 8px 6px;
             cursor: pointer;
+            outline: none;
+            align-items: center;
+            justify-content: center;
+        }
+        .bt-hamburger-icon {
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            width: 24px;
+            height: 17px;
+            position: relative;
+        }
+        .bt-hamburger-icon .bt-bar {
+            display: block;
+            width: 100%;
+            height: 2.2px;
+            background-color: var(--bt-white);
+            border-radius: 2px !important;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            transform-origin: center;
+        }
+        .page-landing-light .bt-hamburger-icon .bt-bar {
+            background-color: #0f172a;
+        }
+        .bt-menu-toggle.is-active .bt-hamburger-icon .bt-bar:nth-child(1) {
+            transform: translateY(7.4px) rotate(45deg);
+            background-color: var(--bt-amber);
+        }
+        .bt-menu-toggle.is-active .bt-hamburger-icon .bt-bar:nth-child(2) {
+            opacity: 0;
+            transform: scaleX(0);
+        }
+        .bt-menu-toggle.is-active .bt-hamburger-icon .bt-bar:nth-child(3) {
+            transform: translateY(-7.4px) rotate(-45deg);
+            background-color: var(--bt-amber);
         }
         /* Responsive Table Scroll Wrapper */
         .bt-table-wrap {
@@ -586,27 +616,52 @@
                 gap: 6px;
             }
             .bt-nav {
-                display: none;
+                display: flex;
                 width: 100%;
                 flex-direction: column;
                 align-items: stretch;
-                border-top: 1px solid #443e3a;
-                padding-top: 8px;
-                margin-top: 4px;
-                gap: 4px;
-                max-height: calc(100vh - 120px);
-                max-height: calc(100dvh - 120px);
-                overflow-y: auto;
+                max-height: 0;
+                opacity: 0;
+                visibility: hidden;
+                overflow: hidden;
+                transform: translateY(-8px);
+                transition: max-height 0.35s cubic-bezier(0.16, 1, 0.3, 1),
+                            opacity 0.28s ease,
+                            transform 0.32s cubic-bezier(0.16, 1, 0.3, 1),
+                            visibility 0.35s ease;
+                padding: 0 12px;
+                margin: 0;
+                gap: 6px;
+                border-top: 1px solid transparent;
             }
             .bt-nav.open {
-                display: flex;
+                max-height: calc(100vh - 100px);
+                max-height: calc(100dvh - 100px);
+                opacity: 1;
+                visibility: visible;
+                transform: translateY(0);
+                overflow-y: auto;
+                padding-top: 10px;
+                padding-bottom: 12px;
+                margin-top: 6px;
+                border-top: 1px solid #443e3a;
+            }
+            .page-landing-light .bt-nav.open {
+                border-top-color: #e2e8f0;
             }
             .bt-nav a, .bt-nav a.bt-nav-cta {
                 margin-left: 0;
                 width: 100%;
                 text-align: left;
-                padding: 10px 12px;
+                padding: 10px 14px;
                 font-size: 12px;
+                opacity: 0;
+                transform: translateY(-4px);
+                transition: opacity 0.25s ease 0.08s, transform 0.25s ease 0.08s, background-color 0.2s ease, color 0.2s ease;
+            }
+            .bt-nav.open a {
+                opacity: 1;
+                transform: translateY(0);
             }
             h1 {
                 font-size: 22px !important;
@@ -769,9 +824,10 @@
             transform: translateY(-1px);
         }
         .page-landing-light .bt-menu-toggle {
-            background-color: #ffffff;
+            background: transparent !important;
+            border: none !important;
+            box-shadow: none !important;
             color: #0f172a;
-            border-color: #cbd5e1;
         }
         @media (max-width: 720px) {
             .page-landing-light .bt-nav {
@@ -841,8 +897,12 @@
                         <span class="bt-brand-sub">{{ $uiText('text.brand_subtitle') }}</span>
                     </span>
                 </a>
-                <button type="button" class="bt-menu-toggle" onclick="const nav=document.getElementById('bt-main-nav'); nav.classList.toggle('open'); syncFixedHeaderOffset();" aria-label="Toggle navigation">
-                    <span>☰ MENU</span>
+                <button type="button" class="bt-menu-toggle" id="bt-menu-toggle-btn" onclick="toggleMobileNav(this)" aria-label="Toggle navigation" aria-expanded="false">
+                    <span class="bt-hamburger-icon">
+                        <span class="bt-bar"></span>
+                        <span class="bt-bar"></span>
+                        <span class="bt-bar"></span>
+                    </span>
                 </button>
                 <nav class="bt-nav" id="bt-main-nav">
                     @php
@@ -945,6 +1005,19 @@
         window.addEventListener('orientationchange', function () {
             setTimeout(syncFixedHeaderOffset, 150);
         });
+
+        function toggleMobileNav(btn) {
+            const nav = document.getElementById('bt-main-nav');
+            if (!nav) return;
+            const isOpen = nav.classList.toggle('open');
+            if (btn) {
+                btn.classList.toggle('is-active', isOpen);
+                btn.setAttribute('aria-expanded', isOpen ? 'true' : 'false');
+            }
+            syncFixedHeaderOffset();
+            setTimeout(syncFixedHeaderOffset, 120);
+            setTimeout(syncFixedHeaderOffset, 360);
+        }
 
         function togglePasswordVisibility(btn) {
             const wrap = btn.closest('.pw-wrap');
