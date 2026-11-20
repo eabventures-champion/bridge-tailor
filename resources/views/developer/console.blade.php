@@ -21,7 +21,7 @@
                 <button type="button" class="btn btn-outline btn-sm" onclick="collapseAllConsoleSections()" style="background:#141210;color:#e6dfd8;border-color:#5a514b;">
                     − Collapse All Sections
                 </button>
-                <form action="{{ route($routePrefix . '.reset') }}" method="POST" style="margin:0;">
+                <form action="{{ route($routePrefix . '.reset') }}" method="POST" style="margin:0;" onsubmit="try{localStorage.removeItem('bt_console_expanded_sections');sessionStorage.removeItem('bt_console_last_saved_section');}catch(e){}">
                     @csrf
                     <button type="submit" class="btn btn-outline btn-sm" style="background:#141210;color:#fff;border-color:#786e67;">
                         ↺ Reset Defaults
@@ -724,20 +724,38 @@
 </section>
 
 <script>
-function toggleSectionCollapse(contentId, btnId, badgeId) {
-    const content = document.getElementById(contentId);
-    const btn = btnId ? document.getElementById(btnId) : null;
-    const badge = badgeId ? document.getElementById(badgeId) : null;
+const ALL_CONSOLE_SECTIONS = ['dev-visibility', 'dev-navigation-menu', 'dev-text', 'dev-users', 'dev-enterprises'];
+const STORAGE_KEY = 'bt_console_expanded_sections';
+const LAST_SAVED_KEY = 'bt_console_last_saved_section';
+
+function getSavedExpandedSections() {
+    try {
+        const data = localStorage.getItem(STORAGE_KEY);
+        return data ? JSON.parse(data) : [];
+    } catch (e) {
+        return [];
+    }
+}
+
+function saveExpandedSections(sections) {
+    try {
+        localStorage.setItem(STORAGE_KEY, JSON.stringify(sections));
+    } catch (e) {}
+}
+
+function setSectionState(sec, expanded) {
+    const content = document.getElementById(sec + '-content');
+    const btn = document.getElementById(sec + '-btn');
+    const badge = document.getElementById(sec + '-badge');
     if (!content) return;
 
-    const isHidden = (content.style.display === 'none' || content.style.display === '');
-    content.style.display = isHidden ? 'block' : 'none';
+    content.style.display = expanded ? 'block' : 'none';
 
     if (btn) {
-        btn.innerHTML = isHidden 
+        btn.innerHTML = expanded 
             ? '<span>− Collapse Section ▲</span>' 
             : '<span>+ Expand Section ▼</span>';
-        if (isHidden) {
+        if (expanded) {
             btn.classList.add('btn-amber');
             btn.classList.remove('btn-outline');
         } else {
@@ -746,9 +764,28 @@ function toggleSectionCollapse(contentId, btnId, badgeId) {
         }
     }
     if (badge) {
-        badge.textContent = isHidden ? 'EXPANDED' : 'COLLAPSED';
-        badge.className = isHidden ? 'tag tag-ok' : 'tag tag-solid';
+        badge.textContent = expanded ? 'EXPANDED' : 'COLLAPSED';
+        badge.className = expanded ? 'tag tag-ok' : 'tag tag-solid';
     }
+}
+
+function toggleSectionCollapse(contentId, btnId, badgeId) {
+    const content = document.getElementById(contentId);
+    if (!content) return;
+
+    const isHidden = (content.style.display === 'none' || content.style.display === '');
+    const willBeExpanded = isHidden;
+
+    const secPrefix = contentId.replace(/-content$/, '');
+    setSectionState(secPrefix, willBeExpanded);
+
+    let saved = getSavedExpandedSections();
+    if (willBeExpanded) {
+        if (!saved.includes(secPrefix)) saved.push(secPrefix);
+    } else {
+        saved = saved.filter(s => s !== secPrefix);
+    }
+    saveExpandedSections(saved);
 }
 
 function ensureExpandedAndToggle(sectionContentId, sectionBtnId, sectionBadgeId, drawerId) {
@@ -760,39 +797,14 @@ function ensureExpandedAndToggle(sectionContentId, sectionBtnId, sectionBadgeId,
 }
 
 function expandAllConsoleSections() {
-    ['dev-visibility', 'dev-navigation-menu', 'dev-text', 'dev-users', 'dev-enterprises'].forEach(function(sec) {
-        const content = document.getElementById(sec + '-content');
-        const btn = document.getElementById(sec + '-btn');
-        const badge = document.getElementById(sec + '-badge');
-        if (content) content.style.display = 'block';
-        if (btn) {
-            btn.innerHTML = '<span>− Collapse Section ▲</span>';
-            btn.classList.add('btn-amber');
-            btn.classList.remove('btn-outline');
-        }
-        if (badge) {
-            badge.textContent = 'EXPANDED';
-            badge.className = 'tag tag-ok';
-        }
-    });
+    ALL_CONSOLE_SECTIONS.forEach(sec => setSectionState(sec, true));
+    saveExpandedSections([...ALL_CONSOLE_SECTIONS]);
 }
 
 function collapseAllConsoleSections() {
-    ['dev-visibility', 'dev-navigation-menu', 'dev-text', 'dev-users', 'dev-enterprises'].forEach(function(sec) {
-        const content = document.getElementById(sec + '-content');
-        const btn = document.getElementById(sec + '-btn');
-        const badge = document.getElementById(sec + '-badge');
-        if (content) content.style.display = 'none';
-        if (btn) {
-            btn.innerHTML = '<span>+ Expand Section ▼</span>';
-            btn.classList.remove('btn-amber');
-            btn.classList.add('btn-outline');
-        }
-        if (badge) {
-            badge.textContent = 'COLLAPSED';
-            badge.className = 'tag tag-solid';
-        }
-    });
+    ALL_CONSOLE_SECTIONS.forEach(sec => setSectionState(sec, false));
+    saveExpandedSections([]);
+    try { sessionStorage.removeItem(LAST_SAVED_KEY); } catch (e) {}
 }
 
 function toggleElement(id) {
@@ -824,5 +836,65 @@ function filterMenuItems(category, btn) {
         }
     });
 }
+
+// Intercept form submissions across console sections so the saved feature never returns to collapsed
+document.addEventListener('submit', function (e) {
+    const form = e.target;
+    const sectionEl = form.closest('section');
+    if (sectionEl && ALL_CONSOLE_SECTIONS.includes(sectionEl.id)) {
+        const secId = sectionEl.id;
+        try {
+            sessionStorage.setItem(LAST_SAVED_KEY, secId);
+            let saved = getSavedExpandedSections();
+            if (!saved.includes(secId)) {
+                saved.push(secId);
+                saveExpandedSections(saved);
+            }
+        } catch (err) {}
+    }
+});
+
+// Restore expanded state and position after saving
+document.addEventListener('DOMContentLoaded', function () {
+    const savedExpanded = getSavedExpandedSections();
+    let lastSaved = null;
+    try {
+        lastSaved = sessionStorage.getItem(LAST_SAVED_KEY);
+    } catch (e) {}
+
+    if (lastSaved && ALL_CONSOLE_SECTIONS.includes(lastSaved)) {
+        if (!savedExpanded.includes(lastSaved)) {
+            savedExpanded.push(lastSaved);
+            saveExpandedSections(savedExpanded);
+        }
+    }
+
+    const hash = window.location.hash ? window.location.hash.substring(1) : null;
+    if (hash && ALL_CONSOLE_SECTIONS.includes(hash)) {
+        if (!savedExpanded.includes(hash)) {
+            savedExpanded.push(hash);
+            saveExpandedSections(savedExpanded);
+        }
+    }
+
+    savedExpanded.forEach(function (sec) {
+        if (ALL_CONSOLE_SECTIONS.includes(sec)) {
+            setSectionState(sec, true);
+        }
+    });
+
+    const targetSec = lastSaved || (hash && ALL_CONSOLE_SECTIONS.includes(hash) ? hash : null);
+    if (targetSec) {
+        const el = document.getElementById(targetSec);
+        if (el) {
+            setTimeout(function () {
+                el.scrollIntoView({ behavior: 'smooth', block: 'start' });
+            }, 80);
+        }
+        try {
+            sessionStorage.removeItem(LAST_SAVED_KEY);
+        } catch (e) {}
+    }
+});
 </script>
 @endsection
