@@ -366,32 +366,174 @@
     }
 
     /* Scope Grid in Step 1 */
+    .bt-scope-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        flex-wrap: wrap;
+        gap: 12px;
+        margin-bottom: 14px;
+    }
+    .bt-mode-selector {
+        display: flex;
+        align-items: center;
+        gap: 6px;
+        background: #f1f5f9;
+        padding: 4px;
+        border-radius: 10px;
+        border: 1px solid #e2e8f0;
+    }
+    .bt-mode-pill {
+        font-size: 12.5px;
+        font-weight: 700;
+        cursor: pointer;
+        display: inline-flex;
+        align-items: center;
+        gap: 7px;
+        color: #475569;
+        padding: 7px 14px;
+        border-radius: 8px;
+        transition: all 0.15s ease;
+        margin: 0;
+        user-select: none;
+    }
+    .bt-mode-pill input[type="radio"] {
+        accent-color: var(--bt-amber, #f17e01);
+        cursor: pointer;
+        margin: 0;
+    }
+    .bt-mode-pill:hover {
+        color: #0f172a;
+    }
+    .bt-mode-pill.active {
+        background: #ffffff;
+        color: var(--bt-amber-deep, #c25e00);
+        box-shadow: 0 1px 4px rgba(15, 23, 42, 0.08);
+    }
+
     .bt-scope-grid {
         display: grid;
-        grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-        gap: 12px;
-        margin-top: 14px;
+        grid-template-columns: repeat(5, 1fr);
+        gap: 10px;
+        margin-top: 10px;
     }
     .bt-scope-card {
-        border: 1px solid #cbd5e1;
-        border-radius: 10px;
-        padding: 12px 14px;
+        border: 1.5px solid #cbd5e1;
+        border-radius: 12px;
+        padding: 14px;
         background: #ffffff;
         cursor: pointer;
         transition: all 0.2s ease;
+        display: grid;
+        grid-template-areas:
+            "badge check"
+            "info info";
+        grid-template-columns: 1fr auto;
+        gap: 10px 6px;
+        align-content: space-between;
+    }
+    .bt-scope-badge {
+        grid-area: badge;
+        justify-self: start;
+        font-weight: 800;
+        font-size: 11px;
+    }
+    .bt-scope-check {
+        grid-area: check;
+        justify-self: end;
         display: flex;
-        flex-direction: column;
-        justify-content: space-between;
+        align-items: center;
+    }
+    .bt-scope-info {
+        grid-area: info;
+    }
+    .bt-scope-title {
+        font-weight: 700;
+        font-size: 13px;
+        line-height: 1.35;
+        color: #0f172a;
+    }
+    .bt-scope-sub {
+        font-size: 11px;
+        color: #64748b;
+        margin-top: 4px;
     }
     .bt-scope-card:hover {
         border-color: var(--bt-amber, #f17e01);
         transform: translateY(-1px);
-        box-shadow: 0 4px 12px rgba(15, 23, 42, 0.05);
+        box-shadow: 0 4px 14px rgba(15, 23, 42, 0.06);
     }
     .bt-scope-card.active {
         border-color: var(--bt-amber, #f17e01);
         background: #fffdfa;
-        box-shadow: 0 0 0 2px rgba(241, 126, 1, 0.15);
+        box-shadow: 0 0 0 2px rgba(241, 126, 1, 0.18);
+    }
+
+    /* Tablet Responsiveness for Scope */
+    @media (min-width: 641px) and (max-width: 1080px) {
+        .bt-scope-grid {
+            grid-template-columns: repeat(2, 1fr) !important;
+            gap: 10px !important;
+        }
+        .bt-scope-grid > label:last-child {
+            grid-column: span 2;
+        }
+    }
+
+    /* Mobile Responsiveness for Scope & Mode */
+    @media (max-width: 640px) {
+        .bt-scope-header {
+            flex-direction: column !important;
+            align-items: stretch !important;
+            gap: 12px !important;
+        }
+        .bt-mode-selector {
+            width: 100% !important;
+            padding: 4px !important;
+            gap: 4px !important;
+        }
+        .bt-mode-pill {
+            flex: 1 !important;
+            justify-content: center !important;
+            text-align: center !important;
+            padding: 9px 8px !important;
+            font-size: 12px !important;
+        }
+        .bt-scope-grid {
+            grid-template-columns: 1fr !important;
+            gap: 8px !important;
+        }
+        .bt-scope-card {
+            display: flex !important;
+            flex-direction: row !important;
+            align-items: center !important;
+            justify-content: space-between !important;
+            padding: 12px 14px !important;
+            gap: 12px !important;
+        }
+        .bt-scope-badge {
+            flex-shrink: 0 !important;
+            font-size: 11px !important;
+            padding: 4px 8px !important;
+        }
+        .bt-scope-info {
+            flex: 1 !important;
+            min-width: 0 !important;
+        }
+        .bt-scope-title {
+            font-size: 13.5px !important;
+            font-weight: 700 !important;
+            color: #0f172a !important;
+            line-height: 1.3 !important;
+        }
+        .bt-scope-sub {
+            font-size: 11px !important;
+            color: #64748b !important;
+            margin-top: 2px !important;
+        }
+        .bt-scope-check {
+            flex-shrink: 0 !important;
+        }
     }
 
     /* Symptom Intake Styling (Step 2) */
@@ -896,19 +1038,19 @@
 
             <!-- Diagnostic Scope Selection Card -->
             <div class="bt-card">
-                <div style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:12px;margin-bottom:12px;">
+                <div class="bt-scope-header">
                     <div>
                         <div class="bt-step-eyebrow">DIAGNOSTIC MODE &amp; FUNCTIONAL SCOPE</div>
                         <h4 style="font-size:15px;margin:2px 0 0;color:#0f172a;">Conduct Comprehensive 5-Pillar Assessment or Select Specific Functions</h4>
                     </div>
-                    <div style="display:flex;gap:14px;">
-                        <label style="font-size:12.5px;font-weight:700;cursor:pointer;display:inline-flex;align-items:center;gap:6px;color:#334155;">
+                    <div class="bt-mode-selector">
+                        <label class="bt-mode-pill {{ !request()->filled('target') ? 'active' : '' }}" id="mode-pill-comprehensive">
                             <input type="radio" name="mode" value="comprehensive" checked onchange="setAssessmentMode('comprehensive')">
-                            Comprehensive (All 5 Modules)
+                            <span>Comprehensive (All 5 Modules)</span>
                         </label>
-                        <label style="font-size:12.5px;font-weight:700;cursor:pointer;display:inline-flex;align-items:center;gap:6px;color:#334155;">
+                        <label class="bt-mode-pill {{ request()->filled('target') ? 'active' : '' }}" id="mode-pill-targeted">
                             <input type="radio" name="mode" value="targeted" {{ request()->filled('target') ? 'checked' : '' }} onchange="setAssessmentMode('targeted')">
-                            Targeted Function(s)
+                            <span>Targeted Function(s)</span>
                         </label>
                     </div>
                 </div>
@@ -919,12 +1061,14 @@
                             $checked = !request()->filled('target') || request()->query('target') === $mKey;
                         @endphp
                         <label class="bt-scope-card {{ $checked ? 'active' : '' }}" id="scope-card-{{ $mKey }}">
-                            <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px;">
-                                <span class="tag tag-amber" style="font-weight:800;">{{ $mKey }}</span>
-                                <input type="checkbox" name="modules_in_scope[]" value="{{ $mKey }}" class="scope-checkbox" {{ $checked ? 'checked' : '' }} onchange="onScopeChange(); document.getElementById('scope-card-{{ $mKey }}').classList.toggle('active', this.checked);">
+                            <span class="tag tag-amber bt-scope-badge">{{ $mKey }}</span>
+                            <div class="bt-scope-info">
+                                <div class="bt-scope-title">{{ $module['name'] }}</div>
+                                <div class="bt-scope-sub">{{ count($module['criteria'] ?? []) }} criteria groups</div>
                             </div>
-                            <div style="font-weight:700;font-size:13px;line-height:1.3;color:#0f172a;">{{ $module['name'] }}</div>
-                            <div style="font-size:11px;color:#64748b;margin-top:4px;">{{ count($module['criteria'] ?? []) }} criteria groups</div>
+                            <div class="bt-scope-check">
+                                <input type="checkbox" name="modules_in_scope[]" value="{{ $mKey }}" class="scope-checkbox" {{ $checked ? 'checked' : '' }} onchange="onScopeChange(); document.getElementById('scope-card-{{ $mKey }}').classList.toggle('active', this.checked);" style="accent-color:var(--bt-amber);width:18px;height:18px;cursor:pointer;margin:0;">
+                            </div>
                         </label>
                     @endforeach
                 </div>
@@ -1333,7 +1477,13 @@
             // 2. Mode & Scope
             if (draft.mode) {
                 const modeRadio = document.querySelector(`input[name="mode"][value="${draft.mode}"]`);
-                if (modeRadio) modeRadio.checked = true;
+                if (modeRadio) {
+                    modeRadio.checked = true;
+                    const compPill = document.getElementById('mode-pill-comprehensive');
+                    const targPill = document.getElementById('mode-pill-targeted');
+                    if (compPill) compPill.classList.toggle('active', draft.mode === 'comprehensive');
+                    if (targPill) targPill.classList.toggle('active', draft.mode === 'targeted');
+                }
             }
             if (Array.isArray(draft.modules_in_scope) && draft.modules_in_scope.length > 0) {
                 document.querySelectorAll('.scope-checkbox').forEach(cb => {
@@ -1422,6 +1572,11 @@
     }
 
     function setAssessmentMode(mode) {
+        const compPill = document.getElementById('mode-pill-comprehensive');
+        const targPill = document.getElementById('mode-pill-targeted');
+        if (compPill) compPill.classList.toggle('active', mode === 'comprehensive');
+        if (targPill) targPill.classList.toggle('active', mode === 'targeted');
+
         if (mode === 'comprehensive') {
             document.querySelectorAll('.scope-checkbox').forEach(cb => {
                 cb.checked = true;
