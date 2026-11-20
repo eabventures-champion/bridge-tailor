@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
     <meta name="csrf-token" content="{{ csrf_token() }}">
     <title>@yield('title', 'AI Business Diagnostic Platform') — Bridge-Tailor Consulting</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -55,6 +55,9 @@
         select,
         textarea {
             border-radius: 8px !important;
+            box-sizing: border-box;
+            font-size: 16px;
+            -webkit-text-size-adjust: 100%;
         }
         .tag,
         .badge {
@@ -455,9 +458,11 @@
             border: 1px solid #b8aea2;
             background-color: var(--bt-white);
             color: var(--bt-ink);
-            padding: 7px 10px;
-            font-size: 13px;
+            padding: 8px 11px;
+            font-size: 16px;
             font-family: inherit;
+            box-sizing: border-box;
+            max-width: 100%;
         }
         .field input:focus, .field select:focus, .field textarea:focus {
             outline: none;

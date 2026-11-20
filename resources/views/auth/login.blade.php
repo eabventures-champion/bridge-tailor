@@ -13,11 +13,15 @@
         align-items: center;
         justify-content: center;
         padding: 48px 20px;
+        width: 100%;
+        box-sizing: border-box;
+        overflow-x: hidden !important;
     }
     .bt-auth-container {
         width: 100%;
         max-width: 1080px;
         margin: 0 auto;
+        box-sizing: border-box;
     }
     .bt-auth-card {
         display: grid;
@@ -27,6 +31,8 @@
         border: 1px solid #e2e8f0;
         box-shadow: 0 20px 45px -10px rgba(15, 23, 42, 0.10), 0 4px 16px -2px rgba(15, 23, 42, 0.04) !important;
         overflow: hidden;
+        width: 100%;
+        box-sizing: border-box;
     }
 
     /* Left Side: Welcoming Visual Panel */
@@ -184,17 +190,27 @@
     }
     .bt-auth-form input[type="text"],
     .bt-auth-form input[type="email"],
-    .bt-auth-form input[type="password"] {
+    .bt-auth-form input[type="password"],
+    .bt-auth-form input[type="tel"],
+    .bt-auth-form input[type="number"],
+    .bt-auth-form input {
         width: 100%;
         padding: 11px 14px;
-        font-size: 15px;
+        font-size: 16px !important; /* Critical: 16px prevents iOS Safari/Chrome from triggering auto-zoom */
         font-family: inherit;
         color: #0f172a;
         background-color: #ffffff;
         border: 1px solid #cbd5e1;
         border-radius: 8px !important;
+        box-sizing: border-box !important;
+        max-width: 100% !important;
+        -webkit-text-size-adjust: 100%;
         transition: border-color 0.2s ease, box-shadow 0.2s ease;
         outline: none;
+    }
+    .bt-auth-form input::placeholder {
+        font-size: 16px !important;
+        color: #94a3b8;
     }
     .bt-auth-form input:focus {
         border-color: var(--bt-amber) !important;
@@ -206,9 +222,14 @@
         position: relative;
         display: flex;
         align-items: center;
+        width: 100%;
+        box-sizing: border-box;
     }
     .bt-auth-form .pw-wrap input {
         padding-right: 64px;
+        font-size: 16px !important;
+        box-sizing: border-box !important;
+        max-width: 100% !important;
     }
     .bt-auth-form .pw-toggle-btn {
         position: absolute;
@@ -332,7 +353,9 @@
         .bt-auth-card {
             grid-template-columns: 1fr;
             max-width: 520px;
+            width: 100% !important;
             margin: 0 auto;
+            box-sizing: border-box !important;
         }
         .bt-auth-visual {
             min-height: 240px;
@@ -347,32 +370,46 @@
         }
         .bt-auth-form-wrap {
             padding: 30px 24px;
+            box-sizing: border-box !important;
         }
     }
     @media (max-width: 768px) {
         .bt-auth-section {
             min-height: auto !important;
-            padding: 24px 14px 44px !important;
+            padding: 20px 14px 40px !important;
         }
         .bt-auth-form input[type="text"],
         .bt-auth-form input[type="email"],
-        .bt-auth-form input[type="password"] {
+        .bt-auth-form input[type="password"],
+        .bt-auth-form input {
             font-size: 16px !important; /* Prevents mobile browser auto-zoom and page bounce on focus */
         }
     }
     @media (max-width: 480px) {
         .bt-auth-section {
-            padding: 16px 12px 36px !important;
+            padding: 12px 10px 32px !important;
+        }
+        .bt-auth-container {
+            width: 100% !important;
+            max-width: 100% !important;
+            padding: 0 !important;
+        }
+        .bt-auth-card {
+            width: 100% !important;
+            max-width: 100% !important;
+            border-radius: 12px !important;
         }
         .bt-auth-visual {
-            min-height: 200px;
-            padding: 20px 16px;
+            min-height: 180px;
+            padding: 18px 14px;
         }
         .bt-auth-visual-title {
-            font-size: 21px;
+            font-size: 20px;
         }
         .bt-auth-form-wrap {
-            padding: 24px 16px;
+            padding: 20px 14px !important;
+            width: 100% !important;
+            box-sizing: border-box !important;
         }
         .bt-auth-form .flat-grid-2 {
             display: flex !important;
@@ -567,6 +604,24 @@
         if (params.get('tab') === 'register' || hasRegisterInput) {
             switchAuthTab('register');
         }
+
+        // Ensure viewport never shifts horizontally when mobile virtual keyboard opens
+        document.querySelectorAll('.bt-auth-form input').forEach(function (input) {
+            input.addEventListener('focus', function () {
+                setTimeout(function () {
+                    if (window.scrollX !== 0) {
+                        window.scrollTo(0, window.scrollY);
+                    }
+                }, 50);
+            });
+            input.addEventListener('blur', function () {
+                setTimeout(function () {
+                    if (window.scrollX !== 0) {
+                        window.scrollTo(0, window.scrollY);
+                    }
+                }, 50);
+            });
+        });
     });
 </script>
 @endsection
