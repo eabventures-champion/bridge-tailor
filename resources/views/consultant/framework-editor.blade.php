@@ -148,8 +148,9 @@
                                     Type to search
                                 </span>
                                 <div style="display:flex;gap:4px;">
-                                    <button type="button" class="btn btn-outline btn-sm" onclick="findPrevMatch()" title="Previous Match (Shift+Enter)">↑ Prev</button>
-                                    <button type="button" class="btn btn-outline btn-sm" onclick="findNextMatch()" title="Next Match (Enter)">↓ Next</button>
+                                    <button type="button" class="btn btn-outline btn-sm" onclick="findPrevMatch(false)" title="Previous Match (Shift+Enter)">↑ Prev</button>
+                                    <button type="button" class="btn btn-outline btn-sm" onclick="findNextMatch(false)" title="Next Match (Enter)">↓ Next</button>
+                                    <button type="button" class="btn btn-outline btn-sm" onclick="focusEditorAtMatch()" title="Jump cursor into JSON editor at current match to edit" style="color:var(--bt-amber-deep);font-weight:700;">✎ Edit Here</button>
                                 </div>
                             </div>
 
@@ -360,9 +361,11 @@
     let searchMatches = [];
     let currentMatchIndex = -1;
 
-    function performSearch() {
-        const query = document.getElementById('json-search-input').value;
+    function performSearch(shouldFocus = false) {
+        const searchInput = document.getElementById('json-search-input');
+        const query = searchInput ? searchInput.value : '';
         const textarea = document.getElementById('f_definition_json');
+        if (!textarea) return;
         const text = textarea.value;
         searchMatches = [];
         currentMatchIndex = -1;
@@ -383,65 +386,88 @@
 
         if (searchMatches.length > 0) {
             currentMatchIndex = 0;
-            highlightMatch(currentMatchIndex);
+            highlightMatch(currentMatchIndex, shouldFocus);
         } else {
             updateSearchUI();
         }
     }
 
-    function highlightMatch(index) {
+    function highlightMatch(index, shouldFocus = false) {
         if (index < 0 || index >= searchMatches.length) return;
         const textarea = document.getElementById('f_definition_json');
+        const searchInput = document.getElementById('json-search-input');
         const match = searchMatches[index];
-
-        textarea.focus();
-        textarea.setSelectionRange(match.start, match.end);
 
         // Compute exact line number
         const textUpToMatch = textarea.value.substring(0, match.start);
         const lineNum = textUpToMatch.split('\n').length;
 
-        // Smoothly scroll to the matched position in the textarea
+        // Smoothly scroll the editor canvas to center the matched line
         const totalLines = textarea.value.split('\n').length;
         const approxLineHeight = textarea.scrollHeight / Math.max(totalLines, 1);
         textarea.scrollTop = Math.max(0, (lineNum * approxLineHeight) - 160);
 
+        if (shouldFocus) {
+            // Only transfer focus to textarea when explicitly requested (e.g. clicking "Edit Here")
+            textarea.focus();
+            textarea.setSelectionRange(match.start, match.end);
+        } else {
+            // Keep focus firmly inside the search input so the user can type uninterrupted
+            try {
+                textarea.setSelectionRange(match.start, match.end);
+            } catch (e) {}
+            if (searchInput && document.activeElement === searchInput) {
+                searchInput.focus();
+            }
+        }
+
         updateSearchUI(lineNum);
     }
 
-    function findNextMatch() {
+    function findNextMatch(shouldFocus = false) {
         if (searchMatches.length === 0) {
-            performSearch();
+            performSearch(shouldFocus);
             return;
         }
         currentMatchIndex = (currentMatchIndex + 1) % searchMatches.length;
-        highlightMatch(currentMatchIndex);
+        highlightMatch(currentMatchIndex, shouldFocus);
     }
 
-    function findPrevMatch() {
+    function findPrevMatch(shouldFocus = false) {
         if (searchMatches.length === 0) {
-            performSearch();
+            performSearch(shouldFocus);
             return;
         }
         currentMatchIndex = (currentMatchIndex - 1 + searchMatches.length) % searchMatches.length;
-        highlightMatch(currentMatchIndex);
+        highlightMatch(currentMatchIndex, shouldFocus);
+    }
+
+    function focusEditorAtMatch() {
+        if (currentMatchIndex >= 0 && searchMatches.length > 0) {
+            highlightMatch(currentMatchIndex, true);
+        } else {
+            const textarea = document.getElementById('f_definition_json');
+            if (textarea) textarea.focus();
+        }
     }
 
     function handleSearchKeyDown(e) {
         if (e.key === 'Enter') {
             e.preventDefault();
             if (e.shiftKey) {
-                findPrevMatch();
+                findPrevMatch(false);
             } else {
-                findNextMatch();
+                findNextMatch(false);
             }
         }
     }
 
     function jumpToSection(keyword) {
         const searchInput = document.getElementById('json-search-input');
-        searchInput.value = keyword;
-        performSearch();
+        if (searchInput) {
+            searchInput.value = keyword;
+            performSearch(false);
+        }
     }
 
     function updateSearchUI(lineNum = null) {
