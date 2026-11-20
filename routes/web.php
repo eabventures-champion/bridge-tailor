@@ -6,6 +6,7 @@ use App\Http\Controllers\ConsultantController;
 use App\Http\Controllers\DeveloperController;
 use App\Http\Controllers\DiagnosticController;
 use App\Http\Controllers\ProfileController;
+use App\Http\Middleware\EnsureAdminPrivilege;
 use App\Http\Middleware\EnsureRole;
 use Illuminate\Support\Facades\Route;
 
@@ -39,18 +40,18 @@ Route::prefix('consultant')->middleware(EnsureRole::class.':admin,consultant')->
     Route::post('/review/{ulid}/actions', [ConsultantController::class, 'addActionItem'])->name('consultant.review.actions.add');
     Route::post('/consultations/{consultation}/status', [ConsultantController::class, 'updateConsultationStatus'])->name('consultant.consultations.status');
     Route::get('/framework', [ConsultantController::class, 'frameworkEditor'])
-        ->middleware(EnsureRole::class.':admin')
+        ->middleware([EnsureRole::class.':admin,developer', EnsureAdminPrivilege::class.':framework'])
         ->name('consultant.framework');
     Route::post('/framework', [ConsultantController::class, 'frameworkPublish'])
-        ->middleware(EnsureRole::class.':admin')
+        ->middleware([EnsureRole::class.':admin,developer', EnsureAdminPrivilege::class.':framework'])
         ->name('consultant.framework.publish');
     Route::post('/framework/{version}/activate', [ConsultantController::class, 'frameworkActivate'])
-        ->middleware(EnsureRole::class.':admin')
+        ->middleware([EnsureRole::class.':admin,developer', EnsureAdminPrivilege::class.':framework'])
         ->name('consultant.framework.activate');
 });
 
 // Admin Console (Dynamic Text, Component Visibility Toggles, User Directory excluding Developers)
-Route::prefix('admin')->middleware(EnsureRole::class.':admin')->group(function () {
+Route::prefix('admin')->middleware([EnsureRole::class.':admin', EnsureAdminPrivilege::class.':console'])->group(function () {
     Route::get('/', [DeveloperController::class, 'index'])->name('admin.console');
     Route::post('/text', [DeveloperController::class, 'updateText'])->name('admin.text.update');
     Route::post('/visibility', [DeveloperController::class, 'updateVisibility'])->name('admin.visibility.update');
@@ -68,9 +69,10 @@ Route::prefix('admin')->middleware(EnsureRole::class.':admin')->group(function (
     Route::post('/menu-reset', [DeveloperController::class, 'resetMenuDefaults'])->name('admin.menu.reset');
 });
 
-// Developer Super-Account Console (Dynamic Text, Component Visibility Toggles, Full User Directory & System Control)
-Route::prefix('developer')->middleware(EnsureRole::class.':developer,admin')->group(function () {
+// Developer Super-Account Console (Dynamic Text, Component Visibility Toggles, Full User Directory, System & Privilege Control)
+Route::prefix('developer')->middleware(EnsureRole::class.':developer')->group(function () {
     Route::get('/', [DeveloperController::class, 'index'])->name('developer.console');
+    Route::post('/privileges', [DeveloperController::class, 'updatePrivileges'])->name('developer.privileges.update');
     Route::post('/text', [DeveloperController::class, 'updateText'])->name('developer.text.update');
     Route::post('/visibility', [DeveloperController::class, 'updateVisibility'])->name('developer.visibility.update');
     Route::post('/reset', [DeveloperController::class, 'resetDefaults'])->name('developer.reset');

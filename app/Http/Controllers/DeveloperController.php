@@ -96,6 +96,9 @@ class DeveloperController extends Controller
 
         $unassignedCompaniesCount = $companies->whereNull('assigned_consultant_id')->count();
 
+        $adminConsolePrivilege = PlatformSetting::visible('privilege.admin_console_access', true);
+        $adminFrameworkPrivilege = PlatformSetting::visible('privilege.admin_framework_access', true);
+
         return view('developer.console', [
             'fw' => FrameworkVersion::active(),
             'isDeveloper' => $isDeveloper,
@@ -105,6 +108,8 @@ class DeveloperController extends Controller
             'autoAssignEnabled' => $assignmentService->isAutoAssignEnabled(),
             'autoAssignStrategy' => $assignmentService->strategy(),
             'unassignedCompaniesCount' => $unassignedCompaniesCount,
+            'adminConsolePrivilege' => $adminConsolePrivilege,
+            'adminFrameworkPrivilege' => $adminFrameworkPrivilege,
             'textSettings' => $textSettings,
             'visibilitySettings' => $visibilitySettings,
             'navigationItems' => $navigationItems,
@@ -114,6 +119,43 @@ class DeveloperController extends Controller
             'auditLogs' => $auditLogs,
             'stats' => $stats,
         ]);
+    }
+
+    public function updatePrivileges(Request $request)
+    {
+        if (! Auth::user()?->isDeveloper()) {
+            abort(403, 'Only the Platform Developer can configure Administrator privilege controls.');
+        }
+
+        $defaults = PlatformSetting::defaults();
+        $privilegeKeys = [
+            'privilege.admin_console_access',
+            'privilege.admin_framework_access',
+        ];
+
+        $privInputs = $request->input('priv', []);
+
+        foreach ($privilegeKeys as $key) {
+            $isOn = isset($privInputs[$key]) && in_array((string) $privInputs[$key], ['1', 'on', 'true'], true);
+            PlatformSetting::updateOrCreate(
+                ['key' => $key],
+                [
+                    'group' => 'privilege',
+                    'type' => 'boolean',
+                    'label' => $defaults[$key]['label'] ?? $key,
+                    'value' => $isOn ? '1' : '0',
+                    'updated_by' => Auth::id(),
+                ]
+            );
+        }
+
+        PlatformSetting::flushCache();
+        AuditLog::record('developer.admin_privileges_updated', null, null, [
+            'admin_console_access' => PlatformSetting::visible('privilege.admin_console_access', true),
+            'admin_framework_access' => PlatformSetting::visible('privilege.admin_framework_access', true),
+        ]);
+
+        return back()->with('status', 'Administrator privileges updated successfully.');
     }
 
     public function updateText(Request $request)

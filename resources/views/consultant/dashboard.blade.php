@@ -6,35 +6,27 @@
 <!-- Section 1: Solid Espresso Consultant Desk Header & KPI Strip -->
 <section class="sec-espresso">
     <div class="bt-container">
-        <div style="display:flex;justify-content:space-between;align-items:flex-end;gap:16px;flex-wrap:wrap;margin-bottom:14px;">
-            <div>
-                <div class="eyebrow">BRIDGE-TAILOR CONSULTANT DESK · CLIENT MANAGEMENT &amp; REVIEW QUEUE</div>
-                <h1 style="font-size:28px;color:#fff;">Diagnostic Assessments, CRM Pipeline &amp; Audit Trail</h1>
-            </div>
-            <div style="display:flex;gap:6px;">
-                @if(auth()->user()?->isAdmin())
-                    <a href="{{ route('consultant.framework') }}" class="btn btn-amber btn-sm">Configure Diagnostic Framework &amp; Questions</a>
-                @endif
-                <a href="{{ route('diagnostic.wizard') }}" class="btn btn-outline btn-sm" style="background:#141210;color:#fff;border-color:#666;">+ Run Consultant-Assisted Diagnostic</a>
-            </div>
+        <div style="margin-bottom:18px;">
+            <div class="eyebrow">BRIDGE-TAILOR CONSULTANT DESK · CLIENT MANAGEMENT &amp; REVIEW QUEUE</div>
+            <h1 style="font-size:28px;color:#fff;">Diagnostic Assessments &amp; CRM Pipeline</h1>
         </div>
 
-        <div class="flat-grid-4" style="border-color:#443e3a;background:#1c1917;">
-            <div style="padding:10px 14px;border-right:1px solid #443e3a;">
-                <div style="font-size:22px;font-weight:800;color:var(--bt-amber);">{{ $stats['total_assessments'] }}</div>
-                <div style="font-size:10px;font-weight:800;text-transform:uppercase;color:#cac4c4;">Total Diagnostic Runs</div>
+        <div class="bt-stats-grid bt-stats-grid-4">
+            <div class="bt-stat-card dark">
+                <div class="bt-stat-val" style="color:var(--bt-amber);">{{ $stats['total_assessments'] }}</div>
+                <div class="bt-stat-label">Total Diagnostic Runs</div>
             </div>
-            <div style="padding:10px 14px;border-right:1px solid #443e3a;">
-                <div style="font-size:22px;font-weight:800;color:#fff;">{{ $stats['avg_health_index'] }}/100</div>
-                <div style="font-size:10px;font-weight:800;text-transform:uppercase;color:#cac4c4;">Cohort Mean Health Index</div>
+            <div class="bt-stat-card dark">
+                <div class="bt-stat-val">{{ $stats['avg_health_index'] }}<span style="font-size:16px;color:#a8a096;font-weight:600;">/100</span></div>
+                <div class="bt-stat-label">Cohort Mean Health Index</div>
             </div>
-            <div style="padding:10px 14px;border-right:1px solid #443e3a;">
-                <div style="font-size:22px;font-weight:800;color:var(--bt-amber);">{{ $stats['pending_reviews'] }}</div>
-                <div style="font-size:10px;font-weight:800;text-transform:uppercase;color:#cac4c4;">Reports Awaiting Consultant Sign-Off</div>
+            <div class="bt-stat-card dark">
+                <div class="bt-stat-val" style="color:var(--bt-amber);">{{ $stats['pending_reviews'] }}</div>
+                <div class="bt-stat-label">Reports Awaiting Consultant Sign-Off</div>
             </div>
-            <div style="padding:10px 14px;">
-                <div style="font-size:22px;font-weight:800;color:#7fd4a6;">{{ $stats['active_leads'] }}</div>
-                <div style="font-size:10px;font-weight:800;text-transform:uppercase;color:#cac4c4;">Active Consulting Engagement Leads</div>
+            <div class="bt-stat-card dark">
+                <div class="bt-stat-val" style="color:#7fd4a6;">{{ $stats['active_leads'] }}</div>
+                <div class="bt-stat-label">Active Consulting Engagement Leads</div>
             </div>
         </div>
     </div>
@@ -167,43 +159,6 @@
                 @empty
                     <tr><td colspan="5">No consultation requests logged yet.</td></tr>
                 @endforelse
-            </tbody>
-        </table>
-    </div>
-</section>
-
-<!-- Section 4: Solid Slate Band — Security & Compliance Audit Log -->
-<section class="sec-slate">
-    <div class="bt-container">
-        <div class="sec-header">
-            <div>
-                <div class="eyebrow">SECURITY &amp; GOVERNANCE AUDIT TRAIL</div>
-                <h2 style="font-size:22px;">Immutable Audit Log of Report Generation &amp; Consultant Amendments</h2>
-            </div>
-        </div>
-
-        <table class="bt-table">
-            <thead>
-                <tr>
-                    <th>Timestamp</th>
-                    <th>Event</th>
-                    <th>Actor</th>
-                    <th>Company</th>
-                    <th>IP Address</th>
-                    <th>Metadata</th>
-                </tr>
-            </thead>
-            <tbody>
-                @foreach($auditLogs as $log)
-                    <tr>
-                        <td style="font-size:11px;white-space:nowrap;">{{ $log->created_at->format('d M Y H:i:s') }}</td>
-                        <td><code style="font-weight:700;color:var(--bt-amber-dark);">{{ $log->event }}</code></td>
-                        <td>{{ $log->actor_label }}</td>
-                        <td>{{ $log->company?->name ?? 'System' }}</td>
-                        <td style="font-size:11px;">{{ $log->ip_address }}</td>
-                        <td style="font-size:11px;"><code>{{ json_encode($log->metadata) }}</code></td>
-                    </tr>
-                @endforeach
             </tbody>
         </table>
     </div>

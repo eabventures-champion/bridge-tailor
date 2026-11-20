@@ -151,22 +151,22 @@
 
         <!-- 4 Compact KPI Strip + Computed Key Readings -->
         @if($uiVisible('vis.report_kpi_strip'))
-        <div class="flat-grid-4" style="background:var(--bt-white);margin-bottom:14px;">
-            <div style="padding:10px 14px;border-right:1px solid var(--bt-border);">
-                <div style="font-size:21px;font-weight:800;">{{ $scored['kpis']['issues_raised'] ?? 0 }}</div>
-                <div style="font-size:10px;font-weight:800;text-transform:uppercase;color:var(--bt-umber);">Intake Symptoms Flagged</div>
+        <div class="bt-stats-grid bt-stats-grid-4" style="margin-bottom:18px;">
+            <div class="bt-stat-card light">
+                <div class="bt-stat-val">{{ $scored['kpis']['issues_raised'] ?? 0 }}</div>
+                <div class="bt-stat-label">Intake Symptoms Flagged</div>
             </div>
-            <div style="padding:10px 14px;border-right:1px solid var(--bt-border);">
-                <div style="font-size:21px;font-weight:800;">{{ $scored['kpis']['answered'] ?? 0 }}</div>
-                <div style="font-size:10px;font-weight:800;text-transform:uppercase;color:var(--bt-umber);">Evidence Questions Verified</div>
+            <div class="bt-stat-card light">
+                <div class="bt-stat-val">{{ $scored['kpis']['answered'] ?? 0 }}</div>
+                <div class="bt-stat-label">Evidence Questions Verified</div>
             </div>
-            <div style="padding:10px 14px;border-right:1px solid var(--bt-border);">
-                <div style="font-size:21px;font-weight:800;color:var(--bt-teal);">{{ $scored['kpis']['in_place_pct'] ?? 0 }}%</div>
-                <div style="font-size:10px;font-weight:800;text-transform:uppercase;color:var(--bt-umber);">Controls Fully In Place</div>
+            <div class="bt-stat-card light">
+                <div class="bt-stat-val" style="color:var(--bt-teal);">{{ $scored['kpis']['in_place_pct'] ?? 0 }}%</div>
+                <div class="bt-stat-label">Controls Fully In Place</div>
             </div>
-            <div style="padding:10px 14px;">
-                <div style="font-size:21px;font-weight:800;color:var(--bt-amber-dark);">{{ $scored['kpis']['missing_pct'] ?? 0 }}%</div>
-                <div style="font-size:10px;font-weight:800;text-transform:uppercase;color:var(--bt-umber);">Controls Missing (Critical Gaps)</div>
+            <div class="bt-stat-card light">
+                <div class="bt-stat-val" style="color:var(--bt-amber-dark);">{{ $scored['kpis']['missing_pct'] ?? 0 }}%</div>
+                <div class="bt-stat-label">Controls Missing (Critical Gaps)</div>
             </div>
         </div>
         @endif

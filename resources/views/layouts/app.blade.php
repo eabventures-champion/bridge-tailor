@@ -415,10 +415,102 @@
         }
         .flat-grid-2 { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 12px; }
         .flat-grid-3 { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 12px; }
-        .flat-grid-4 { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 0; border: 1px solid var(--bt-border); }
-        .flat-grid-5 { display: grid; grid-template-columns: repeat(5, minmax(0, 1fr)); gap: 0; border: 1px solid var(--bt-border); }
-        @media (max-width: 900px) {
+        .flat-grid-4 { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 12px; }
+        .flat-grid-5 { display: grid; grid-template-columns: repeat(5, minmax(0, 1fr)); gap: 12px; }
+        @media (max-width: 1024px) {
+            .flat-grid-4, .flat-grid-5 { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+        }
+        @media (max-width: 640px) {
             .flat-grid-2, .flat-grid-3, .flat-grid-4, .flat-grid-5 { grid-template-columns: 1fr; }
+        }
+
+        /* Modern Elevated Statistics Cards Architecture */
+        .bt-stats-grid {
+            display: grid;
+            gap: 14px;
+            margin-bottom: 18px;
+        }
+        .bt-stats-grid-4 {
+            grid-template-columns: repeat(4, minmax(0, 1fr));
+        }
+        .bt-stats-grid-5 {
+            grid-template-columns: repeat(5, minmax(0, 1fr));
+        }
+        @media (max-width: 1080px) {
+            .bt-stats-grid-4, .bt-stats-grid-5 {
+                grid-template-columns: repeat(2, minmax(0, 1fr));
+            }
+        }
+        @media (max-width: 640px) {
+            .bt-stats-grid-4, .bt-stats-grid-5 {
+                grid-template-columns: 1fr;
+            }
+        }
+        .bt-stat-card {
+            position: relative;
+            padding: 16px 20px;
+            border-radius: 12px !important;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            min-height: 84px;
+            box-sizing: border-box;
+            transition: transform 0.2s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.2s ease, border-color 0.2s ease;
+        }
+        .bt-stat-card:hover {
+            transform: translateY(-2px);
+        }
+        /* Dark Theme Stats Card (Used in Espresso & Slate Console Headers) */
+        .bt-stat-card.dark {
+            background: linear-gradient(180deg, #231f1c 0%, #171513 100%);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            box-shadow: 0 4px 16px rgba(0, 0, 0, 0.25), inset 0 1px 0 rgba(255, 255, 255, 0.06);
+        }
+        .bt-stat-card.dark:hover {
+            border-color: rgba(245, 158, 11, 0.45);
+            box-shadow: 0 8px 24px rgba(0, 0, 0, 0.35), 0 0 14px rgba(245, 158, 11, 0.15);
+        }
+        .bt-stat-card.dark .bt-stat-val {
+            font-size: 26px;
+            font-weight: 800;
+            line-height: 1.15;
+            letter-spacing: -0.02em;
+            color: #ffffff;
+        }
+        .bt-stat-card.dark .bt-stat-label {
+            font-size: 10px;
+            font-weight: 800;
+            text-transform: uppercase;
+            letter-spacing: 0.07em;
+            color: #b5ada4;
+            margin-top: 6px;
+            line-height: 1.35;
+        }
+        /* Light Theme Stats Card (Used in Report, Portal, Cream sections) */
+        .bt-stat-card.light {
+            background: #ffffff;
+            border: 1px solid #e2e8f0;
+            box-shadow: 0 2px 8px rgba(15, 23, 42, 0.04), 0 1px 2px rgba(15, 23, 42, 0.06);
+        }
+        .bt-stat-card.light:hover {
+            border-color: var(--bt-amber);
+            box-shadow: 0 6px 20px rgba(15, 23, 42, 0.08), 0 0 0 1px var(--bt-amber-pale);
+        }
+        .bt-stat-card.light .bt-stat-val {
+            font-size: 26px;
+            font-weight: 800;
+            line-height: 1.15;
+            letter-spacing: -0.02em;
+            color: var(--bt-ink);
+        }
+        .bt-stat-card.light .bt-stat-label {
+            font-size: 10px;
+            font-weight: 800;
+            text-transform: uppercase;
+            letter-spacing: 0.07em;
+            color: #64748b;
+            margin-top: 6px;
+            line-height: 1.35;
         }
         /* Solid Badges */
         .tag {
@@ -651,13 +743,6 @@
             }
             .bt-action-log-form {
                 grid-template-columns: 1fr 1fr;
-            }
-            .flat-grid-4 > div {
-                border-right: none !important;
-                border-bottom: 1px solid var(--bt-border);
-            }
-            .flat-grid-4 > div:last-child {
-                border-bottom: none;
             }
         }
 

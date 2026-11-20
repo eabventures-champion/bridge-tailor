@@ -95,7 +95,26 @@ class NavigationItem extends Model
                 $query->whereIn('audience', [$role, 'auth', 'all']);
             }
 
-            return $query->get();
+            $items = $query->get();
+
+            // Enforce developer-governed administrator privilege filters
+            if ($role === 'admin') {
+                $allowConsole = PlatformSetting::visible('privilege.admin_console_access', true);
+                $allowFramework = PlatformSetting::visible('privilege.admin_framework_access', true);
+
+                $items = $items->filter(function ($item) use ($allowConsole, $allowFramework) {
+                    if (! $allowConsole && ($item->key === 'admin_console' || $item->route_name === 'admin.console' || trim((string) $item->url, '/') === 'admin')) {
+                        return false;
+                    }
+                    if (! $allowFramework && ($item->key === 'admin_framework' || $item->route_name === 'consultant.framework' || str_contains((string) $item->url, '/consultant/framework'))) {
+                        return false;
+                    }
+
+                    return true;
+                })->values();
+            }
+
+            return $items;
         } catch (\Throwable $e) {
             return collect([]);
         }

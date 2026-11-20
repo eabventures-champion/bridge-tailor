@@ -404,4 +404,71 @@ class DiagnosticPlatformTest extends TestCase
         $response->assertSee('+ Expand All Sections');
         $response->assertSee('− Collapse All Sections');
     }
+
+    public function test_developer_can_gate_admin_privileges_for_console_and_framework(): void
+    {
+        $dev = User::where('role', 'developer')->first();
+        $admin = User::where('role', 'admin')->first();
+
+        // 1. Developer toggles off Admin Console access and Framework access
+        $response = $this->actingAs($dev)->post(route('developer.privileges.update'), [
+            'priv' => [
+                'privilege.admin_console_access' => '0',
+                'privilege.admin_framework_access' => '0',
+            ],
+        ]);
+        $response->assertRedirect();
+
+        // 2. Admin should now be forbidden (403) from accessing /admin and /consultant/framework
+        $adminConsoleRes = $this->actingAs($admin)->get('/admin');
+        $adminConsoleRes->assertStatus(403);
+
+        $adminFrameworkRes = $this->actingAs($admin)->get('/consultant/framework');
+        $adminFrameworkRes->assertStatus(403);
+
+        // 3. Navigation items for admin should omit admin_console and admin_framework
+        $this->actingAs($admin);
+        $navItems = NavigationItem::getForCurrentRequest();
+        $keys = $navItems->pluck('key')->all();
+        $this->assertNotContains('admin_console', $keys);
+        $this->assertNotContains('admin_framework', $keys);
+
+        // 4. Developer always retains access regardless of toggles
+        $devConsoleRes = $this->actingAs($dev)->get('/admin');
+        $devConsoleRes->assertStatus(200);
+
+        $devFrameworkRes = $this->actingAs($dev)->get('/consultant/framework');
+        $devFrameworkRes->assertStatus(200);
+
+        // 5. Restore toggles
+        $this->actingAs($dev)->post(route('developer.privileges.update'), [
+            'priv' => [
+                'privilege.admin_console_access' => '1',
+                'privilege.admin_framework_access' => '1',
+            ],
+        ]);
+
+        $this->actingAs($admin)->get('/admin')->assertStatus(200);
+        $this->actingAs($admin)->get('/consultant/framework')->assertStatus(200);
+    }
+
+    public function test_consultant_dashboard_does_not_render_audit_trail_or_removed_buttons(): void
+    {
+        $consultant = User::where('role', 'consultant')->first();
+
+        $response = $this->actingAs($consultant)->get('/consultant');
+        $response->assertStatus(200);
+
+        // The 2 action buttons must be absent
+        $response->assertDontSee('+ Run Consultant-Assisted Diagnostic');
+        $response->assertDontSee('Configure Diagnostic Framework &amp; Questions', false);
+
+        // The Audit Trail section and table must be absent
+        $response->assertDontSee('SECURITY &amp; GOVERNANCE AUDIT TRAIL', false);
+        $response->assertDontSee('Immutable Audit Log of Report Generation');
+
+        // Modern stats card classes should be present
+        $response->assertSee('bt-stats-grid bt-stats-grid-4', false);
+        $response->assertSee('bt-stat-card dark', false);
+    }
 }

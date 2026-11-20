@@ -226,6 +226,17 @@ class PlatformSetting extends Model
                 'label' => 'Header — Show Brand Title & Subtitle Next to Logo',
                 'value' => '1',
             ],
+            // Developer Master Governance: Administrator Privilege Controls
+            'privilege.admin_console_access' => [
+                'group' => 'privilege', 'type' => 'boolean',
+                'label' => 'Developer Master Control — Admin Privilege: Allow Access to Admin Console (/admin)',
+                'value' => '1',
+            ],
+            'privilege.admin_framework_access' => [
+                'group' => 'privilege', 'type' => 'boolean',
+                'label' => 'Developer Master Control — Admin Privilege: Allow Access to Framework & Questions Configuration (/consultant/framework)',
+                'value' => '1',
+            ],
             'vis.nav_overview' => [
                 'group' => 'visibility', 'type' => 'boolean',
                 'label' => 'Navigation — "Overview" Header Link (Highlighted in Navigation)',

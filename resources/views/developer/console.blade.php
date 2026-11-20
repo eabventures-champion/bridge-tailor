@@ -27,36 +27,111 @@
                         ↺ Reset Defaults
                     </button>
                 </form>
+                @if($isDeveloper || $adminFrameworkPrivilege)
                 <a href="{{ route('consultant.framework') }}" class="btn btn-amber btn-sm">Framework JSON Engine →</a>
+                @endif
             </div>
         </div>
 
-        <div class="flat-grid-5" style="border-color:#443e3a;background:#1c1917;">
-            <div style="padding:10px 14px;border-right:1px solid #443e3a;">
-                <div style="font-size:22px;font-weight:800;color:var(--bt-amber);">{{ $stats['users_total'] }}</div>
-                <div style="font-size:10px;font-weight:800;text-transform:uppercase;color:#cac4c4;">
+        <div class="bt-stats-grid bt-stats-grid-5">
+            <div class="bt-stat-card dark">
+                <div class="bt-stat-val" style="color:var(--bt-amber);">{{ $stats['users_total'] }}</div>
+                <div class="bt-stat-label">
                     Users ({{ $stats['clients_count'] }} Client · {{ $stats['consultants_count'] }} Consult · {{ $stats['admins_count'] }} {{ $isDeveloper ? 'Admin/Dev' : 'Admin' }})
                 </div>
             </div>
-            <div style="padding:10px 14px;border-right:1px solid #443e3a;">
-                <div style="font-size:22px;font-weight:800;color:#fff;">{{ $stats['companies_total'] }}</div>
-                <div style="font-size:10px;font-weight:800;text-transform:uppercase;color:#cac4c4;">Registered Client Companies</div>
+            <div class="bt-stat-card dark">
+                <div class="bt-stat-val">{{ $stats['companies_total'] }}</div>
+                <div class="bt-stat-label">Registered Client Companies</div>
             </div>
-            <div style="padding:10px 14px;border-right:1px solid #443e3a;">
-                <div style="font-size:22px;font-weight:800;color:#fff;">{{ $stats['assessments_total'] }}</div>
-                <div style="font-size:10px;font-weight:800;text-transform:uppercase;color:#cac4c4;">Total Diagnostic Assessments</div>
+            <div class="bt-stat-card dark">
+                <div class="bt-stat-val">{{ $stats['assessments_total'] }}</div>
+                <div class="bt-stat-label">Total Diagnostic Assessments</div>
             </div>
-            <div style="padding:10px 14px;border-right:1px solid #443e3a;">
-                <div style="font-size:22px;font-weight:800;color:#7fd4a6;">{{ $stats['visible_components'] }} / {{ $stats['total_components'] }}</div>
-                <div style="font-size:10px;font-weight:800;text-transform:uppercase;color:#cac4c4;">UI Components Currently Visible</div>
+            <div class="bt-stat-card dark">
+                <div class="bt-stat-val" style="color:#7fd4a6;">{{ $stats['visible_components'] }} <span style="font-size:16px;color:#a8a096;font-weight:600;">/ {{ $stats['total_components'] }}</span></div>
+                <div class="bt-stat-label">UI Components Currently Visible</div>
             </div>
-            <div style="padding:10px 14px;">
-                <div style="font-size:22px;font-weight:800;color:var(--bt-amber);">{{ $stats['consultations_total'] }} · {{ $stats['actions_total'] }}</div>
-                <div style="font-size:10px;font-weight:800;text-transform:uppercase;color:#cac4c4;">CRM Leads &amp; Tracked Actions</div>
+            <div class="bt-stat-card dark">
+                <div class="bt-stat-val" style="color:var(--bt-amber);">{{ $stats['consultations_total'] }} <span style="font-size:16px;color:#a8a096;font-weight:600;">·</span> {{ $stats['actions_total'] }}</div>
+                <div class="bt-stat-label">CRM Leads &amp; Tracked Actions</div>
             </div>
         </div>
     </div>
 </section>
+
+@if($isDeveloper)
+<!-- Section 0: Developer Master Control — Administrator Privilege Gateway -->
+<section class="sec-slate" style="background:#131b26;border-bottom:2px solid #2563eb;">
+    <div class="bt-container">
+        <form action="{{ route('developer.privileges.update') }}" method="POST">
+            @csrf
+            <div class="sec-header" style="cursor:pointer;" onclick="toggleSectionCollapse('dev-privileges-content', 'dev-privileges-btn', 'dev-privileges-badge')">
+                <div>
+                    <div class="eyebrow" style="color:#60a5fa;">00 · DEVELOPER MASTER GOVERNANCE · ADMINISTRATOR PRIVILEGE CONTROLS</div>
+                    <div style="display:flex;align-items:center;gap:10px;flex-wrap:wrap;">
+                        <h2 style="font-size:22px;color:#ffffff;margin:0;">Administrator Feature &amp; Console Access Gates</h2>
+                        <span class="tag" style="background:#1e3a8a;color:#93c5fd;border-color:#3b82f6;" id="dev-privileges-badge">DEVELOPER ONLY</span>
+                    </div>
+                    <div style="font-size:12px;color:#94a3b8;margin-top:4px;">
+                        Control whether standard Administrator accounts can access the Admin Console and Framework/Questions Configuration. When disabled, links disappear from their navigation and routes are locked with 403.
+                    </div>
+                </div>
+                <div style="display:flex;gap:8px;align-items:center;flex-wrap:wrap;" onclick="event.stopPropagation()">
+                    <button type="button" class="btn btn-outline btn-sm" id="dev-privileges-btn" onclick="toggleSectionCollapse('dev-privileges-content', 'dev-privileges-btn', 'dev-privileges-badge')" style="background:#1e293b;color:#e2e8f0;border-color:#475569;">
+                        − Collapse Section ▲
+                    </button>
+                    <button type="submit" class="btn btn-amber btn-sm">Save Privilege Policies →</button>
+                </div>
+            </div>
+
+            <div id="dev-privileges-content" style="display:block;margin-top:16px;">
+                <div class="flat-grid-2">
+                    <label class="flat-box-dark" style="display:flex;justify-content:space-between;align-items:center;gap:16px;cursor:pointer;background:#1e293b;border:1px solid {{ $adminConsolePrivilege ? '#3b82f6' : '#64748b' }};border-left:5px solid {{ $adminConsolePrivilege ? '#3b82f6' : '#ef4444' }};">
+                        <div>
+                            <div style="display:flex;align-items:center;gap:8px;margin-bottom:4px;">
+                                <strong style="font-size:14px;color:#ffffff;">Admin Console Access</strong>
+                                <span class="tag {{ $adminConsolePrivilege ? 'tag-ok' : 'tag-critical' }}">
+                                    {{ $adminConsolePrivilege ? 'ENABLED FOR ADMIN' : 'RESTRICTED / DISABLED' }}
+                                </span>
+                            </div>
+                            <div style="font-size:12px;color:#94a3b8;line-height:1.4;">
+                                Grants Administrators access to the dedicated Admin Console (<code style="color:#93c5fd;">/admin</code>) and header navigation tab. When unchecked, Administrators cannot view or load the console.
+                            </div>
+                            <div style="font-size:10px;color:#64748b;margin-top:4px;">
+                                Key: <code>privilege.admin_console_access</code>
+                            </div>
+                        </div>
+                        <div style="text-align:center;flex-shrink:0;">
+                            <input type="checkbox" name="priv[privilege.admin_console_access]" value="1" {{ $adminConsolePrivilege ? 'checked' : '' }} style="width:20px;height:20px;cursor:pointer;accent-color:var(--bt-amber);">
+                        </div>
+                    </label>
+
+                    <label class="flat-box-dark" style="display:flex;justify-content:space-between;align-items:center;gap:16px;cursor:pointer;background:#1e293b;border:1px solid {{ $adminFrameworkPrivilege ? '#3b82f6' : '#64748b' }};border-left:5px solid {{ $adminFrameworkPrivilege ? '#3b82f6' : '#ef4444' }};">
+                        <div>
+                            <div style="display:flex;align-items:center;gap:8px;margin-bottom:4px;">
+                                <strong style="font-size:14px;color:#ffffff;">Framework &amp; Questions Config Access</strong>
+                                <span class="tag {{ $adminFrameworkPrivilege ? 'tag-ok' : 'tag-critical' }}">
+                                    {{ $adminFrameworkPrivilege ? 'ENABLED FOR ADMIN' : 'RESTRICTED / DISABLED' }}
+                                </span>
+                            </div>
+                            <div style="font-size:12px;color:#94a3b8;line-height:1.4;">
+                                Grants Administrators access to the Diagnostic Framework Definition JSON Editor (<code style="color:#93c5fd;">/consultant/framework</code>). When unchecked, navigation tabs and direct routes are locked.
+                            </div>
+                            <div style="font-size:10px;color:#64748b;margin-top:4px;">
+                                Key: <code>privilege.admin_framework_access</code>
+                            </div>
+                        </div>
+                        <div style="text-align:center;flex-shrink:0;">
+                            <input type="checkbox" name="priv[privilege.admin_framework_access]" value="1" {{ $adminFrameworkPrivilege ? 'checked' : '' }} style="width:20px;height:20px;cursor:pointer;accent-color:var(--bt-amber);">
+                        </div>
+                    </label>
+                </div>
+            </div>
+        </form>
+    </div>
+</section>
+@endif
 
 <!-- Section 2: Solid Cream Band — Show / Hide Platform Components & Cards -->
 <section class="sec-cream" id="dev-visibility">
