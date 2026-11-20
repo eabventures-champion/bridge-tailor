@@ -139,6 +139,7 @@
         }
         /* Primary Header */
         .bt-header {
+            position: relative;
             background-color: var(--bt-espresso);
             color: var(--bt-white);
             border-bottom: 3px solid var(--bt-amber);
@@ -629,8 +630,15 @@
                 gap: 6px;
             }
             .bt-nav {
-                display: flex;
+                position: absolute;
+                top: 100%;
+                left: 0;
+                right: 0;
                 width: 100%;
+                background-color: var(--bt-espresso);
+                border-top: 1px solid #443e3a;
+                box-shadow: 0 16px 36px -6px rgba(0, 0, 0, 0.45);
+                display: flex;
                 flex-direction: column;
                 align-items: stretch;
                 max-height: 0;
@@ -642,22 +650,24 @@
                             opacity 0.28s ease,
                             transform 0.32s cubic-bezier(0.16, 1, 0.3, 1),
                             visibility 0.35s ease;
-                padding: 0 12px;
+                padding: 0 16px;
                 margin: 0;
                 gap: 0;
-                border-top: 1px solid transparent;
+                pointer-events: none;
+                z-index: 1000;
             }
             .bt-nav.open {
-                max-height: calc(100vh - 100px);
-                max-height: calc(100dvh - 100px);
+                max-height: calc(100vh - 80px);
+                max-height: calc(100dvh - 80px);
                 opacity: 1;
                 visibility: visible;
                 transform: translateY(0);
                 overflow-y: auto;
                 padding-top: 6px;
-                padding-bottom: 10px;
-                margin-top: 6px;
+                padding-bottom: 12px;
+                margin-top: 0;
                 border-top: 1px solid #443e3a;
+                pointer-events: auto;
             }
             .page-landing-light .bt-nav.open {
                 border-top-color: #e2e8f0;
@@ -887,10 +897,15 @@
         @media (max-width: 720px) {
             .page-landing-light .bt-nav {
                 background-color: #ffffff;
-                border-top-color: #e2e8f0;
+                border-top: 1px solid #e2e8f0;
+                border-bottom: 1px solid #e2e8f0;
                 box-shadow: 0 14px 30px -4px rgba(15, 23, 42, 0.12) !important;
                 border-radius: 0 0 10px 10px;
-                padding: 6px 14px 12px;
+                padding: 0 16px;
+            }
+            .page-landing-light .bt-nav.open {
+                border-top-color: #e2e8f0;
+                padding: 6px 16px 12px;
             }
             .page-landing-light .bt-nav a,
             .page-landing-light .bt-nav a.bt-nav-cta {
@@ -1088,14 +1103,14 @@
         function syncFixedHeaderOffset() {
             const fixedHeader = document.querySelector('.bt-top-fixed');
             if (fixedHeader) {
-                const nav = document.getElementById('bt-main-nav');
-                const isNavOpen = nav && nav.classList.contains('open');
-                let baseHeight = fixedHeader.offsetHeight;
-                if (isNavOpen && nav) {
-                    baseHeight = Math.max(54, baseHeight - nav.offsetHeight);
-                }
-                document.documentElement.style.setProperty('--bt-header-height', baseHeight + 'px');
-                document.body.style.paddingTop = baseHeight + 'px';
+                const headerBar = document.querySelector('.bt-header');
+                const topBar = document.querySelector('.bt-utility');
+                let h = 0;
+                if (headerBar) h += headerBar.offsetHeight;
+                if (topBar) h += topBar.offsetHeight;
+                if (h <= 0) h = fixedHeader.offsetHeight;
+                document.documentElement.style.setProperty('--bt-header-height', h + 'px');
+                document.body.style.paddingTop = h + 'px';
             }
         }
         window.addEventListener('resize', syncFixedHeaderOffset);
@@ -1111,10 +1126,35 @@
                 btn.classList.toggle('is-active', isOpen);
                 btn.setAttribute('aria-expanded', isOpen ? 'true' : 'false');
             }
-            syncFixedHeaderOffset();
-            setTimeout(syncFixedHeaderOffset, 120);
-            setTimeout(syncFixedHeaderOffset, 360);
         }
+
+        document.addEventListener('click', function (e) {
+            const nav = document.getElementById('bt-main-nav');
+            const btn = document.getElementById('bt-menu-toggle-btn');
+            if (nav && nav.classList.contains('open')) {
+                if (!nav.contains(e.target) && (!btn || !btn.contains(e.target))) {
+                    nav.classList.remove('open');
+                    if (btn) {
+                        btn.classList.remove('is-active');
+                        btn.setAttribute('aria-expanded', 'false');
+                    }
+                }
+            }
+        });
+
+        document.addEventListener('keydown', function (e) {
+            if (e.key === 'Escape') {
+                const nav = document.getElementById('bt-main-nav');
+                const btn = document.getElementById('bt-menu-toggle-btn');
+                if (nav && nav.classList.contains('open')) {
+                    nav.classList.remove('open');
+                    if (btn) {
+                        btn.classList.remove('is-active');
+                        btn.setAttribute('aria-expanded', 'false');
+                    }
+                }
+            }
+        });
 
         function togglePasswordVisibility(btn) {
             const wrap = btn.closest('.pw-wrap');
