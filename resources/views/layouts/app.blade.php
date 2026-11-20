@@ -198,19 +198,24 @@
             letter-spacing: 0.04em;
         }
         .bt-nav a:hover, .bt-nav a.active {
-            background-color: #3d3835;
-            color: var(--bt-white);
-            border-color: #5c544f;
+            background-color: var(--bt-amber);
+            color: var(--bt-ink);
+            border-color: var(--bt-amber);
+            border-radius: 6px !important;
         }
         .bt-nav a.bt-nav-cta {
             background-color: var(--bt-amber);
             color: var(--bt-ink);
             font-weight: 700;
             border-color: var(--bt-amber);
+            border-radius: 6px !important;
             margin-left: 6px;
         }
         .bt-nav a.bt-nav-cta:hover {
             background-color: #ffa033;
+            border-color: #ffa033;
+            color: var(--bt-ink);
+            border-radius: 6px !important;
         }
         /* Solid Section Bands */
         .sec-espresso { background-color: var(--bt-espresso); color: var(--bt-white); border-bottom: 1px solid #3f3a37; }
@@ -733,22 +738,35 @@
             color: #64748b;
         }
         .page-landing-light .bt-nav a {
-            color: #334155;
+            color: #1e293b;
+            border: 1px solid #cbd5e1;
+            border-radius: 6px !important;
+            padding: 7px 16px;
+            font-weight: 700;
+            transition: all 0.25s ease;
         }
         .page-landing-light .bt-nav a:hover,
         .page-landing-light .bt-nav a.active {
-            background-color: #f1f5f9;
-            color: #0f172a;
-            border-color: #cbd5e1;
+            background-color: var(--bt-amber);
+            border-color: var(--bt-amber);
+            color: #141210;
+            border-radius: 6px !important;
+            box-shadow: 0 4px 14px rgba(241, 126, 1, 0.35) !important;
+            transform: translateY(-1px);
         }
         .page-landing-light .bt-nav a.bt-nav-cta {
             background-color: var(--bt-amber);
             color: var(--bt-ink);
             border-color: var(--bt-amber);
+            border-radius: 6px !important;
         }
         .page-landing-light .bt-nav a.bt-nav-cta:hover {
-            background-color: #d96f00;
-            color: #ffffff;
+            background-color: #ffa033;
+            border-color: #ffa033;
+            color: #141210;
+            border-radius: 6px !important;
+            box-shadow: 0 4px 14px rgba(241, 126, 1, 0.45) !important;
+            transform: translateY(-1px);
         }
         .page-landing-light .bt-menu-toggle {
             background-color: #ffffff;
