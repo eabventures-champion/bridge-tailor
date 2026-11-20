@@ -384,4 +384,24 @@ class DiagnosticPlatformTest extends TestCase
         $response->assertSee('https://images.unsplash.com/custom-boardroom-exec.jpg');
         $response->assertSee('images/slider/custom-local-slide.jpg');
     }
+
+    public function test_console_sections_are_collapsed_by_default(): void
+    {
+        $admin = User::where('role', 'admin')->first();
+
+        $response = $this->actingAs($admin)->get('/admin');
+        $response->assertStatus(200);
+
+        // All 5 major module sections should have collapsed content containers by default
+        $response->assertSee('id="dev-visibility-content" style="display:none;', false);
+        $response->assertSee('id="dev-navigation-menu-content" style="display:none;', false);
+        $response->assertSee('id="dev-text-content" style="display:none;', false);
+        $response->assertSee('id="dev-users-content" style="display:none;', false);
+        $response->assertSee('id="dev-enterprises-content" style="display:none;', false);
+
+        // All badges and expand buttons should be rendered
+        $response->assertSee('+ Expand Section ▼');
+        $response->assertSee('+ Expand All Sections');
+        $response->assertSee('− Collapse All Sections');
+    }
 }

@@ -14,11 +14,17 @@
                     Edit any platform text dynamically, show or hide sections/cards in real time, and inspect or manage {{ $isDeveloper ? 'every Client, Consultant, Admin, and Developer' : 'Client, Consultant, and Admin' }} account.
                 </div>
             </div>
-            <div style="display:flex;gap:6px;flex-wrap:wrap;">
+            <div style="display:flex;gap:6px;flex-wrap:wrap;align-items:center;">
+                <button type="button" class="btn btn-outline btn-sm" onclick="expandAllConsoleSections()" style="background:#141210;color:#e6dfd8;border-color:#5a514b;">
+                    + Expand All Sections
+                </button>
+                <button type="button" class="btn btn-outline btn-sm" onclick="collapseAllConsoleSections()" style="background:#141210;color:#e6dfd8;border-color:#5a514b;">
+                    − Collapse All Sections
+                </button>
                 <form action="{{ route($routePrefix . '.reset') }}" method="POST" style="margin:0;">
                     @csrf
                     <button type="submit" class="btn btn-outline btn-sm" style="background:#141210;color:#fff;border-color:#786e67;">
-                        ↺ Reset All Text &amp; Visibility to Defaults
+                        ↺ Reset Defaults
                     </button>
                 </form>
                 <a href="{{ route('consultant.framework') }}" class="btn btn-amber btn-sm">Framework JSON Engine →</a>
@@ -57,34 +63,44 @@
     <div class="bt-container">
         <form action="{{ route($routePrefix . '.visibility.update') }}" method="POST">
             @csrf
-            <div class="sec-header">
+            <div class="sec-header" style="cursor:pointer;" onclick="toggleSectionCollapse('dev-visibility-content', 'dev-visibility-btn', 'dev-visibility-badge')">
                 <div>
                     <div class="eyebrow">01 · DYNAMIC COMPONENT &amp; CARD VISIBILITY CONTROLLER</div>
-                    <h2 style="font-size:23px;">Show or Hide Sections, Cards &amp; UI Modules Across the Platform</h2>
+                    <div style="display:flex;align-items:center;gap:10px;flex-wrap:wrap;">
+                        <h2 style="font-size:23px;margin:0;">Show or Hide Sections, Cards &amp; UI Modules Across the Platform</h2>
+                        <span class="tag tag-solid" id="dev-visibility-badge">COLLAPSED</span>
+                    </div>
                 </div>
-                <button type="submit" class="btn btn-amber">Save Component Visibility Toggles →</button>
+                <div style="display:flex;gap:8px;align-items:center;flex-wrap:wrap;" onclick="event.stopPropagation()">
+                    <button type="button" class="btn btn-outline btn-sm" id="dev-visibility-btn" onclick="toggleSectionCollapse('dev-visibility-content', 'dev-visibility-btn', 'dev-visibility-badge')">
+                        + Expand Section ▼
+                    </button>
+                    <button type="submit" class="btn btn-amber btn-sm">Save Visibility Toggles →</button>
+                </div>
             </div>
 
-            <div class="flat-grid-2">
-                @foreach($visibilitySettings as $key => $item)
-                    @php
-                        $isVisible = in_array((string) $item['current'], ['1', 'true', 'yes', 'on'], true);
-                    @endphp
-                    <label class="flat-box" style="display:flex;justify-content:space-between;align-items:center;gap:12px;cursor:pointer;background:{{ $isVisible ? 'var(--bt-white)' : '#efe8df' }};border-left:4px solid {{ $isVisible ? 'var(--bt-teal)' : '#9E2A1C' }};">
-                        <div>
-                            <div style="font-weight:700;font-size:13px;">{{ $item['label'] }}</div>
-                            <div style="font-size:10.5px;color:#666;margin-top:2px;">Key: <code>{{ $key }}</code></div>
-                        </div>
-                        <div style="display:flex;align-items:center;gap:8px;flex-shrink:0;">
-                            <span class="tag {{ $isVisible ? 'tag-ok' : 'tag-high' }}">{{ $isVisible ? 'VISIBLE' : 'HIDDEN' }}</span>
-                            <input type="checkbox" name="vis[{{ $key }}]" value="1" {{ $isVisible ? 'checked' : '' }} style="width:18px;height:18px;cursor:pointer;">
-                        </div>
-                    </label>
-                @endforeach
-            </div>
+            <div id="dev-visibility-content" style="display:none;margin-top:14px;">
+                <div class="flat-grid-2">
+                    @foreach($visibilitySettings as $key => $item)
+                        @php
+                            $isVisible = in_array((string) $item['current'], ['1', 'true', 'yes', 'on'], true);
+                        @endphp
+                        <label class="flat-box" style="display:flex;justify-content:space-between;align-items:center;gap:12px;cursor:pointer;background:{{ $isVisible ? 'var(--bt-white)' : '#efe8df' }};border-left:4px solid {{ $isVisible ? 'var(--bt-teal)' : '#9E2A1C' }};">
+                            <div>
+                                <div style="font-weight:700;font-size:13px;">{{ $item['label'] }}</div>
+                                <div style="font-size:10.5px;color:#666;margin-top:2px;">Key: <code>{{ $key }}</code></div>
+                            </div>
+                            <div style="display:flex;align-items:center;gap:8px;flex-shrink:0;">
+                                <span class="tag {{ $isVisible ? 'tag-ok' : 'tag-high' }}">{{ $isVisible ? 'VISIBLE' : 'HIDDEN' }}</span>
+                                <input type="checkbox" name="vis[{{ $key }}]" value="1" {{ $isVisible ? 'checked' : '' }} style="width:18px;height:18px;cursor:pointer;">
+                            </div>
+                        </label>
+                    @endforeach
+                </div>
 
-            <div style="display:flex;justify-content:flex-end;margin-top:12px;">
-                <button type="submit" class="btn btn-amber">Apply Show / Hide Settings →</button>
+                <div style="display:flex;justify-content:flex-end;margin-top:12px;">
+                    <button type="submit" class="btn btn-amber">Apply Show / Hide Settings →</button>
+                </div>
             </div>
         </form>
     </div>
@@ -93,16 +109,22 @@
 <!-- Section 01B: Solid Slate Band — Dynamic Navigation Menu CMS, Visibility & Total Removal -->
 <section class="sec-slate" id="dev-navigation-menu">
     <div class="bt-container">
-        <div class="sec-header">
+        <div class="sec-header" style="cursor:pointer;" onclick="toggleSectionCollapse('dev-navigation-menu-content', 'dev-navigation-menu-btn', 'dev-navigation-menu-badge')">
             <div>
                 <div class="eyebrow">01B · DYNAMIC NAVIGATION MENU CMS, VISIBILITY &amp; TOTAL REMOVAL</div>
-                <h2 style="font-size:23px;">Header Navigation: Hide / Show, Make Active Dynamic Menus &amp; Total Removal</h2>
+                <div style="display:flex;align-items:center;gap:10px;flex-wrap:wrap;">
+                    <h2 style="font-size:23px;margin:0;">Header Navigation: Hide / Show, Make Active Dynamic Menus &amp; Total Removal</h2>
+                    <span class="tag tag-solid" id="dev-navigation-menu-badge">COLLAPSED</span>
+                </div>
                 <div style="font-size:12.5px;color:#555;margin-top:4px;">
                     Control top-level menu items (including the highlighted <strong>Overview</strong>). Hide or enable to show, activate/deactivate dynamic items, add custom links, or execute total removal.
                 </div>
             </div>
-            <div style="display:flex;gap:8px;flex-wrap:wrap;align-items:center;">
-                <button type="button" class="btn btn-amber btn-sm" onclick="toggleElement('add-menu-drawer')">+ Add Dynamic Menu Item →</button>
+            <div style="display:flex;gap:8px;flex-wrap:wrap;align-items:center;" onclick="event.stopPropagation()">
+                <button type="button" class="btn btn-outline btn-sm" id="dev-navigation-menu-btn" onclick="toggleSectionCollapse('dev-navigation-menu-content', 'dev-navigation-menu-btn', 'dev-navigation-menu-badge')">
+                    + Expand Section ▼
+                </button>
+                <button type="button" class="btn btn-amber btn-sm" onclick="ensureExpandedAndToggle('dev-navigation-menu-content', 'dev-navigation-menu-btn', 'dev-navigation-menu-badge', 'add-menu-drawer')">+ Add Dynamic Menu Item →</button>
                 <form action="{{ route($routePrefix . '.menu.reset') }}" method="POST" style="margin:0;" onsubmit="return confirm('Restore all system navigation items to initial platform defaults?');">
                     @csrf
                     <button type="submit" class="btn btn-outline btn-sm">↺ Reset Menu to Defaults</button>
@@ -110,7 +132,8 @@
             </div>
         </div>
 
-        <!-- Add Dynamic Menu Item Drawer / Card -->
+        <div id="dev-navigation-menu-content" style="display:none;margin-top:14px;">
+            <!-- Add Dynamic Menu Item Drawer / Card -->
         <div id="add-menu-drawer" class="flat-box" style="display:none;background:#fff;margin-bottom:16px;border-left:4px solid var(--bt-amber);">
             <div style="font-size:14px;font-weight:700;margin-bottom:12px;color:var(--bt-ink);">+ Create New Dynamic Navigation Menu Link</div>
             <form action="{{ route($routePrefix . '.menu.store') }}" method="POST">
@@ -350,6 +373,7 @@
                 </tbody>
             </table>
         </div>
+        </div>
     </div>
 </section>
 
@@ -358,44 +382,54 @@
     <div class="bt-container">
         <form action="{{ route($routePrefix . '.text.update') }}" method="POST" enctype="multipart/form-data">
             @csrf
-            <div class="sec-header">
+            <div class="sec-header" style="cursor:pointer;" onclick="toggleSectionCollapse('dev-text-content', 'dev-text-btn', 'dev-text-badge')">
                 <div>
                     <div class="eyebrow">02 · DYNAMIC PLATFORM TEXT &amp; HEADLINE CMS</div>
-                    <h2 style="font-size:23px;">Dynamically Edit Platform Headlines, Labels, Callouts, Slider Images &amp; Copy</h2>
-                </div>
-                <button type="submit" class="btn btn-amber">Save All Text Overrides →</button>
-            </div>
-
-            <div class="flat-grid-2">
-                @foreach($textSettings as $key => $item)
-                    <div class="flat-box" style="background:var(--bt-slate);">
-                        <div class="field" style="margin-bottom:0;">
-                            <label>{{ $item['label'] }} <span style="font-weight:400;opacity:0.7;">({{ $key }})</span></label>
-                            @if(str_contains($key, 'slide_') && str_contains($key, '_image'))
-                                <div style="display:flex;gap:10px;align-items:center;margin-bottom:6px;">
-                                    @php
-                                        $currImg = $item['current'] ?? '';
-                                        $previewUrl = str_starts_with($currImg, 'http') ? $currImg : asset(ltrim($currImg, '/'));
-                                    @endphp
-                                    <img src="{{ $previewUrl }}" alt="Slide Preview" style="height:44px;width:72px;object-fit:cover;border:1px solid #cbd5e1;background:#e2e8f0;flex-shrink:0;">
-                                    <input type="text" name="texts[{{ $key }}]" value="{{ $item['current'] }}" placeholder="{{ $item['placeholder'] ?? 'e.g. images/slider/slide-1.jpg or https://...' }}" style="flex:1;">
-                                </div>
-                                <div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap;">
-                                    <span style="font-size:10.5px;font-weight:700;color:var(--bt-umber);text-transform:uppercase;">Or upload replacement file:</span>
-                                    <input type="file" name="slide_uploads[{{ $key }}]" accept="image/*" style="font-size:11px;padding:3px 6px;">
-                                </div>
-                            @elseif(strlen((string) $item['current']) > 110)
-                                <textarea name="texts[{{ $key }}]" rows="3" placeholder="{{ $item['placeholder'] ?? '' }}">{{ $item['current'] }}</textarea>
-                            @else
-                                <input type="text" name="texts[{{ $key }}]" value="{{ $item['current'] }}" placeholder="{{ $item['placeholder'] ?? '' }}">
-                            @endif
-                        </div>
+                    <div style="display:flex;align-items:center;gap:10px;flex-wrap:wrap;">
+                        <h2 style="font-size:23px;margin:0;">Dynamically Edit Platform Headlines, Labels, Callouts, Slider Images &amp; Copy</h2>
+                        <span class="tag tag-solid" id="dev-text-badge">COLLAPSED</span>
                     </div>
-                @endforeach
+                </div>
+                <div style="display:flex;gap:8px;align-items:center;flex-wrap:wrap;" onclick="event.stopPropagation()">
+                    <button type="button" class="btn btn-outline btn-sm" id="dev-text-btn" onclick="toggleSectionCollapse('dev-text-content', 'dev-text-btn', 'dev-text-badge')">
+                        + Expand Section ▼
+                    </button>
+                    <button type="submit" class="btn btn-amber btn-sm">Save All Text Overrides →</button>
+                </div>
             </div>
 
-            <div style="display:flex;justify-content:flex-end;margin-top:12px;">
-                <button type="submit" class="btn btn-amber">Publish Dynamic Text Changes →</button>
+            <div id="dev-text-content" style="display:none;margin-top:14px;">
+                <div class="flat-grid-2">
+                    @foreach($textSettings as $key => $item)
+                        <div class="flat-box" style="background:var(--bt-slate);">
+                            <div class="field" style="margin-bottom:0;">
+                                <label>{{ $item['label'] }} <span style="font-weight:400;opacity:0.7;">({{ $key }})</span></label>
+                                @if(str_contains($key, 'slide_') && str_contains($key, '_image'))
+                                    <div style="display:flex;gap:10px;align-items:center;margin-bottom:6px;">
+                                        @php
+                                            $currImg = $item['current'] ?? '';
+                                            $previewUrl = str_starts_with($currImg, 'http') ? $currImg : asset(ltrim($currImg, '/'));
+                                        @endphp
+                                        <img src="{{ $previewUrl }}" alt="Slide Preview" style="height:44px;width:72px;object-fit:cover;border:1px solid #cbd5e1;background:#e2e8f0;flex-shrink:0;">
+                                        <input type="text" name="texts[{{ $key }}]" value="{{ $item['current'] }}" placeholder="{{ $item['placeholder'] ?? 'e.g. images/slider/slide-1.jpg or https://...' }}" style="flex:1;">
+                                    </div>
+                                    <div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap;">
+                                        <span style="font-size:10.5px;font-weight:700;color:var(--bt-umber);text-transform:uppercase;">Or upload replacement file:</span>
+                                        <input type="file" name="slide_uploads[{{ $key }}]" accept="image/*" style="font-size:11px;padding:3px 6px;">
+                                    </div>
+                                @elseif(strlen((string) $item['current']) > 110)
+                                    <textarea name="texts[{{ $key }}]" rows="3" placeholder="{{ $item['placeholder'] ?? '' }}">{{ $item['current'] }}</textarea>
+                                @else
+                                    <input type="text" name="texts[{{ $key }}]" value="{{ $item['current'] }}" placeholder="{{ $item['placeholder'] ?? '' }}">
+                                @endif
+                            </div>
+                        </div>
+                    @endforeach
+                </div>
+
+                <div style="display:flex;justify-content:flex-end;margin-top:14px;">
+                    <button type="submit" class="btn btn-amber">Publish Dynamic Text Changes →</button>
+                </div>
             </div>
         </form>
     </div>
@@ -404,14 +438,23 @@
 <!-- Section 4: Solid Slate Band — User Directory -->
 <section class="sec-slate" id="dev-users">
     <div class="bt-container">
-        <div class="sec-header">
+        <div class="sec-header" style="cursor:pointer;" onclick="toggleSectionCollapse('dev-users-content', 'dev-users-btn', 'dev-users-badge')">
             <div>
                 <div class="eyebrow">03 · USER DIRECTORY — {{ $isDeveloper ? 'CLIENTS, CONSULTANTS, ADMINS & DEVELOPERS' : 'CLIENTS, CONSULTANTS & ADMINS' }}</div>
-                <h2 style="font-size:23px;">Inspect &amp; Edit Every User Account, Role, Contact Detail &amp; Password</h2>
+                <div style="display:flex;align-items:center;gap:10px;flex-wrap:wrap;">
+                    <h2 style="font-size:23px;margin:0;">Inspect &amp; Edit Every User Account, Role, Contact Detail &amp; Password</h2>
+                    <span class="tag tag-solid" id="dev-users-badge">COLLAPSED</span>
+                </div>
+            </div>
+            <div style="display:flex;gap:8px;align-items:center;flex-wrap:wrap;" onclick="event.stopPropagation()">
+                <button type="button" class="btn btn-outline btn-sm" id="dev-users-btn" onclick="toggleSectionCollapse('dev-users-content', 'dev-users-btn', 'dev-users-badge')">
+                    + Expand Section ▼
+                </button>
             </div>
         </div>
 
-        <table class="bt-table" style="margin-bottom:16px;">
+        <div id="dev-users-content" style="display:none;margin-top:14px;">
+            <table class="bt-table" style="margin-bottom:16px;">
             <thead>
                 <tr>
                     <th style="width:5%;">ID</th>
@@ -537,28 +580,38 @@
                 <button type="submit" class="btn btn-amber btn-sm">+ Create Platform User Account</button>
             </form>
         </div>
+        </div>
     </div>
 </section>
 
 <!-- Section 5: Solid Cream Band — All Registered Companies, Manual Consultant Assignment & Automated Routing Engine -->
 <section class="sec-cream" id="dev-enterprises">
     <div class="bt-container">
-        <div class="sec-header">
+        <div class="sec-header" style="cursor:pointer;" onclick="toggleSectionCollapse('dev-enterprises-content', 'dev-enterprises-btn', 'dev-enterprises-badge')">
             <div>
                 <div class="eyebrow">04 · ALL ENTERPRISES, CONSULTANT ASSIGNMENT &amp; AUTOMATED ROUTING</div>
-                <h2 style="font-size:22px;">Complete Enterprise Directory, Manual Assignment &amp; Auto-Routing Engine</h2>
+                <div style="display:flex;align-items:center;gap:10px;flex-wrap:wrap;">
+                    <h2 style="font-size:22px;margin:0;">Complete Enterprise Directory, Manual Assignment &amp; Auto-Routing Engine</h2>
+                    <span class="tag tag-solid" id="dev-enterprises-badge">COLLAPSED</span>
+                </div>
             </div>
-            @if($unassignedCompaniesCount > 0)
-                <form action="{{ route('developer.companies.auto_assign_all') }}" method="POST" style="margin:0;">
-                    @csrf
-                    <button type="submit" class="btn btn-amber btn-sm">
-                        ⚡ Auto-Assign {{ $unassignedCompaniesCount }} Unassigned {{ Str::plural('Company', $unassignedCompaniesCount) }} Now →
-                    </button>
-                </form>
-            @endif
+            <div style="display:flex;gap:8px;align-items:center;flex-wrap:wrap;" onclick="event.stopPropagation()">
+                <button type="button" class="btn btn-outline btn-sm" id="dev-enterprises-btn" onclick="toggleSectionCollapse('dev-enterprises-content', 'dev-enterprises-btn', 'dev-enterprises-badge')">
+                    + Expand Section ▼
+                </button>
+                @if($unassignedCompaniesCount > 0)
+                    <form action="{{ route('developer.companies.auto_assign_all') }}" method="POST" style="margin:0;">
+                        @csrf
+                        <button type="submit" class="btn btn-amber btn-sm">
+                            ⚡ Auto-Assign {{ $unassignedCompaniesCount }} Unassigned {{ Str::plural('Company', $unassignedCompaniesCount) }} Now →
+                        </button>
+                    </form>
+                @endif
+            </div>
         </div>
 
-        <!-- Automated Consultant Routing Engine Control Box -->
+        <div id="dev-enterprises-content" style="display:none;margin-top:14px;">
+            <!-- Automated Consultant Routing Engine Control Box -->
         <div class="flat-box" style="margin-bottom:14px;background:var(--bt-white);border-left:5px solid {{ $autoAssignEnabled ? 'var(--bt-teal)' : 'var(--bt-amber)' }};">
             <form action="{{ route('developer.assignment.settings') }}" method="POST">
                 @csrf
@@ -666,10 +719,82 @@
                 @endforeach
             </tbody>
         </table>
+        </div>
     </div>
 </section>
 
 <script>
+function toggleSectionCollapse(contentId, btnId, badgeId) {
+    const content = document.getElementById(contentId);
+    const btn = btnId ? document.getElementById(btnId) : null;
+    const badge = badgeId ? document.getElementById(badgeId) : null;
+    if (!content) return;
+
+    const isHidden = (content.style.display === 'none' || content.style.display === '');
+    content.style.display = isHidden ? 'block' : 'none';
+
+    if (btn) {
+        btn.innerHTML = isHidden 
+            ? '<span>− Collapse Section ▲</span>' 
+            : '<span>+ Expand Section ▼</span>';
+        if (isHidden) {
+            btn.classList.add('btn-amber');
+            btn.classList.remove('btn-outline');
+        } else {
+            btn.classList.remove('btn-amber');
+            btn.classList.add('btn-outline');
+        }
+    }
+    if (badge) {
+        badge.textContent = isHidden ? 'EXPANDED' : 'COLLAPSED';
+        badge.className = isHidden ? 'tag tag-ok' : 'tag tag-solid';
+    }
+}
+
+function ensureExpandedAndToggle(sectionContentId, sectionBtnId, sectionBadgeId, drawerId) {
+    const content = document.getElementById(sectionContentId);
+    if (content && (content.style.display === 'none' || content.style.display === '')) {
+        toggleSectionCollapse(sectionContentId, sectionBtnId, sectionBadgeId);
+    }
+    toggleElement(drawerId);
+}
+
+function expandAllConsoleSections() {
+    ['dev-visibility', 'dev-navigation-menu', 'dev-text', 'dev-users', 'dev-enterprises'].forEach(function(sec) {
+        const content = document.getElementById(sec + '-content');
+        const btn = document.getElementById(sec + '-btn');
+        const badge = document.getElementById(sec + '-badge');
+        if (content) content.style.display = 'block';
+        if (btn) {
+            btn.innerHTML = '<span>− Collapse Section ▲</span>';
+            btn.classList.add('btn-amber');
+            btn.classList.remove('btn-outline');
+        }
+        if (badge) {
+            badge.textContent = 'EXPANDED';
+            badge.className = 'tag tag-ok';
+        }
+    });
+}
+
+function collapseAllConsoleSections() {
+    ['dev-visibility', 'dev-navigation-menu', 'dev-text', 'dev-users', 'dev-enterprises'].forEach(function(sec) {
+        const content = document.getElementById(sec + '-content');
+        const btn = document.getElementById(sec + '-btn');
+        const badge = document.getElementById(sec + '-badge');
+        if (content) content.style.display = 'none';
+        if (btn) {
+            btn.innerHTML = '<span>+ Expand Section ▼</span>';
+            btn.classList.remove('btn-amber');
+            btn.classList.add('btn-outline');
+        }
+        if (badge) {
+            badge.textContent = 'COLLAPSED';
+            badge.className = 'tag tag-solid';
+        }
+    });
+}
+
 function toggleElement(id) {
     const el = document.getElementById(id);
     if (!el) return;
