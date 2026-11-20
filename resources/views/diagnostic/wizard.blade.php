@@ -783,6 +783,49 @@
     .bt-step-actions.between {
         justify-content: space-between;
     }
+    @media (max-width: 640px) {
+        .bt-step-actions {
+            display: flex !important;
+            flex-direction: column !important;
+            align-items: center !important;
+            justify-content: center !important;
+            gap: 12px !important;
+            width: 100% !important;
+            margin: 20px auto 0 !important;
+            padding-top: 16px !important;
+            box-sizing: border-box !important;
+        }
+        .bt-step-actions.end,
+        .bt-step-actions-center-mobile {
+            justify-content: center !important;
+            align-items: center !important;
+            text-align: center !important;
+            width: 100% !important;
+        }
+        .bt-step-actions.between {
+            flex-direction: column-reverse !important;
+            justify-content: center !important;
+            align-items: center !important;
+            width: 100% !important;
+        }
+        .bt-step-actions .btn,
+        .bt-step-next-btn,
+        .bt-step-prev-btn {
+            width: 100% !important;
+            max-width: 100% !important;
+            margin: 0 auto !important;
+            display: flex !important;
+            align-items: center !important;
+            justify-content: center !important;
+            text-align: center !important;
+            padding: 13px 16px !important;
+            font-size: 12.5px !important;
+            letter-spacing: 0.03em !important;
+            line-height: 1.35 !important;
+            box-sizing: border-box !important;
+            border-radius: 8px !important;
+        }
+    }
 
     /* Toast Notification */
     .bt-toast {
@@ -1068,9 +1111,9 @@
             </div>
 
             <!-- Bottom Navigation Bar -->
-            <div class="bt-step-actions end">
-                <button type="button" class="btn btn-amber btn-lg" onclick="gotoStep(2)">
-                    Continue to Step 02: Symptom &amp; Pain Intake →
+            <div class="bt-step-actions end bt-step-actions-center-mobile">
+                <button type="button" class="btn btn-amber btn-lg bt-step-next-btn" onclick="gotoStep(2)">
+                    <span>Continue to Step 02: Symptom &amp; Pain <span style="white-space:nowrap;">Intake&nbsp;→</span></span>
                 </button>
             </div>
         </section>
@@ -1126,8 +1169,10 @@
 
             <!-- Bottom Navigation Bar -->
             <div class="bt-step-actions between">
-                <button type="button" class="btn btn-outline" onclick="gotoStep(1)">← Back to Business Profile</button>
-                <button type="button" class="btn btn-amber btn-lg" onclick="gotoStep(3)">Continue to Step 03: Evidence Questions →</button>
+                <button type="button" class="btn btn-outline bt-step-prev-btn" onclick="gotoStep(1)">← Back to Business Profile</button>
+                <button type="button" class="btn btn-amber btn-lg bt-step-next-btn" onclick="gotoStep(3)">
+                    <span>Continue to Step 03: Evidence <span style="white-space:nowrap;">Questions&nbsp;→</span></span>
+                </button>
             </div>
         </section>
 
@@ -1224,8 +1269,10 @@
 
             <!-- Bottom Navigation Bar -->
             <div class="bt-step-actions between">
-                <button type="button" class="btn btn-outline" onclick="prevModuleOrStep()">← Previous Module / Step</button>
-                <button type="button" class="btn btn-amber btn-lg" id="next-mod-btn" onclick="nextModuleOrStep()">Next Module →</button>
+                <button type="button" class="btn btn-outline bt-step-prev-btn" onclick="prevModuleOrStep()">← Previous Module / Step</button>
+                <button type="button" class="btn btn-amber btn-lg bt-step-next-btn" id="next-mod-btn" onclick="nextModuleOrStep()">
+                    <span>Next <span style="white-space:nowrap;">Module&nbsp;→</span></span>
+                </button>
             </div>
         </section>
 
@@ -1316,9 +1363,9 @@
 
             <!-- Submit Action Bar -->
             <div class="bt-step-actions between">
-                <button type="button" class="btn btn-outline" onclick="gotoStep(3)">← Back to Questionnaire</button>
-                <button type="submit" class="btn btn-amber btn-lg" id="btn-submit-diag" style="padding:12px 28px;font-size:14px;font-weight:700;">
-                    Compute Scores &amp; Generate AI Diagnostic Report →
+                <button type="button" class="btn btn-outline bt-step-prev-btn" onclick="gotoStep(3)">← Back to Questionnaire</button>
+                <button type="submit" class="btn btn-amber btn-lg bt-step-next-btn" id="btn-submit-diag" style="padding:13px 20px;font-size:13px;font-weight:700;">
+                    <span>Compute Scores &amp; Generate AI Diagnostic <span style="white-space:nowrap;">Report&nbsp;→</span></span>
                 </button>
             </div>
         </section>
@@ -1570,15 +1617,19 @@
 
     function getScopedModules() {
         const boxes = document.querySelectorAll('.scope-checkbox:checked');
-        const list = Array.from(boxes).map(cb => cb.value);
-        return list.length ? list : ['SG'];
+        return Array.from(boxes).map(cb => cb.value);
     }
 
     function setAssessmentMode(mode) {
         const compPill = document.getElementById('mode-pill-comprehensive');
         const targPill = document.getElementById('mode-pill-targeted');
+        const compRadio = document.querySelector('input[name="mode"][value="comprehensive"]');
+        const targRadio = document.querySelector('input[name="mode"][value="targeted"]');
+
         if (compPill) compPill.classList.toggle('active', mode === 'comprehensive');
         if (targPill) targPill.classList.toggle('active', mode === 'targeted');
+        if (mode === 'comprehensive' && compRadio) compRadio.checked = true;
+        if (mode === 'targeted' && targRadio) targRadio.checked = true;
 
         if (mode === 'comprehensive') {
             document.querySelectorAll('.scope-checkbox').forEach(cb => {
@@ -1592,6 +1643,24 @@
     }
 
     function onScopeChange() {
+        const allBoxes = document.querySelectorAll('.scope-checkbox');
+        const checkedBoxes = document.querySelectorAll('.scope-checkbox:checked');
+        const compPill = document.getElementById('mode-pill-comprehensive');
+        const targPill = document.getElementById('mode-pill-targeted');
+        const compRadio = document.querySelector('input[name="mode"][value="comprehensive"]');
+        const targRadio = document.querySelector('input[name="mode"][value="targeted"]');
+
+        // Dynamically synchronize the mode selector radio & pills
+        if (allBoxes.length > 0 && checkedBoxes.length === allBoxes.length) {
+            if (compRadio) compRadio.checked = true;
+            if (compPill) compPill.classList.add('active');
+            if (targPill) targPill.classList.remove('active');
+        } else {
+            if (targRadio) targRadio.checked = true;
+            if (targPill) targPill.classList.add('active');
+            if (compPill) compPill.classList.remove('active');
+        }
+
         const scoped = getScopedModules();
         document.querySelectorAll('[data-rail-mod]').forEach(el => {
             const m = el.getAttribute('data-rail-mod');
@@ -1845,6 +1914,14 @@
             const email = document.getElementById('f_contact_email')?.value?.trim();
             if (!name || !comp || !email) {
                 alert('Please complete your Name, Company Name, and Business Email in Step 01 before proceeding.');
+                return;
+            }
+
+            const scoped = document.querySelectorAll('.scope-checkbox:checked');
+            if (scoped.length === 0) {
+                alert('Please select at least one Diagnostic Module or Function (or choose "Comprehensive (All 5 Modules)") before continuing to Step 02.');
+                const scopeSec = document.querySelector('.bt-scope-grid') || document.querySelector('.bt-mode-selector');
+                if (scopeSec) scopeSec.scrollIntoView({ behavior: 'smooth', block: 'center' });
                 return;
             }
         }
