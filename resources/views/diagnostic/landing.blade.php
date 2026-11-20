@@ -247,10 +247,10 @@
         border-color: #e2e8f0;
     }
 
-    /* Slider Interactive Controls & Progress Indicators - Vertical Dots Only */
+    /* Slider Interactive Controls & Progress Indicators - Vertical Floating Dots Only (No Background) */
     .bt-slider-controls {
         position: absolute;
-        right: 28px;
+        right: 24px;
         top: 50%;
         transform: translateY(-50%);
         bottom: auto;
@@ -258,13 +258,13 @@
         display: flex;
         flex-direction: column;
         align-items: center;
-        gap: 10px;
-        background: rgba(15, 23, 42, 0.55);
-        backdrop-filter: blur(8px);
-        -webkit-backdrop-filter: blur(8px);
-        padding: 10px 7px;
-        border: 1px solid rgba(255, 255, 255, 0.25);
-        box-shadow: 0 4px 18px rgba(0, 0, 0, 0.25) !important;
+        gap: 12px;
+        background: transparent !important;
+        backdrop-filter: none !important;
+        -webkit-backdrop-filter: none !important;
+        border: none !important;
+        box-shadow: none !important;
+        padding: 0 !important;
     }
     .bt-slider-arrow {
         display: none !important;
@@ -273,28 +273,31 @@
         display: flex;
         flex-direction: column;
         align-items: center;
-        gap: 8px;
+        gap: 10px;
     }
     .bt-slider-dot {
-        width: 8px;
-        height: 8px;
+        width: 10px;
+        height: 10px;
         border-radius: 50% !important;
-        background: rgba(255, 255, 255, 0.45);
-        border: 1px solid rgba(255, 255, 255, 0.7);
+        background: rgba(255, 255, 255, 0.65);
+        border: 1px solid rgba(0, 0, 0, 0.3);
+        box-shadow: 0 1px 4px rgba(0, 0, 0, 0.45) !important;
         padding: 0;
         cursor: pointer;
         transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
     }
     .bt-slider-dot:hover {
-        background: rgba(241, 126, 1, 0.85);
-    }
-    .bt-slider-dot.active {
-        width: 8px;
-        height: 24px;
-        border-radius: 4px !important;
         background: var(--bt-amber);
         border-color: var(--bt-amber);
-        box-shadow: 0 2px 10px rgba(241, 126, 1, 0.6) !important;
+        transform: scale(1.15);
+    }
+    .bt-slider-dot.active {
+        width: 10px;
+        height: 28px;
+        border-radius: 5px !important;
+        background: var(--bt-amber);
+        border-color: var(--bt-amber);
+        box-shadow: 0 2px 8px rgba(241, 126, 1, 0.6), 0 1px 3px rgba(0, 0, 0, 0.4) !important;
     }
 
     @media (max-width: 900px) {
@@ -362,18 +365,22 @@
             color: #ffffff;
         }
         .bt-slider-controls {
-            right: 12px;
+            right: 14px;
             left: auto;
             top: 50%;
             bottom: auto;
             transform: translateY(-50%);
             max-width: none;
-            padding: 8px 6px;
-            gap: 7px;
-            background: rgba(15, 23, 42, 0.55);
-            backdrop-filter: blur(6px);
-            -webkit-backdrop-filter: blur(6px);
-            border: 1px solid rgba(255, 255, 255, 0.25);
+            padding: 0 !important;
+            gap: 10px;
+            background: transparent !important;
+            backdrop-filter: none !important;
+            -webkit-backdrop-filter: none !important;
+            border: none !important;
+            box-shadow: none !important;
+        }
+        .bt-slider-dots {
+            gap: 8px;
         }
         .bt-slider-dot {
             width: 8px;
@@ -381,7 +388,7 @@
         }
         .bt-slider-dot.active {
             width: 8px;
-            height: 22px;
+            height: 24px;
         }
     }
 
@@ -417,22 +424,26 @@
             letter-spacing: 0.04em;
         }
         .bt-slider-controls {
-            right: 8px;
+            right: 10px;
             left: auto;
             top: 50%;
             bottom: auto;
             transform: translateY(-50%);
-            padding: 6px 4px;
-            gap: 6px;
-            background: rgba(15, 23, 42, 0.55);
+            padding: 0 !important;
+            gap: 8px;
+            background: transparent !important;
+            backdrop-filter: none !important;
+            -webkit-backdrop-filter: none !important;
+            border: none !important;
+            box-shadow: none !important;
         }
         .bt-slider-dot {
-            width: 6px;
-            height: 6px;
+            width: 7px;
+            height: 7px;
         }
         .bt-slider-dot.active {
-            width: 6px;
-            height: 18px;
+            width: 7px;
+            height: 20px;
         }
     }
 
