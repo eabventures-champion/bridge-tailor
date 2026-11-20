@@ -87,7 +87,7 @@
             color: inherit;
             text-decoration: none;
         }
-        /* Fixed Top Header Shell (Mobile & Desktop) */
+        /* Fixed Top Header Shell (Mobile & Desktop) - Premium Business White */
         .bt-top-fixed {
             position: fixed;
             top: 0;
@@ -95,14 +95,17 @@
             right: 0;
             width: 100%;
             z-index: 9999;
-            background-color: var(--bt-espresso);
+            background-color: rgba(255, 255, 255, 0.98);
+            backdrop-filter: blur(14px);
+            -webkit-backdrop-filter: blur(14px);
+            box-shadow: 0 2px 14px rgba(15, 23, 42, 0.05) !important;
         }
         /* Top Utility Strip */
         .bt-utility {
-            background-color: var(--bt-ink);
-            color: #d6cfc7;
+            background-color: #f8fafc;
+            color: #475569;
             font-size: 11px;
-            border-bottom: 1px solid #3a3532;
+            border-bottom: 1px solid #e2e8f0;
         }
         .bt-utility-inner {
             max-width: 1280px;
@@ -114,6 +117,9 @@
             gap: 12px;
             flex-wrap: wrap;
         }
+        .bt-utility strong {
+            color: #0f172a !important;
+        }
         .bt-role-form {
             display: inline-flex;
             align-items: center;
@@ -121,9 +127,9 @@
             margin: 0;
         }
         .bt-role-btn {
-            background-color: #2c2927;
-            color: #e6dfd8;
-            border: 1px solid #4d4642;
+            background-color: #ffffff;
+            color: #1e293b;
+            border: 1px solid #cbd5e1;
             padding: 2px 8px;
             font-size: 10.5px;
             font-weight: 600;
@@ -131,6 +137,7 @@
             cursor: pointer;
             text-transform: uppercase;
             letter-spacing: 0.04em;
+            border-radius: 4px !important;
         }
         .bt-role-btn.active, .bt-role-btn:hover {
             background-color: var(--bt-amber);
@@ -140,8 +147,8 @@
         /* Primary Header */
         .bt-header {
             position: relative;
-            background-color: var(--bt-espresso);
-            color: var(--bt-white);
+            background-color: rgba(255, 255, 255, 0.98);
+            color: var(--bt-ink);
             border-bottom: 3px solid var(--bt-amber);
         }
         .bt-header-inner {
@@ -166,6 +173,7 @@
             font-size: 14px;
             padding: 6px 9px;
             letter-spacing: 0.06em;
+            border-radius: 4px !important;
         }
         .bt-brand-text {
             display: flex;
@@ -176,42 +184,45 @@
             font-size: 15px;
             letter-spacing: 0.05em;
             text-transform: uppercase;
-            color: var(--bt-white);
+            color: #0f172a;
         }
         .bt-brand-sub {
             font-size: 10.5px;
-            color: #cac4c4;
+            color: #64748b;
             letter-spacing: 0.08em;
             text-transform: uppercase;
         }
         .bt-nav {
             display: flex;
             align-items: center;
-            gap: 2px;
+            gap: 6px;
             flex-wrap: wrap;
         }
         .bt-nav a {
-            padding: 7px 13px;
+            color: #1e293b;
+            border: 1px solid #cbd5e1;
+            border-radius: 6px !important;
+            padding: 7px 16px;
             font-size: 12px;
-            font-weight: 600;
-            color: #e6dfd8;
-            border: 1px solid transparent;
+            font-weight: 700;
             text-transform: uppercase;
             letter-spacing: 0.04em;
+            transition: all 0.25s ease;
         }
         .bt-nav-arrow {
             display: none !important;
         }
         .bt-nav a:hover, .bt-nav a.active {
             background-color: var(--bt-amber);
-            color: var(--bt-ink);
             border-color: var(--bt-amber);
+            color: #141210;
             border-radius: 6px !important;
+            box-shadow: 0 4px 14px rgba(241, 126, 1, 0.35) !important;
+            transform: translateY(-1px);
         }
         .bt-nav a.bt-nav-cta {
             background-color: var(--bt-amber);
             color: var(--bt-ink);
-            font-weight: 700;
             border-color: var(--bt-amber);
             border-radius: 6px !important;
             margin-left: 6px;
@@ -219,8 +230,10 @@
         .bt-nav a.bt-nav-cta:hover {
             background-color: #ffa033;
             border-color: #ffa033;
-            color: var(--bt-ink);
+            color: #141210;
             border-radius: 6px !important;
+            box-shadow: 0 4px 14px rgba(241, 126, 1, 0.45) !important;
+            transform: translateY(-1px);
         }
         /* Solid Section Bands */
         .sec-espresso { background-color: var(--bt-espresso); color: var(--bt-white); border-bottom: 1px solid #3f3a37; }
@@ -511,13 +524,10 @@
             display: block;
             width: 100%;
             height: 2.2px;
-            background-color: var(--bt-white);
+            background-color: #0f172a;
             border-radius: 2px !important;
             transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
             transform-origin: center;
-        }
-        .page-landing-light .bt-hamburger-icon .bt-bar {
-            background-color: #0f172a;
         }
         .bt-menu-toggle.is-active .bt-hamburger-icon .bt-bar:nth-child(1) {
             transform: translateY(7.4px) rotate(45deg);
@@ -635,9 +645,11 @@
                 left: 0;
                 right: 0;
                 width: 100%;
-                background-color: var(--bt-espresso);
-                border-top: 1px solid #443e3a;
-                box-shadow: 0 16px 36px -6px rgba(0, 0, 0, 0.45);
+                background-color: #ffffff;
+                border-top: 1px solid #e2e8f0;
+                border-bottom: 1px solid #e2e8f0;
+                box-shadow: 0 14px 30px -4px rgba(15, 23, 42, 0.12) !important;
+                border-radius: 0 0 10px 10px;
                 display: flex;
                 flex-direction: column;
                 align-items: stretch;
@@ -663,14 +675,10 @@
                 visibility: visible;
                 transform: translateY(0);
                 overflow-y: auto;
-                padding-top: 6px;
-                padding-bottom: 12px;
+                padding: 6px 16px 12px;
                 margin-top: 0;
-                border-top: 1px solid #443e3a;
+                border-top: 1px solid #e2e8f0;
                 pointer-events: auto;
-            }
-            .page-landing-light .bt-nav.open {
-                border-top-color: #e2e8f0;
             }
             .bt-nav a,
             .bt-nav a.bt-nav-cta {
@@ -680,17 +688,17 @@
                 margin-left: 0 !important;
                 width: 100% !important;
                 text-align: left !important;
-                padding: 13px 8px !important;
+                padding: 13px 4px !important;
                 font-size: 13px !important;
                 font-weight: 600 !important;
                 letter-spacing: 0.05em !important;
                 text-transform: uppercase !important;
                 background: transparent !important;
                 border: none !important;
-                border-bottom: 1px solid rgba(255, 255, 255, 0.08) !important;
+                border-bottom: 1px solid #f1f5f9 !important;
                 border-radius: 0 !important;
                 box-shadow: none !important;
-                color: #e6dfd8 !important;
+                color: #0f172a !important;
                 opacity: 0;
                 transform: translateY(-4px);
                 transition: opacity 0.25s ease 0.08s,
@@ -703,24 +711,26 @@
                 opacity: 1;
                 transform: translateY(0);
             }
-            .bt-nav a:last-child {
+            .bt-nav a:last-child,
+            .bt-nav a.bt-nav-cta:last-child {
                 border-bottom: none !important;
             }
             .bt-nav a:hover,
             .bt-nav a:active,
             .bt-nav a.active {
-                background: transparent !important;
-                color: var(--bt-amber) !important;
+                color: var(--bt-amber-deep) !important;
+                background: rgba(241, 126, 1, 0.04) !important;
                 border-radius: 0 !important;
                 box-shadow: none !important;
-                padding-left: 12px !important;
+                padding-left: 10px !important;
+                transform: none !important;
             }
             .bt-nav-arrow {
                 display: inline-flex !important;
                 align-items: center;
                 justify-content: center;
-                color: var(--bt-amber);
-                opacity: 0.75;
+                color: var(--bt-amber-deep);
+                opacity: 0.85;
                 transition: transform 0.2s ease, opacity 0.2s ease;
             }
             .bt-nav a:hover .bt-nav-arrow,
@@ -816,125 +826,9 @@
             }
         }
 
-        /* Cool Premium Business White Theme for Landing Page (Matching Teleios / Executive Ambience) */
+        /* Cool Premium Business White Theme */
         body.page-landing-light {
             background-color: #f8fafc;
-        }
-        .page-landing-light .bt-top-fixed {
-            background-color: rgba(255, 255, 255, 0.96);
-            backdrop-filter: blur(14px);
-            -webkit-backdrop-filter: blur(14px);
-            box-shadow: 0 2px 14px rgba(15, 23, 42, 0.05) !important;
-            border-bottom: none;
-        }
-        .page-landing-light .bt-utility {
-            background-color: #f8fafc;
-            color: #475569;
-            border-bottom: 1px solid #e2e8f0;
-        }
-        .page-landing-light .bt-utility strong {
-            color: #0f172a !important;
-        }
-        .page-landing-light .bt-role-btn {
-            background-color: #ffffff;
-            color: #1e293b;
-            border-color: #cbd5e1;
-        }
-        .page-landing-light .bt-role-btn.active,
-        .page-landing-light .bt-role-btn:hover {
-            background-color: var(--bt-amber);
-            color: var(--bt-ink);
-            border-color: var(--bt-amber);
-        }
-        .page-landing-light .bt-header {
-            background-color: rgba(255, 255, 255, 0.96);
-            color: var(--bt-ink);
-            border-bottom: 3px solid var(--bt-amber);
-        }
-        .page-landing-light .bt-brand-name {
-            color: #0f172a;
-        }
-        .page-landing-light .bt-brand-sub {
-            color: #64748b;
-        }
-        .page-landing-light .bt-nav a {
-            color: #1e293b;
-            border: 1px solid #cbd5e1;
-            border-radius: 6px !important;
-            padding: 7px 16px;
-            font-weight: 700;
-            transition: all 0.25s ease;
-        }
-        .page-landing-light .bt-nav a:hover,
-        .page-landing-light .bt-nav a.active {
-            background-color: var(--bt-amber);
-            border-color: var(--bt-amber);
-            color: #141210;
-            border-radius: 6px !important;
-            box-shadow: 0 4px 14px rgba(241, 126, 1, 0.35) !important;
-            transform: translateY(-1px);
-        }
-        .page-landing-light .bt-nav a.bt-nav-cta {
-            background-color: var(--bt-amber);
-            color: var(--bt-ink);
-            border-color: var(--bt-amber);
-            border-radius: 6px !important;
-        }
-        .page-landing-light .bt-nav a.bt-nav-cta:hover {
-            background-color: #ffa033;
-            border-color: #ffa033;
-            color: #141210;
-            border-radius: 6px !important;
-            box-shadow: 0 4px 14px rgba(241, 126, 1, 0.45) !important;
-            transform: translateY(-1px);
-        }
-        .page-landing-light .bt-menu-toggle {
-            background: transparent !important;
-            border: none !important;
-            box-shadow: none !important;
-            color: #0f172a;
-        }
-        @media (max-width: 720px) {
-            .page-landing-light .bt-nav {
-                background-color: #ffffff;
-                border-top: 1px solid #e2e8f0;
-                border-bottom: 1px solid #e2e8f0;
-                box-shadow: 0 14px 30px -4px rgba(15, 23, 42, 0.12) !important;
-                border-radius: 0 0 10px 10px;
-                padding: 0 16px;
-            }
-            .page-landing-light .bt-nav.open {
-                border-top-color: #e2e8f0;
-                padding: 6px 16px 12px;
-            }
-            .page-landing-light .bt-nav a,
-            .page-landing-light .bt-nav a.bt-nav-cta {
-                color: #0f172a !important;
-                background: transparent !important;
-                border: none !important;
-                border-bottom: 1px solid #f1f5f9 !important;
-                border-radius: 0 !important;
-                box-shadow: none !important;
-                padding: 13px 4px !important;
-                font-weight: 600 !important;
-            }
-            .page-landing-light .bt-nav a:last-child,
-            .page-landing-light .bt-nav a.bt-nav-cta:last-child {
-                border-bottom: none !important;
-            }
-            .page-landing-light .bt-nav a:hover,
-            .page-landing-light .bt-nav a:active,
-            .page-landing-light .bt-nav a.active {
-                color: var(--bt-amber-deep) !important;
-                background: rgba(241, 126, 1, 0.04) !important;
-                border-radius: 0 !important;
-                box-shadow: none !important;
-                padding-left: 10px !important;
-                transform: none !important;
-            }
-            .page-landing-light .bt-nav-arrow {
-                color: var(--bt-amber-deep);
-            }
         }
         @media (max-width: 480px) {
             .bt-brand-name {
@@ -958,12 +852,12 @@
         <div class="bt-utility">
             <div class="bt-utility-inner">
                 <div>
-                    <strong style="color:#fff;">BRIDGE-TAILOR CONSULTING</strong> · {{ $uiText('text.top_bar_office') }} ·
-                    <a href="https://bridge-tailor.com" target="_blank" rel="noopener" style="color:var(--bt-amber);text-decoration:underline;">www.bridge-tailor.com</a>
+                    <strong style="color:#0f172a;">BRIDGE-TAILOR CONSULTING</strong> · {{ $uiText('text.top_bar_office') }} ·
+                    <a href="https://bridge-tailor.com" target="_blank" rel="noopener" style="color:var(--bt-amber-deep);text-decoration:underline;">www.bridge-tailor.com</a>
                 </div>
                 <div style="display:flex;align-items:center;gap:12px;flex-wrap:wrap;">
                     @auth
-                        <span>Signed in as <a href="{{ route('profile.show') }}" style="color:#fff;font-weight:700;text-decoration:underline;">{{ auth()->user()->name }}</a>
+                        <span style="color:#334155;">Signed in as <a href="{{ route('profile.show') }}" style="color:var(--bt-amber-deep);font-weight:700;text-decoration:underline;">{{ auth()->user()->name }}</a>
                             <span class="tag tag-amber" style="margin-left:4px;">{{ strtoupper(auth()->user()->role) }}</span>
                         </span>
                         <a href="{{ route('profile.show') }}" class="bt-role-btn {{ request()->routeIs('profile.*') ? 'active' : '' }}">My Profile</a>
