@@ -918,11 +918,17 @@
         <header class="bt-header">
             <div class="bt-header-inner">
                 <a href="{{ route('diagnostic.landing') }}" class="bt-brand">
-                    <span class="bt-brand-mark">BT</span>
+                    @if(!empty($uiText('text.brand_logo_image')))
+                        <img src="{{ str_starts_with($uiText('text.brand_logo_image'), 'http') ? $uiText('text.brand_logo_image') : asset(ltrim($uiText('text.brand_logo_image'), '/')) }}" alt="{{ $uiText('text.brand_title') }}" style="max-height:42px;max-width:200px;object-fit:contain;border-radius:6px;display:inline-block;">
+                    @else
+                        <span class="bt-brand-mark">BT</span>
+                    @endif
+                    @if($uiVisible('vis.brand_text_beside_logo'))
                     <span class="bt-brand-text">
                         <span class="bt-brand-name">{{ $uiText('text.brand_title') }}</span>
                         <span class="bt-brand-sub">{{ $uiText('text.brand_subtitle') }}</span>
                     </span>
+                    @endif
                 </a>
                 <button type="button" class="bt-menu-toggle" id="bt-menu-toggle-btn" onclick="toggleMobileNav(this)" aria-label="Toggle navigation" aria-expanded="false">
                     <span class="bt-hamburger-icon">

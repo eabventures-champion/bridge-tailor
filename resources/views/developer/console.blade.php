@@ -404,18 +404,22 @@
                         <div class="flat-box" style="background:var(--bt-slate);">
                             <div class="field" style="margin-bottom:0;">
                                 <label>{{ $item['label'] }} <span style="font-weight:400;opacity:0.7;">({{ $key }})</span></label>
-                                @if((str_contains($key, 'slide_') && str_contains($key, '_image')) || str_contains($key, 'login_welcome_image'))
+                                @if((str_contains($key, 'slide_') && str_contains($key, '_image')) || str_contains($key, 'login_welcome_image') || str_contains($key, 'brand_logo_image') || str_contains($key, '_image'))
                                     <div style="display:flex;gap:10px;align-items:center;margin-bottom:6px;">
                                         @php
                                             $currImg = $item['current'] ?? '';
-                                            $previewUrl = str_starts_with($currImg, 'http') ? $currImg : asset(ltrim($currImg, '/'));
+                                            $previewUrl = !empty($currImg) ? (str_starts_with($currImg, 'http') ? $currImg : asset(ltrim($currImg, '/'))) : null;
                                         @endphp
-                                        <img src="{{ $previewUrl }}" alt="Preview" style="height:44px;width:72px;object-fit:cover;border:1px solid #cbd5e1;background:#e2e8f0;flex-shrink:0;">
-                                        <input type="text" name="texts[{{ $key }}]" value="{{ $item['current'] }}" placeholder="{{ $item['placeholder'] ?? 'e.g. images/slider/slide-1.jpg or https://...' }}" style="flex:1;">
+                                        @if($previewUrl)
+                                            <img src="{{ $previewUrl }}" alt="Preview" style="height:44px;max-width:90px;object-fit:contain;border:1px solid #cbd5e1;background:#fff;padding:2px;flex-shrink:0;border-radius:6px;">
+                                        @else
+                                            <div style="height:44px;width:72px;border:1px dashed #cbd5e1;background:#f8fafc;display:flex;align-items:center;justify-content:center;font-size:10px;color:#94a3b8;flex-shrink:0;border-radius:6px;">No Image</div>
+                                        @endif
+                                        <input type="text" name="texts[{{ $key }}]" value="{{ $item['current'] }}" placeholder="{{ $item['placeholder'] ?? 'e.g. images/branding/logo.png or https://...' }}" style="flex:1;">
                                     </div>
                                     <div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap;">
                                         <span style="font-size:10.5px;font-weight:700;color:var(--bt-umber);text-transform:uppercase;">Or upload replacement file:</span>
-                                        <input type="file" name="slide_uploads[{{ $key }}]" accept="image/*" style="font-size:11px;padding:3px 6px;">
+                                        <input type="file" name="slide_uploads[{{ $key }}]" accept="image/*,.svg" style="font-size:11px;padding:3px 6px;">
                                     </div>
                                 @elseif(strlen((string) $item['current']) > 110)
                                     <textarea name="texts[{{ $key }}]" rows="3" placeholder="{{ $item['placeholder'] ?? '' }}">{{ $item['current'] }}</textarea>

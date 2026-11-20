@@ -27,6 +27,12 @@ class PlatformSetting extends Model
                 'label' => 'Top Utility Bar — Office & Location Text',
                 'value' => 'East Legon, Accra, Ghana',
             ],
+            'text.brand_logo_image' => [
+                'group' => 'text', 'type' => 'string',
+                'label' => 'Header Navbar — Brand Logo Image (File Upload or URL Path)',
+                'placeholder' => 'Upload image below or enter e.g. images/branding/logo.png or https://...',
+                'value' => '',
+            ],
             'text.brand_title' => [
                 'group' => 'text', 'type' => 'string',
                 'label' => 'Header — Brand Title',
@@ -215,6 +221,11 @@ class PlatformSetting extends Model
             ],
 
             // Dynamic Component & Card Visibility Toggles ('1' = visible, '0' = hidden)
+            'vis.brand_text_beside_logo' => [
+                'group' => 'visibility', 'type' => 'boolean',
+                'label' => 'Header — Show Brand Title & Subtitle Next to Logo',
+                'value' => '1',
+            ],
             'vis.nav_overview' => [
                 'group' => 'visibility', 'type' => 'boolean',
                 'label' => 'Navigation — "Overview" Header Link (Highlighted in Navigation)',
