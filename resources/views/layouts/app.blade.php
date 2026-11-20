@@ -589,6 +589,9 @@
                 padding-top: 8px;
                 margin-top: 4px;
                 gap: 4px;
+                max-height: calc(100vh - 120px);
+                max-height: calc(100dvh - 120px);
+                overflow-y: auto;
             }
             .bt-nav.open {
                 display: flex;
@@ -597,7 +600,8 @@
                 margin-left: 0;
                 width: 100%;
                 text-align: left;
-                padding: 9px 12px;
+                padding: 10px 12px;
+                font-size: 12px;
             }
             h1 {
                 font-size: 22px !important;
@@ -755,6 +759,27 @@
             .page-landing-light .bt-nav {
                 background-color: #ffffff;
                 border-top-color: #e2e8f0;
+                box-shadow: 0 10px 25px -5px rgba(15, 23, 42, 0.08) !important;
+            }
+            .page-landing-light .bt-nav a {
+                color: #1e293b;
+                border-bottom: 1px solid #f1f5f9;
+                padding: 11px 14px;
+            }
+            .page-landing-light .bt-nav a:last-child {
+                border-bottom: none;
+            }
+        }
+        @media (max-width: 480px) {
+            .bt-brand-name {
+                font-size: 13.5px;
+            }
+            .bt-brand-sub {
+                font-size: 9.5px;
+            }
+            .bt-brand-mark {
+                font-size: 12px;
+                padding: 5px 7px;
             }
         }
     </style>
@@ -899,6 +924,9 @@
             }
         }
         window.addEventListener('resize', syncFixedHeaderOffset);
+        window.addEventListener('orientationchange', function () {
+            setTimeout(syncFixedHeaderOffset, 150);
+        });
 
         function togglePasswordVisibility(btn) {
             const wrap = btn.closest('.pw-wrap');

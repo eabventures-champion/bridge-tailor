@@ -254,22 +254,130 @@
 
     @media (max-width: 900px) {
         .bt-hero-slider-section {
-            min-height: auto;
+            min-height: calc(100vh - 75px);
+            min-height: calc(100dvh - 75px);
+            min-height: 540px;
+        }
+        .bt-slide-tint {
+            background: linear-gradient(to bottom,
+                rgba(255, 255, 255, 0.45) 0%,
+                rgba(255, 255, 255, 0.18) 50%,
+                rgba(255, 255, 255, 0.45) 100%
+            );
         }
         .bt-slide-inner {
-            padding: 24px 0 64px;
+            padding: 28px 16px 80px;
         }
         .bt-hero-transparent-card {
-            padding: 22px 20px;
-            background: rgba(255, 255, 255, 0.55);
+            padding: 24px 20px;
+            background: rgba(255, 255, 255, 0.68);
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.85);
+            max-width: 100%;
         }
         .bt-hero-title {
             font-size: 26px;
+            line-height: 1.2;
+            margin-bottom: 12px;
+        }
+        .bt-hero-subtitle {
+            font-size: 13.5px;
+            line-height: 1.58;
+        }
+        .bt-hero-actions {
+            flex-direction: column;
+            align-items: stretch;
+            gap: 10px;
+            margin-top: 18px;
+            padding-top: 16px;
+        }
+        .bt-hero-cta {
+            width: 100%;
+            justify-content: center;
+            text-align: center;
+            padding: 12px 18px;
+            font-size: 12.5px;
+        }
+        .bt-hero-btn-secondary {
+            width: 100%;
+            justify-content: center;
+            text-align: center;
+            padding: 11px 16px;
+            font-size: 12px;
         }
         .bt-slider-controls {
-            right: 50%;
-            transform: translateX(50%);
-            bottom: 12px;
+            left: 50%;
+            right: auto;
+            transform: translateX(-50%);
+            bottom: 14px;
+            max-width: calc(100% - 32px);
+            padding: 5px 12px;
+            gap: 10px;
+            box-shadow: 0 4px 16px rgba(15, 23, 42, 0.12) !important;
+        }
+    }
+
+    @media (max-width: 640px) {
+        .bt-hero-slider-section {
+            min-height: calc(100vh - 70px);
+            min-height: calc(100dvh - 70px);
+            min-height: 500px;
+        }
+        .bt-slide-inner {
+            padding: 16px 12px 75px;
+        }
+        .bt-hero-transparent-card {
+            padding: 18px 16px;
+            background: rgba(255, 255, 255, 0.72);
+        }
+        .bt-hero-title {
+            font-size: 22px;
+            line-height: 1.22;
+            margin-bottom: 8px;
+        }
+        .bt-hero-subtitle {
+            font-size: 12.5px;
+            line-height: 1.52;
+        }
+        .bt-hero-actions {
+            margin-top: 14px;
+            padding-top: 12px;
+            gap: 8px;
+        }
+        .bt-hero-cta {
+            font-size: 11.5px;
+            padding: 11px 14px;
+            letter-spacing: 0.04em;
+        }
+        .bt-slider-controls {
+            bottom: 10px;
+            padding: 4px 10px;
+            gap: 6px;
+        }
+        .bt-slider-arrow {
+            width: 32px;
+            height: 32px;
+        }
+        .bt-slider-dot {
+            width: 8px;
+            height: 8px;
+        }
+        .bt-slider-dot.active {
+            width: 22px;
+        }
+    }
+
+    @media (max-width: 380px) {
+        .bt-hero-title {
+            font-size: 19.5px;
+        }
+        .bt-hero-subtitle {
+            font-size: 11.5px;
+            line-height: 1.48;
+        }
+        .bt-hero-transparent-card {
+            padding: 15px 12px;
         }
     }
 </style>
@@ -502,6 +610,7 @@
             <a href="{{ route('diagnostic.wizard') }}" class="btn btn-sm">Run Full or Targeted Module Assessment →</a>
         </div>
 
+        <div class="bt-table-wrap">
         <table class="bt-table">
             <thead>
                 <tr>
@@ -515,12 +624,12 @@
             <tbody>
                 @foreach($fw->modules() as $mKey => $module)
                     <tr>
-                        <td style="font-weight:800;font-size:13px;color:var(--bt-amber-deep);">{{ $mKey }}</td>
-                        <td>
+                        <td data-label="Module Code" style="font-weight:800;font-size:13px;color:var(--bt-amber-deep);">{{ $mKey }}</td>
+                        <td data-label="Assessment Module">
                             <div style="font-weight:700;color:var(--bt-ink);">{{ $module['name'] }}</div>
                             <div style="font-size:11.5px;color:#555;margin-top:2px;">{{ $module['description'] }}</div>
                         </td>
-                        <td>
+                        <td data-label="5 Core Assessment Criteria">
                             <div style="display:flex;flex-wrap:wrap;gap:4px;">
                                 @foreach($module['criteria'] as $cKey => $crit)
                                     <span style="display:inline-block;border:1px solid #d6cdc2;background:#faf6f0;padding:2px 6px;font-size:11px;font-weight:600;">
@@ -529,7 +638,7 @@
                                 @endforeach
                             </div>
                         </td>
-                        <td>
+                        <td data-label="Bridge Tailor Programme Routing">
                             @php
                                 $progKeys = collect($module['criteria'])->pluck('programme')->unique()->filter();
                             @endphp
@@ -543,7 +652,7 @@
                                 @endif
                             @endforeach
                         </td>
-                        <td>
+                        <td data-label="Assessment Action">
                             <a href="{{ route('diagnostic.wizard', ['target' => $mKey]) }}" class="btn btn-outline btn-sm" style="width:100%;">
                                 Assess {{ $module['short'] }}
                             </a>
@@ -552,6 +661,7 @@
                 @endforeach
             </tbody>
         </table>
+        </div>
     </div>
 </section>
 @endif
