@@ -4,232 +4,661 @@
 
 @push('head')
 <style>
-    .wiz-shell {
-        display: grid;
-        grid-template-columns: 270px 1fr;
-        min-height: calc(100vh - 110px);
-        border-bottom: 1px solid var(--bt-border);
+    /* Modern Wizard Shell */
+    .bt-wiz-wrapper {
+        max-width: 1180px;
+        margin: 0 auto;
+        padding: 28px 20px 80px;
     }
-    @media (max-width: 960px) {
-        .wiz-shell { grid-template-columns: 1fr; }
-        .wiz-rail {
-            border-right: none;
-            border-bottom: 2px solid var(--bt-amber);
-            padding: 14px 12px;
-        }
-        #rail-modules {
-            display: grid;
-            grid-template-columns: repeat(2, 1fr);
-            gap: 6px;
-        }
-        .rail-mod { margin-bottom: 0; }
+
+    /* Top Stepper Header Card */
+    .bt-wiz-header-card {
+        background: #ffffff;
+        border: 1px solid #e2e8f0;
+        border-radius: 16px;
+        box-shadow: 0 4px 24px -2px rgba(15, 23, 42, 0.06);
+        overflow: hidden;
+        margin-bottom: 24px;
     }
-    @media (max-width: 640px) {
-        #rail-modules {
-            grid-template-columns: 1fr;
-        }
-        .wiz-steps {
-            grid-template-columns: repeat(2, 1fr) !important;
-        }
-        .wiz-step-tab {
-            border-bottom: 1px solid var(--bt-border);
-            padding: 8px 10px;
-            font-size: 10.5px;
-        }
-        .symptom-head {
-            flex-direction: column;
-            align-items: flex-start;
-            gap: 4px;
-        }
-        .pain-pip {
-            width: 34px;
-            height: 32px;
-        }
-    }
-    .wiz-rail {
-        background-color: var(--bt-espresso);
-        color: var(--bt-white);
-        border-right: 2px solid var(--bt-amber);
-        padding: 20px 18px;
+
+    /* Top Meta & Live Stats Strip */
+    .bt-wiz-meta-strip {
+        padding: 12px 24px;
+        background: #f8fafc;
+        border-bottom: 1px solid #f1f5f9;
         display: flex;
-        flex-direction: column;
         justify-content: space-between;
+        align-items: center;
+        flex-wrap: wrap;
+        gap: 12px;
     }
-    .rail-mod {
-        border: 1px solid #47413d;
-        background-color: #211f1d;
-        padding: 9px 11px;
-        margin-bottom: 7px;
-        opacity: 0.55;
-    }
-    .rail-mod.active {
-        opacity: 1;
-        border-color: var(--bt-amber);
-        background-color: #342f2c;
-    }
-    .rail-mod-head {
+    .bt-wiz-meta-left {
         display: flex;
         align-items: center;
-        gap: 9px;
+        gap: 10px;
     }
-    .rail-badge {
-        width: 28px;
-        height: 28px;
-        background-color: #3f3935;
-        color: #d0c7be;
-        font-weight: 800;
+    .bt-wiz-pill-badge {
+        display: inline-flex;
+        align-items: center;
+        gap: 6px;
+        padding: 4px 10px;
+        background: #fff7ed;
+        color: var(--bt-amber-deep, #c25e00);
+        border: 1px solid #fed7aa;
+        border-radius: 9999px;
         font-size: 11px;
+        font-weight: 800;
+        letter-spacing: 0.05em;
+        text-transform: uppercase;
+    }
+    .bt-wiz-pill-badge::before {
+        content: '';
+        display: inline-block;
+        width: 6px;
+        height: 6px;
+        border-radius: 50%;
+        background-color: var(--bt-amber, #f17e01);
+    }
+    .bt-wiz-meta-text {
+        font-size: 12.5px;
+        color: #475569;
+        font-weight: 500;
+    }
+    .bt-wiz-meta-stats {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        flex-wrap: wrap;
+    }
+    .bt-wiz-stat-chip {
+        display: inline-flex;
+        align-items: center;
+        gap: 6px;
+        background: #ffffff;
+        border: 1px solid #e2e8f0;
+        padding: 4px 10px;
+        border-radius: 8px;
+        font-size: 12px;
+        color: #64748b;
+    }
+    .bt-wiz-stat-chip strong {
+        color: #0f172a;
+        font-weight: 700;
+    }
+    .bt-wiz-stat-chip.highlight {
+        background: #fff7ed;
+        border-color: #fbd38d;
+        color: #9a3412;
+    }
+    .bt-wiz-stat-chip.highlight strong {
+        color: var(--bt-amber-deep, #c25e00);
+    }
+
+    /* Animated Slim Progress Track */
+    .bt-wiz-progress-track {
+        height: 4px;
+        background: #f1f5f9;
+        position: relative;
+        overflow: hidden;
+    }
+    .bt-wiz-progress-fill {
+        height: 100%;
+        background: linear-gradient(90deg, #f17e01 0%, #fb923c 100%);
+        transition: width 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+
+    /* 4 Interactive Step Tabs */
+    .bt-wiz-steps-row {
+        display: grid;
+        grid-template-columns: repeat(4, 1fr);
+        background: #ffffff;
+    }
+    .bt-wiz-step-item {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        padding: 16px 20px;
+        background: transparent;
+        border: none;
+        border-bottom: 3px solid transparent;
+        border-right: 1px solid #f1f5f9;
+        cursor: pointer;
+        text-align: left;
+        font-family: inherit;
+        transition: all 0.2s ease;
+        position: relative;
+    }
+    .bt-wiz-step-item:last-child {
+        border-right: none;
+    }
+    .bt-wiz-step-item:hover {
+        background: #f8fafc;
+    }
+    .bt-wiz-step-item.active {
+        background: #ffffff;
+        border-bottom-color: var(--bt-amber, #f17e01);
+    }
+    .bt-wiz-step-item.completed {
+        background: #fafafa;
+    }
+
+    .bt-wiz-step-num {
+        width: 32px;
+        height: 32px;
+        border-radius: 50%;
+        border: 2px solid #cbd5e1;
+        background: #ffffff;
+        color: #64748b;
+        font-size: 13px;
+        font-weight: 800;
         display: flex;
         align-items: center;
         justify-content: center;
         flex-shrink: 0;
+        transition: all 0.2s ease;
     }
-    .rail-mod.active .rail-badge {
-        background-color: var(--bt-amber);
-        color: var(--bt-ink);
+    .bt-wiz-step-item.active .bt-wiz-step-num {
+        border-color: var(--bt-amber, #f17e01);
+        background: var(--bt-amber, #f17e01);
+        color: #ffffff;
+        box-shadow: 0 0 0 3px rgba(241, 126, 1, 0.2);
     }
-    .wiz-steps {
-        display: grid;
-        grid-template-columns: repeat(4, 1fr);
-        border-bottom: 2px solid var(--bt-espresso);
-        background-color: var(--bt-slate);
+    .bt-wiz-step-item.completed .bt-wiz-step-num {
+        border-color: #059669;
+        background: #059669;
+        color: #ffffff;
     }
-    .wiz-step-tab {
-        padding: 10px 14px;
+    .bt-wiz-step-num .num-check {
+        display: none;
+    }
+    .bt-wiz-step-item.completed .bt-wiz-step-num .num-text {
+        display: none;
+    }
+    .bt-wiz-step-item.completed .bt-wiz-step-num .num-check {
+        display: inline;
+    }
+
+    .bt-wiz-step-info {
+        display: flex;
+        flex-direction: column;
+        gap: 2px;
+        min-width: 0;
+    }
+    .bt-wiz-step-title {
+        font-size: 13.5px;
+        font-weight: 700;
+        color: #334155;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        transition: color 0.15s ease;
+    }
+    .bt-wiz-step-item.active .bt-wiz-step-title {
+        color: #0f172a;
+    }
+    .bt-wiz-step-sub {
+        font-size: 11px;
+        color: #94a3b8;
+        font-weight: 500;
+    }
+    .bt-wiz-step-item.active .bt-wiz-step-sub {
+        color: var(--bt-amber-deep, #c25e00);
+        font-weight: 600;
+    }
+
+    /* Responsive Stepper */
+    @media (max-width: 900px) {
+        .bt-wiz-steps-row {
+            grid-template-columns: repeat(2, 1fr);
+        }
+        .bt-wiz-step-item {
+            border-bottom: 1px solid #f1f5f9;
+        }
+        .bt-wiz-step-item.active {
+            border-bottom: 2px solid var(--bt-amber, #f17e01);
+        }
+    }
+    @media (max-width: 540px) {
+        .bt-wiz-wrapper {
+            padding: 16px 12px 60px;
+        }
+        .bt-wiz-steps-row {
+            grid-template-columns: 1fr;
+        }
+        .bt-wiz-step-item {
+            padding: 10px 14px;
+        }
+    }
+
+    /* Modern Card Layouts */
+    .bt-step-pane {
+        animation: stepFadeIn 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+    @keyframes stepFadeIn {
+        from {
+            opacity: 0;
+            transform: translateY(8px);
+        }
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    }
+
+    .bt-card {
+        background: #ffffff;
+        border: 1px solid #e2e8f0;
+        border-radius: 14px;
+        padding: 24px 26px;
+        box-shadow: 0 2px 14px rgba(15, 23, 42, 0.04);
+        margin-bottom: 20px;
+    }
+    .bt-card-title {
+        font-family: 'DM Serif Display', Georgia, serif;
+        font-size: 20px;
+        color: #0f172a;
+        margin: 0 0 6px;
+    }
+    .bt-card-sub {
+        font-size: 13px;
+        color: #64748b;
+        margin: 0 0 16px;
+        line-height: 1.5;
+    }
+
+    /* Section Banner Header */
+    .bt-step-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: flex-start;
+        flex-wrap: wrap;
+        gap: 16px;
+        margin-bottom: 22px;
+        padding: 4px 2px;
+    }
+    .bt-step-eyebrow {
+        font-size: 11px;
+        font-weight: 800;
+        text-transform: uppercase;
+        letter-spacing: 0.08em;
+        color: var(--bt-amber-deep, #c25e00);
+        margin-bottom: 4px;
+    }
+    .bt-step-title {
+        font-family: 'DM Serif Display', Georgia, serif;
+        font-size: 26px;
+        color: #0f172a;
+        margin: 0 0 6px;
+        line-height: 1.25;
+    }
+    .bt-step-desc {
+        font-size: 13.5px;
+        color: #64748b;
+        margin: 0;
+        max-width: 680px;
+        line-height: 1.5;
+    }
+
+    /* Demo Prefill Pill Button */
+    .bt-prefill-btn {
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        padding: 9px 16px;
+        background: #ffffff;
+        border: 1.5px solid var(--bt-amber, #f17e01);
+        color: var(--bt-amber-deep, #c25e00);
+        border-radius: 8px;
+        font-size: 12.5px;
+        font-weight: 700;
+        cursor: pointer;
+        box-shadow: 0 2px 8px rgba(241, 126, 1, 0.12);
+        transition: all 0.2s ease;
+    }
+    .bt-prefill-btn:hover {
+        background: #fff7ed;
+        transform: translateY(-1px);
+        box-shadow: 0 4px 12px rgba(241, 126, 1, 0.2);
+    }
+    .bt-prefill-btn:active {
+        transform: translateY(0);
+    }
+
+    /* Modern Input Controls */
+    .field {
+        margin-bottom: 16px;
+    }
+    .field label {
+        display: block;
         font-size: 11.5px;
         font-weight: 700;
         text-transform: uppercase;
-        letter-spacing: 0.04em;
-        border-right: 1px solid var(--bt-border);
-        cursor: pointer;
-        color: #6b625b;
-        background-color: var(--bt-slate);
-        text-align: left;
-    }
-    .wiz-step-tab.active {
-        background-color: var(--bt-espresso);
-        color: var(--bt-white);
-    }
-    .wiz-step-tab.completed {
-        background-color: var(--bt-amber-pale);
-        color: var(--bt-ink);
-    }
-    /* Symptom Rows */
-    .symptom-item {
-        border: 1px solid var(--bt-border);
-        background-color: var(--bt-white);
+        letter-spacing: 0.05em;
+        color: #334155;
         margin-bottom: 6px;
     }
-    .symptom-item.selected {
-        border-color: var(--bt-ink);
-        border-left: 4px solid var(--bt-amber);
-        background-color: var(--bt-amber-pale);
+    input[type="text"],
+    input[type="email"],
+    select,
+    textarea {
+        width: 100%;
+        padding: 11px 14px;
+        font-size: 13.5px;
+        font-family: inherit;
+        color: #0f172a;
+        background-color: #ffffff;
+        border: 1px solid #cbd5e1;
+        border-radius: 8px !important;
+        transition: border-color 0.2s ease, box-shadow 0.2s ease;
+        outline: none;
     }
-    .symptom-head {
-        padding: 8px 12px;
+    input:focus,
+    select:focus,
+    textarea:focus {
+        border-color: var(--bt-amber, #f17e01) !important;
+        box-shadow: 0 0 0 3px rgba(241, 126, 1, 0.18) !important;
+    }
+
+    /* Scope Grid in Step 1 */
+    .bt-scope-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+        gap: 12px;
+        margin-top: 14px;
+    }
+    .bt-scope-card {
+        border: 1px solid #cbd5e1;
+        border-radius: 10px;
+        padding: 12px 14px;
+        background: #ffffff;
+        cursor: pointer;
+        transition: all 0.2s ease;
+        display: flex;
+        flex-direction: column;
+        justify-content: space-between;
+    }
+    .bt-scope-card:hover {
+        border-color: var(--bt-amber, #f17e01);
+        transform: translateY(-1px);
+        box-shadow: 0 4px 12px rgba(15, 23, 42, 0.05);
+    }
+    .bt-scope-card.active {
+        border-color: var(--bt-amber, #f17e01);
+        background: #fffdfa;
+        box-shadow: 0 0 0 2px rgba(241, 126, 1, 0.15);
+    }
+
+    /* Symptom Intake Styling (Step 2) */
+    .bt-symptom-card {
+        border: 1px solid #e2e8f0;
+        background: #ffffff;
+        border-radius: 10px;
+        margin-bottom: 8px;
+        transition: all 0.2s ease;
+        overflow: hidden;
+    }
+    .bt-symptom-card:hover {
+        border-color: #cbd5e1;
+        box-shadow: 0 2px 8px rgba(15, 23, 42, 0.04);
+    }
+    .bt-symptom-card.selected {
+        border-color: var(--bt-amber, #f17e01);
+        border-left: 4px solid var(--bt-amber, #f17e01);
+        background: #fffdfa;
+    }
+    .bt-symptom-head {
+        padding: 12px 16px;
         display: flex;
         justify-content: space-between;
         align-items: center;
         cursor: pointer;
-        font-size: 13px;
+        font-size: 13.5px;
         font-weight: 600;
+        color: #1e293b;
+        gap: 12px;
     }
-    .pain-bar {
-        padding: 6px 12px 9px;
-        border-top: 1px solid #e2c7a4;
+    .bt-symptom-head span.quote {
+        flex: 1;
+        line-height: 1.45;
+    }
+    .bt-symptom-badge {
+        font-size: 10px;
+        font-weight: 800;
+        letter-spacing: 0.04em;
+        text-transform: uppercase;
+        color: #64748b;
+        background: #f1f5f9;
+        padding: 3px 7px;
+        border-radius: 6px;
+        flex-shrink: 0;
+    }
+    .bt-symptom-card.selected .bt-symptom-badge {
+        background: #fff7ed;
+        color: var(--bt-amber-deep, #c25e00);
+    }
+
+    /* Tactile Pain Rating Bar */
+    .bt-pain-bar {
+        padding: 10px 16px 14px;
+        background: #fafafa;
+        border-top: 1px dashed #fed7aa;
         display: flex;
         align-items: center;
-        gap: 6px;
+        gap: 8px;
         flex-wrap: wrap;
     }
-    .pain-pip {
-        width: 28px;
-        height: 25px;
-        border: 1px solid var(--bt-ink);
-        background-color: var(--bt-white);
-        color: var(--bt-ink);
+    .bt-pain-label {
         font-size: 11px;
         font-weight: 800;
+        text-transform: uppercase;
+        color: #475569;
+        margin-right: 4px;
+    }
+    .bt-pain-pill {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        width: 34px;
+        height: 32px;
+        border: 1.5px solid #cbd5e1;
+        border-radius: 8px;
+        background: #ffffff;
+        color: #334155;
+        font-size: 12px;
+        font-weight: 800;
         cursor: pointer;
+        transition: all 0.15s ease;
     }
-    .pain-pip.on {
-        background-color: var(--bt-ink);
-        color: var(--bt-white);
+    .bt-pain-pill:hover {
+        border-color: var(--bt-amber, #f17e01);
+        color: var(--bt-amber-deep, #c25e00);
+        transform: translateY(-1px);
     }
-    /* Gateway Question Blocks */
+    .bt-pain-pill.on {
+        background: var(--bt-amber, #f17e01);
+        border-color: var(--bt-amber, #f17e01);
+        color: #ffffff;
+        box-shadow: 0 2px 6px rgba(241, 126, 1, 0.3);
+    }
+
+    /* Evidence Questionnaire (Step 3) */
+    .mod-subnav {
+        display: flex;
+        gap: 6px;
+        margin-bottom: 20px;
+        flex-wrap: wrap;
+    }
+    .mod-subnav-btn {
+        border: 1px solid #cbd5e1;
+        background: #ffffff;
+        color: #334155;
+        padding: 8px 14px;
+        font-size: 12.5px;
+        font-weight: 700;
+        border-radius: 8px;
+        cursor: pointer;
+        font-family: inherit;
+        transition: all 0.2s ease;
+        display: inline-flex;
+        align-items: center;
+        gap: 6px;
+    }
+    .mod-subnav-btn:hover {
+        border-color: var(--bt-amber, #f17e01);
+        background: #fff7ed;
+    }
+    .mod-subnav-btn.current {
+        background: #0f172a;
+        border-color: #0f172a;
+        color: #ffffff;
+        box-shadow: 0 2px 8px rgba(15, 23, 42, 0.15);
+    }
+
+    /* Module Hero Banner inside Step 3 */
+    .bt-module-banner {
+        background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%);
+        color: #ffffff;
+        border-radius: 12px;
+        padding: 20px 24px;
+        margin-bottom: 18px;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        flex-wrap: wrap;
+        gap: 14px;
+        border: 1px solid rgba(255, 255, 255, 0.08);
+    }
+    .bt-module-banner-score {
+        background: rgba(255, 255, 255, 0.06);
+        border: 1px solid rgba(241, 126, 1, 0.4);
+        padding: 10px 18px;
+        border-radius: 10px;
+        text-align: right;
+    }
+
+    /* Question Block */
     .q-block {
-        border: 1px solid var(--bt-border);
-        background-color: var(--bt-white);
-        padding: 12px 14px;
-        margin-bottom: 10px;
+        border: 1px solid #e2e8f0;
+        background: #ffffff;
+        padding: 16px 18px;
+        border-radius: 10px;
+        margin-bottom: 12px;
+        transition: border-color 0.2s ease, box-shadow 0.2s ease;
+    }
+    .q-block:hover {
+        border-color: #cbd5e1;
+        box-shadow: 0 2px 8px rgba(15, 23, 42, 0.03);
     }
     .q-block.followup {
-        border-left: 4px solid var(--bt-amber-deep);
-        background-color: #fffaf3;
+        border-left: 4px solid var(--bt-amber-deep, #c25e00);
+        background: #fffdfa;
     }
     .q-opt-grid {
         display: grid;
         grid-template-columns: repeat(3, 1fr);
-        gap: 6px;
-        margin-top: 8px;
+        gap: 8px;
+        margin-top: 12px;
     }
     @media (max-width: 720px) {
         .q-opt-grid { grid-template-columns: 1fr; }
     }
     .q-opt-btn {
-        border: 1px solid #b8aea2;
-        background-color: var(--bt-white);
-        color: var(--bt-ink);
-        padding: 8px 10px;
+        border: 1.5px solid #cbd5e1;
+        background: #ffffff;
+        color: #1e293b;
+        padding: 11px 13px;
+        border-radius: 8px;
         text-align: left;
         font-family: inherit;
-        font-size: 12.5px;
+        font-size: 13px;
         font-weight: 600;
         cursor: pointer;
         display: flex;
         justify-content: space-between;
         align-items: center;
+        transition: all 0.15s ease;
+        line-height: 1.35;
     }
     .q-opt-btn:hover {
-        background-color: var(--bt-cream);
+        border-color: #94a3b8;
+        background: #f8fafc;
+        transform: translateY(-1px);
     }
     .q-opt-btn.selected-0 {
-        background-color: var(--bt-teal);
-        border-color: var(--bt-teal);
-        color: #fff;
+        background: #ecfdf5;
+        border-color: #059669;
+        color: #065f46;
+        box-shadow: 0 0 0 2px rgba(5, 150, 105, 0.2);
     }
     .q-opt-btn.selected-1 {
-        background-color: var(--bt-amber);
-        border-color: var(--bt-ink);
-        color: var(--bt-ink);
+        background: #fffbeb;
+        border-color: #d97706;
+        color: #92400e;
+        box-shadow: 0 0 0 2px rgba(217, 119, 6, 0.2);
     }
     .q-opt-btn.selected-2 {
-        background-color: var(--bt-ink);
-        border-color: var(--bt-ink);
-        color: #fff;
+        background: #f1f5f9;
+        border-color: #475569;
+        color: #0f172a;
+        box-shadow: 0 0 0 2px rgba(71, 85, 105, 0.2);
     }
-    .mod-subnav {
+
+    /* Criterion Group Header */
+    .bt-criterion-header {
         display: flex;
-        gap: 4px;
-        margin-bottom: 14px;
-        flex-wrap: wrap;
-    }
-    .mod-subnav-btn {
-        border: 1px solid var(--bt-border-strong);
-        background-color: var(--bt-white);
-        color: var(--bt-ink);
-        padding: 6px 11px;
+        justify-content: space-between;
+        align-items: center;
+        background: #f1f5f9;
+        padding: 9px 14px;
+        border-radius: 8px;
         font-size: 11.5px;
-        font-weight: 700;
-        cursor: pointer;
-        font-family: inherit;
+        font-weight: 800;
+        text-transform: uppercase;
+        color: #334155;
+        margin-bottom: 10px;
     }
-    .mod-subnav-btn.current {
-        background-color: var(--bt-ink);
-        color: var(--bt-white);
+
+    /* Step Action Bottom Bar */
+    .bt-step-actions {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        margin-top: 24px;
+        padding-top: 18px;
+        border-top: 1px solid #e2e8f0;
     }
-    .mod-subnav-btn.done {
-        border-bottom: 3px solid var(--bt-amber);
+    .bt-step-actions.end {
+        justify-content: flex-end;
+    }
+    .bt-step-actions.between {
+        justify-content: space-between;
+    }
+
+    /* Toast Notification */
+    .bt-toast {
+        position: fixed;
+        bottom: 24px;
+        right: 24px;
+        background: #0f172a;
+        color: #ffffff;
+        padding: 12px 20px;
+        border-radius: 10px;
+        box-shadow: 0 8px 24px rgba(15, 23, 42, 0.2);
+        font-size: 13px;
+        font-weight: 600;
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        z-index: 9999;
+        opacity: 0;
+        transform: translateY(12px);
+        transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+        pointer-events: none;
+    }
+    .bt-toast.show {
+        opacity: 1;
+        transform: translateY(0);
+        pointer-events: auto;
     }
 </style>
 @endpush
@@ -241,442 +670,492 @@
         <input type="hidden" name="existing_company_ulid" value="{{ $prefillCompany->ulid }}">
     @endif
 
-    <div class="wiz-shell">
-        <!-- Left Rail: Live Diagnostic Path & Severity Preview -->
-        <aside class="wiz-rail">
-            <div>
-                <div class="eyebrow">BRIDGE-TAILOR METHODOLOGY</div>
-                <div class="serif" style="font-size:21px;color:#fff;margin-bottom:14px;">Live Diagnostic Path</div>
-
-                <div id="rail-modules">
-                    @foreach($fw->modules() as $mKey => $module)
-                        <div class="rail-mod active" data-rail-mod="{{ $mKey }}">
-                            <div class="rail-mod-head">
-                                <div class="rail-badge">{{ $mKey }}</div>
-                                <div>
-                                    <div style="font-size:12px;font-weight:700;color:#fff;line-height:1.2;">{{ $module['short'] ?? $module['name'] }}</div>
-                                    <div style="font-size:10.5px;color:#cac4c4;margin-top:2px;" data-rail-status="{{ $mKey }}">In scope · awaiting input</div>
-                                </div>
-                            </div>
-                        </div>
-                    @endforeach
+    <div class="bt-wiz-wrapper">
+        <!-- Top Modern Stepper & Progress Card -->
+        <div class="bt-wiz-header-card">
+            <!-- Meta & Real-Time Stats Strip -->
+            <div class="bt-wiz-meta-strip">
+                <div class="bt-wiz-meta-left">
+                    <span class="bt-wiz-pill-badge">AI Diagnostic Platform</span>
+                    <span class="bt-wiz-meta-text">Deterministic Business Health Evaluation &amp; Intervention Sequencing</span>
                 </div>
-
-                <div class="flat-box-dark" style="margin-top:14px;padding:10px 12px;font-size:11px;">
-                    <div style="font-weight:800;color:var(--bt-amber);text-transform:uppercase;margin-bottom:4px;">LIVE PROGRESS</div>
-                    <div style="display:flex;justify-content:space-between;margin-bottom:3px;">
-                        <span>Symptoms Flagged:</span>
+                <div class="bt-wiz-meta-stats">
+                    <div class="bt-wiz-stat-chip">
+                        <span>🚩 Symptoms:</span>
                         <strong id="rail-symptom-count">0</strong>
                     </div>
-                    <div style="display:flex;justify-content:space-between;margin-bottom:3px;">
-                        <span>Evidence Answered:</span>
+                    <div class="bt-wiz-stat-chip">
+                        <span>✓ Evidence Checks:</span>
                         <strong id="rail-answer-count">0 / 0</strong>
                     </div>
-                    <div style="display:flex;justify-content:space-between;">
-                        <span>Sequencing Gate:</span>
-                        <strong id="rail-gate-note" style="color:var(--bt-amber);">Active</strong>
+                    <div class="bt-wiz-stat-chip highlight">
+                        <span>Progress:</span>
+                        <strong id="bt-wiz-progress-pct">25%</strong>
                     </div>
+                    <!-- Hidden element to maintain full JS backward compatibility -->
+                    <span id="rail-gate-note" style="display:none;">Active</span>
                 </div>
             </div>
 
-            <div style="font-size:11px;color:#b2a89f;line-height:1.45;border-top:1px solid #443e3a;padding-top:12px;">
-                Pain rating (1–5) + gateway evidence answers together determine functional scores. Questions adapt automatically to your business stage and sector.
-            </div>
-        </aside>
-
-        <!-- Main Wizard Area -->
-        <div>
-            <!-- 4 Step Tabs -->
-            <div class="wiz-steps">
-                <button type="button" class="wiz-step-tab active" data-step-tab="1" onclick="gotoStep(1)">
-                    01 · Business Profile &amp; Scope
-                </button>
-                <button type="button" class="wiz-step-tab" data-step-tab="2" onclick="gotoStep(2)">
-                    02 · What's Going On (Intake)
-                </button>
-                <button type="button" class="wiz-step-tab" data-step-tab="3" onclick="gotoStep(3)">
-                    03 · A Closer Look (Adaptive)
-                </button>
-                <button type="button" class="wiz-step-tab" data-step-tab="4" onclick="gotoStep(4)">
-                    04 · Documents, Consent &amp; Generate
-                </button>
+            <!-- Dynamic Slim Progress Line -->
+            <div class="bt-wiz-progress-track">
+                <div id="bt-wiz-progress-bar" class="bt-wiz-progress-fill" style="width: 25%;"></div>
             </div>
 
-            <!-- STEP 1: BUSINESS PROFILE & ASSESSMENT SCOPE (Solid Cream Band) -->
-            <section id="wiz-step-1" class="sec-cream" style="min-height:calc(100vh - 160px);">
-                <div class="bt-container">
-                    <div class="sec-header">
-                        <div>
-                            <div class="eyebrow">STEP 01 OF 04 · ASSEMBLE COMPANY CONTEXT</div>
-                            <h1 style="font-size:26px;">{{ $uiText('text.wizard_step1_title') }}</h1>
-                        </div>
-                        @if($uiVisible('vis.wizard_demo_prefill_button'))
-                        <button type="button" class="btn btn-outline btn-sm" onclick="fillDemoBusiness()">
-                            Prefill Sample African SME Profile
-                        </button>
-                        @endif
+            <!-- 4 Clickable Step Tabs -->
+            <div class="bt-wiz-steps-row">
+                <button type="button" class="bt-wiz-step-item active" data-step-tab="1" onclick="gotoStep(1)">
+                    <div class="bt-wiz-step-num">
+                        <span class="num-text">1</span>
+                        <span class="num-check">✓</span>
                     </div>
-
-                    <div class="flat-grid-2" style="margin-bottom:14px;">
-                        <div class="flat-box">
-                            <div class="eyebrow">CONTACT &amp; ENTERPRISE IDENTITY</div>
-                            <div class="flat-grid-2">
-                                <div class="field">
-                                    <label>Your Full Name *</label>
-                                    <input type="text" name="contact_name" id="f_contact_name" required value="{{ old('contact_name', $prefillCompany?->contact_name ?? auth()->user()?->name ?? '') }}" placeholder="e.g. Kwame Osei-Tutu">
-                                </div>
-                                <div class="field">
-                                    <label>Company Name *</label>
-                                    <input type="text" name="company_name" id="f_company_name" required value="{{ old('company_name', $prefillCompany?->name ?? '') }}" placeholder="e.g. Savannah Foods & Processing Ltd">
-                                </div>
-                                <div class="field">
-                                    <label>Business Email *</label>
-                                    <input type="email" name="contact_email" id="f_contact_email" required value="{{ old('contact_email', $prefillCompany?->contact_email ?? auth()->user()?->email ?? '') }}" placeholder="you@company.com">
-                                </div>
-                                <div class="field">
-                                    <label>Phone / WhatsApp</label>
-                                    <input type="text" name="contact_phone" id="f_contact_phone" value="{{ old('contact_phone', $prefillCompany?->contact_phone ?? auth()->user()?->phone ?? '') }}" placeholder="+233 24 000 0000">
-                                </div>
-                                <div class="field">
-                                    <label>Country</label>
-                                    <input type="text" name="country" id="f_country" value="{{ old('country', $prefillCompany?->country ?? 'Ghana') }}">
-                                </div>
-                                <div class="field">
-                                    <label>City / Hub</label>
-                                    <input type="text" name="city" id="f_city" value="{{ old('city', $prefillCompany?->city ?? 'Accra') }}">
-                                </div>
-                            </div>
-                        </div>
-
-                        <div class="flat-box">
-                            <div class="eyebrow">ADAPTIVE CLASSIFICATION (DRIVES QUESTION BRANCHING &amp; BENCHMARKS)</div>
-                            <div class="flat-grid-2">
-                                <div class="field">
-                                    <label>Business Stage *</label>
-                                    <select name="stage" id="f_stage" onchange="onProfileChange()">
-                                        @foreach($fw->stages() as $k => $label)
-                                            <option value="{{ $k }}" {{ old('stage', $prefillCompany?->stage ?? 'growth') === $k ? 'selected' : '' }}>{{ $label }}</option>
-                                        @endforeach
-                                    </select>
-                                </div>
-                                <div class="field">
-                                    <label>Industry Sector *</label>
-                                    <select name="sector" id="f_sector" onchange="onProfileChange()">
-                                        @foreach($fw->sectors() as $k => $label)
-                                            <option value="{{ $k }}" {{ old('sector', $prefillCompany?->sector ?? 'general') === $k ? 'selected' : '' }}>{{ $label }}</option>
-                                        @endforeach
-                                    </select>
-                                </div>
-                                <div class="field">
-                                    <label>Workforce Size</label>
-                                    <select name="size_band" id="f_size_band">
-                                        @foreach($fw->get('size_bands', []) as $k => $label)
-                                            <option value="{{ $k }}" {{ old('size_band', $prefillCompany?->size_band ?? '21-50') === $k ? 'selected' : '' }}>{{ $label }}</option>
-                                        @endforeach
-                                    </select>
-                                </div>
-                                <div class="field">
-                                    <label>Annual Revenue Band (GHS)</label>
-                                    <select name="revenue_band" id="f_revenue_band">
-                                        @foreach($fw->get('revenue_bands', []) as $k => $label)
-                                            <option value="{{ $k }}" {{ old('revenue_band', $prefillCompany?->revenue_band ?? '3to6') === $k ? 'selected' : '' }}>{{ $label }}</option>
-                                        @endforeach
-                                    </select>
-                                </div>
-                            </div>
-                            <div style="font-size:11.5px;background:var(--bt-slate);border:1px solid var(--bt-border);padding:7px 10px;margin-top:4px;">
-                                <strong>Adaptive Engine Note:</strong> Selecting <em>Solo founder</em> automatically skips multi-layer board &amp; staff delegation questions. Selecting <em>Oil &amp; Gas, Agritech, Fintech, Manufacturing, or Retail</em> activates sector-specific regulatory and operational checks.
-                            </div>
-                        </div>
+                    <div class="bt-wiz-step-info">
+                        <span class="bt-wiz-step-title">01 · Business Profile</span>
+                        <span class="bt-wiz-step-sub">Scope &amp; Context</span>
                     </div>
+                </button>
 
-                    <div class="flat-grid-2" style="margin-bottom:14px;">
-                        <div class="flat-box">
-                            <div class="field" style="margin-bottom:0;">
-                                <label>12-Month Strategic Objectives</label>
-                                <textarea name="objectives" id="f_objectives" rows="2" placeholder="What are you aiming to achieve over the next 12–24 months? (e.g. raise growth capital, expand into new markets, reduce founder dependency)">{{ old('objectives', $prefillCompany?->objectives ?? '') }}</textarea>
-                            </div>
-                        </div>
-                        <div class="flat-box">
-                            <div class="field" style="margin-bottom:0;">
-                                <label>Primary Operational Challenges</label>
-                                <textarea name="challenges" id="f_challenges" rows="2" placeholder="Where is the business currently experiencing the greatest friction or uncertainty?">{{ old('challenges', $prefillCompany?->challenges ?? '') }}</textarea>
-                            </div>
-                        </div>
+                <button type="button" class="bt-wiz-step-item" data-step-tab="2" onclick="gotoStep(2)">
+                    <div class="bt-wiz-step-num">
+                        <span class="num-text">2</span>
+                        <span class="num-check">✓</span>
                     </div>
-
-                    <!-- Assessment Scope: Comprehensive (all 5 modules) or Targeted functional assessment -->
-                    <div class="flat-box">
-                        <div style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:10px;margin-bottom:10px;">
-                            <div>
-                                <div class="eyebrow">DIAGNOSTIC MODE &amp; FUNCTIONAL SCOPE</div>
-                                <h4 style="font-size:14px;">Conduct a Comprehensive 5-Pillar Assessment or Target Specific Functions</h4>
-                            </div>
-                            <div style="display:flex;gap:8px;">
-                                <label style="font-size:12px;font-weight:700;cursor:pointer;display:inline-flex;align-items:center;gap:5px;">
-                                    <input type="radio" name="mode" value="comprehensive" checked onchange="setAssessmentMode('comprehensive')">
-                                    Comprehensive (All 5 Modules)
-                                </label>
-                                <label style="font-size:12px;font-weight:700;cursor:pointer;display:inline-flex;align-items:center;gap:5px;">
-                                    <input type="radio" name="mode" value="targeted" {{ request()->filled('target') ? 'checked' : '' }} onchange="setAssessmentMode('targeted')">
-                                    Targeted Function(s)
-                                </label>
-                            </div>
-                        </div>
-
-                        <div class="bt-scope-grid">
-                            @foreach($fw->modules() as $mKey => $module)
-                                @php
-                                    $checked = !request()->filled('target') || request()->query('target') === $mKey;
-                                @endphp
-                                <label class="flat-box" style="padding:9px 10px;cursor:pointer;background:var(--bt-cream);border-color:var(--bt-ink);">
-                                    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:4px;">
-                                        <span class="tag tag-amber">{{ $mKey }}</span>
-                                        <input type="checkbox" name="modules_in_scope[]" value="{{ $mKey }}" class="scope-checkbox" {{ $checked ? 'checked' : '' }} onchange="onScopeChange()">
-                                    </div>
-                                    <div style="font-weight:700;font-size:12px;line-height:1.25;">{{ $module['name'] }}</div>
-                                </label>
-                            @endforeach
-                        </div>
+                    <div class="bt-wiz-step-info">
+                        <span class="bt-wiz-step-title">02 · Symptom Intake</span>
+                        <span class="bt-wiz-step-sub">Operational Strain</span>
                     </div>
+                </button>
 
-                    <div style="display:flex;justify-content:flex-end;gap:10px;margin-top:16px;">
-                        <button type="button" class="btn btn-amber" onclick="gotoStep(2)">
-                            Continue to Step 02: Symptom &amp; Pain Intake →
-                        </button>
+                <button type="button" class="bt-wiz-step-item" data-step-tab="3" onclick="gotoStep(3)">
+                    <div class="bt-wiz-step-num">
+                        <span class="num-text">3</span>
+                        <span class="num-check">✓</span>
                     </div>
+                    <div class="bt-wiz-step-info">
+                        <span class="bt-wiz-step-title">03 · Evidence Checks</span>
+                        <span class="bt-wiz-step-sub">Adaptive Gateway</span>
+                    </div>
+                </button>
+
+                <button type="button" class="bt-wiz-step-item" data-step-tab="4" onclick="gotoStep(4)">
+                    <div class="bt-wiz-step-num">
+                        <span class="num-text">4</span>
+                        <span class="num-check">✓</span>
+                    </div>
+                    <div class="bt-wiz-step-info">
+                        <span class="bt-wiz-step-title">04 · AI Consent &amp; Report</span>
+                        <span class="bt-wiz-step-sub">Generate Roadmap</span>
+                    </div>
+                </button>
+            </div>
+        </div>
+
+        <!-- Hidden container keeping module status elements for JS compatibility -->
+        <div id="rail-modules" style="display:none;" aria-hidden="true">
+            @foreach($fw->modules() as $mKey => $module)
+                <div class="rail-mod active" data-rail-mod="{{ $mKey }}">
+                    <div class="rail-badge">{{ $mKey }}</div>
+                    <div data-rail-status="{{ $mKey }}">In scope · awaiting input</div>
                 </div>
-            </section>
+            @endforeach
+        </div>
 
-            <!-- STEP 2: SYMPTOM INTAKE & PAIN RATING (Solid White Band) -->
-            <section id="wiz-step-2" class="sec-white" style="display:none;min-height:calc(100vh - 160px);">
-                <div class="bt-container">
-                    <div class="sec-header">
-                        <div>
-                            <div class="eyebrow">STEP 02 OF 04 · BRIDGE-TAILOR INTAKE METHODOLOGY ("HOW IT FEELS")</div>
-                            <h1 style="font-size:26px;">{{ $uiText('text.wizard_step2_title') }}</h1>
-                        </div>
-                        <div style="font-size:12px;font-weight:600;color:var(--bt-umber);">
-                            Select every statement that sounds familiar and rate its severity from <strong>1 (minor friction)</strong> to <strong>5 (acute strain)</strong>.
-                        </div>
-                    </div>
+        <!-- ============================================================== -->
+        <!-- STEP 1: BUSINESS PROFILE & ASSESSMENT SCOPE                    -->
+        <!-- ============================================================== -->
+        <section id="wiz-step-1" class="bt-step-pane">
+            <div class="bt-step-header">
+                <div>
+                    <div class="bt-step-eyebrow">STEP 01 OF 04 · ASSEMBLE COMPANY CONTEXT</div>
+                    <h1 class="bt-step-title">{{ $uiText('text.wizard_step1_title') }}</h1>
+                    <p class="bt-step-desc">
+                        Provide enterprise details and operating scope. The diagnostic engine dynamically adapts its question branching, stage baselines, and peer benchmarks.
+                    </p>
+                </div>
+                @if($uiVisible('vis.wizard_demo_prefill_button'))
+                <button type="button" class="bt-prefill-btn" onclick="fillDemoBusiness()">
+                    <span>⚡</span>
+                    <span>Prefill Sample African SME Profile</span>
+                </button>
+                @endif
+            </div>
 
+            <div class="flat-grid-2" style="margin-bottom:18px;">
+                <div class="bt-card">
+                    <div class="bt-step-eyebrow" style="margin-bottom:10px;">CONTACT &amp; ENTERPRISE IDENTITY</div>
                     <div class="flat-grid-2">
-                        @foreach($fw->get('symptom_categories', []) as $catKey => $catLabel)
-                            <div class="flat-box" style="background:var(--bt-slate);">
-                                <div class="eyebrow" style="margin-bottom:8px;">CATEGORY {{ $catKey }} · {{ strtoupper($catLabel) }}</div>
-                                @foreach($fw->symptoms() as $sym)
-                                    @if($sym['cat'] === $catKey)
-                                        <div class="symptom-item" id="sym-box-{{ $sym['id'] }}">
-                                            <div class="symptom-head" onclick="toggleSymptom('{{ $sym['id'] }}')">
-                                                <span>"{{ $sym['label'] }}"</span>
-                                                <span style="font-size:10.5px;font-weight:800;color:var(--bt-umber);">
-                                                    {{ implode(' · ', array_keys($sym['modules'])) }}
-                                                </span>
-                                            </div>
-                                            <div class="pain-bar" id="sym-pain-{{ $sym['id'] }}" style="display:none;">
-                                                <span style="font-size:10.5px;font-weight:800;text-transform:uppercase;color:var(--bt-amber-dark);">Pain Rating (1–5):</span>
-                                                @for($n = 1; $n <= 5; $n++)
-                                                    <button type="button" class="pain-pip" data-pip="{{ $sym['id'] }}-{{ $n }}" onclick="setSymptomPain('{{ $sym['id'] }}', {{ $n }})">{{ $n }}</button>
-                                                @endfor
-                                                <input type="hidden" name="symptoms[{{ $sym['id'] }}]" id="sym-input-{{ $sym['id'] }}" value="" disabled>
-                                            </div>
-                                        </div>
-                                    @endif
+                        <div class="field">
+                            <label>Your Full Name *</label>
+                            <input type="text" name="contact_name" id="f_contact_name" required value="{{ old('contact_name', $prefillCompany?->contact_name ?? auth()->user()?->name ?? '') }}" placeholder="e.g. Kwame Osei-Tutu">
+                        </div>
+                        <div class="field">
+                            <label>Company Name *</label>
+                            <input type="text" name="company_name" id="f_company_name" required value="{{ old('company_name', $prefillCompany?->name ?? '') }}" placeholder="e.g. Savannah Foods &amp; Processing Ltd">
+                        </div>
+                        <div class="field">
+                            <label>Business Email *</label>
+                            <input type="email" name="contact_email" id="f_contact_email" required value="{{ old('contact_email', $prefillCompany?->contact_email ?? auth()->user()?->email ?? '') }}" placeholder="you@company.com">
+                        </div>
+                        <div class="field">
+                            <label>Phone / WhatsApp</label>
+                            <input type="text" name="contact_phone" id="f_contact_phone" value="{{ old('contact_phone', $prefillCompany?->contact_phone ?? auth()->user()?->phone ?? '') }}" placeholder="+233 24 000 0000">
+                        </div>
+                        <div class="field">
+                            <label>Country</label>
+                            <input type="text" name="country" id="f_country" value="{{ old('country', $prefillCompany?->country ?? 'Ghana') }}">
+                        </div>
+                        <div class="field">
+                            <label>City / Hub</label>
+                            <input type="text" name="city" id="f_city" value="{{ old('city', $prefillCompany?->city ?? 'Accra') }}">
+                        </div>
+                    </div>
+                </div>
+
+                <div class="bt-card">
+                    <div class="bt-step-eyebrow" style="margin-bottom:10px;">ADAPTIVE CLASSIFICATION (BENCHMARK ENGINE)</div>
+                    <div class="flat-grid-2">
+                        <div class="field">
+                            <label>Business Stage *</label>
+                            <select name="stage" id="f_stage" onchange="onProfileChange()">
+                                @foreach($fw->stages() as $k => $label)
+                                    <option value="{{ $k }}" {{ old('stage', $prefillCompany?->stage ?? 'growth') === $k ? 'selected' : '' }}>{{ $label }}</option>
                                 @endforeach
+                            </select>
+                        </div>
+                        <div class="field">
+                            <label>Industry Sector *</label>
+                            <select name="sector" id="f_sector" onchange="onProfileChange()">
+                                @foreach($fw->sectors() as $k => $label)
+                                    <option value="{{ $k }}" {{ old('sector', $prefillCompany?->sector ?? 'general') === $k ? 'selected' : '' }}>{{ $label }}</option>
+                                @endforeach
+                            </select>
+                        </div>
+                        <div class="field">
+                            <label>Workforce Size</label>
+                            <select name="size_band" id="f_size_band">
+                                @foreach($fw->get('size_bands', []) as $k => $label)
+                                    <option value="{{ $k }}" {{ old('size_band', $prefillCompany?->size_band ?? '21-50') === $k ? 'selected' : '' }}>{{ $label }}</option>
+                                @endforeach
+                            </select>
+                        </div>
+                        <div class="field">
+                            <label>Annual Revenue Band (GHS)</label>
+                            <select name="revenue_band" id="f_revenue_band">
+                                @foreach($fw->get('revenue_bands', []) as $k => $label)
+                                    <option value="{{ $k }}" {{ old('revenue_band', $prefillCompany?->revenue_band ?? '3to6') === $k ? 'selected' : '' }}>{{ $label }}</option>
+                                @endforeach
+                            </select>
+                        </div>
+                    </div>
+                    <div style="font-size:12px;background:#f8fafc;border:1px solid #e2e8f0;border-radius:8px;padding:9px 12px;margin-top:2px;color:#475569;line-height:1.45;">
+                        <strong style="color:var(--bt-amber-deep);">Adaptive Engine Note:</strong> Selecting <em>Solo founder</em> automatically skips multi-layer board &amp; staff delegation questions. Selecting <em>Oil &amp; Gas, Agritech, Fintech, Manufacturing, or Retail</em> activates specialized operational checks.
+                    </div>
+                </div>
+            </div>
+
+            <div class="flat-grid-2" style="margin-bottom:18px;">
+                <div class="bt-card">
+                    <div class="field" style="margin-bottom:0;">
+                        <label>12-Month Strategic Objectives</label>
+                        <textarea name="objectives" id="f_objectives" rows="3" placeholder="What are you aiming to achieve over the next 12–24 months? (e.g. raise growth capital, expand into new markets, reduce founder dependency)">{{ old('objectives', $prefillCompany?->objectives ?? '') }}</textarea>
+                    </div>
+                </div>
+                <div class="bt-card">
+                    <div class="field" style="margin-bottom:0;">
+                        <label>Primary Operational Challenges</label>
+                        <textarea name="challenges" id="f_challenges" rows="3" placeholder="Where is the business currently experiencing the greatest friction, bottlenecks, or uncertainty?">{{ old('challenges', $prefillCompany?->challenges ?? '') }}</textarea>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Diagnostic Scope Selection Card -->
+            <div class="bt-card">
+                <div style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:12px;margin-bottom:12px;">
+                    <div>
+                        <div class="bt-step-eyebrow">DIAGNOSTIC MODE &amp; FUNCTIONAL SCOPE</div>
+                        <h4 style="font-size:15px;margin:2px 0 0;color:#0f172a;">Conduct Comprehensive 5-Pillar Assessment or Select Specific Functions</h4>
+                    </div>
+                    <div style="display:flex;gap:14px;">
+                        <label style="font-size:12.5px;font-weight:700;cursor:pointer;display:inline-flex;align-items:center;gap:6px;color:#334155;">
+                            <input type="radio" name="mode" value="comprehensive" checked onchange="setAssessmentMode('comprehensive')">
+                            Comprehensive (All 5 Modules)
+                        </label>
+                        <label style="font-size:12.5px;font-weight:700;cursor:pointer;display:inline-flex;align-items:center;gap:6px;color:#334155;">
+                            <input type="radio" name="mode" value="targeted" {{ request()->filled('target') ? 'checked' : '' }} onchange="setAssessmentMode('targeted')">
+                            Targeted Function(s)
+                        </label>
+                    </div>
+                </div>
+
+                <div class="bt-scope-grid">
+                    @foreach($fw->modules() as $mKey => $module)
+                        @php
+                            $checked = !request()->filled('target') || request()->query('target') === $mKey;
+                        @endphp
+                        <label class="bt-scope-card {{ $checked ? 'active' : '' }}" id="scope-card-{{ $mKey }}">
+                            <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px;">
+                                <span class="tag tag-amber" style="font-weight:800;">{{ $mKey }}</span>
+                                <input type="checkbox" name="modules_in_scope[]" value="{{ $mKey }}" class="scope-checkbox" {{ $checked ? 'checked' : '' }} onchange="onScopeChange(); document.getElementById('scope-card-{{ $mKey }}').classList.toggle('active', this.checked);">
                             </div>
+                            <div style="font-weight:700;font-size:13px;line-height:1.3;color:#0f172a;">{{ $module['name'] }}</div>
+                            <div style="font-size:11px;color:#64748b;margin-top:4px;">{{ count($module['criteria'] ?? []) }} criteria groups</div>
+                        </label>
+                    @endforeach
+                </div>
+            </div>
+
+            <!-- Bottom Navigation Bar -->
+            <div class="bt-step-actions end">
+                <button type="button" class="btn btn-amber btn-lg" onclick="gotoStep(2)">
+                    Continue to Step 02: Symptom &amp; Pain Intake →
+                </button>
+            </div>
+        </section>
+
+        <!-- ============================================================== -->
+        <!-- STEP 2: SYMPTOM INTAKE & PAIN RATING                          -->
+        <!-- ============================================================== -->
+        <section id="wiz-step-2" class="bt-step-pane" style="display:none;">
+            <div class="bt-step-header">
+                <div>
+                    <div class="bt-step-eyebrow">STEP 02 OF 04 · BRIDGE-TAILOR INTAKE METHODOLOGY ("HOW IT FEELS")</div>
+                    <h1 class="bt-step-title">{{ $uiText('text.wizard_step2_title') }}</h1>
+                    <p class="bt-step-desc">
+                        Select every statement that matches symptoms currently experienced in your business, and rate its severity from <strong>1 (minor friction)</strong> to <strong>5 (acute strain)</strong>.
+                    </p>
+                </div>
+            </div>
+
+            <div class="flat-grid-2">
+                @foreach($fw->get('symptom_categories', []) as $catKey => $catLabel)
+                    <div class="bt-card" style="padding:18px 20px;">
+                        <div class="bt-step-eyebrow" style="margin-bottom:12px;">CATEGORY {{ $catKey }} · {{ strtoupper($catLabel) }}</div>
+                        @foreach($fw->symptoms() as $sym)
+                            @if($sym['cat'] === $catKey)
+                                <div class="bt-symptom-card" id="sym-box-{{ $sym['id'] }}">
+                                    <div class="bt-symptom-head" onclick="toggleSymptom('{{ $sym['id'] }}')">
+                                        <span class="quote">“{{ $sym['label'] }}”</span>
+                                        <span class="bt-symptom-badge">
+                                            {{ implode(' · ', array_keys($sym['modules'])) }}
+                                        </span>
+                                    </div>
+                                    <div class="bt-pain-bar" id="sym-pain-{{ $sym['id'] }}" style="display:none;">
+                                        <span class="bt-pain-label">Pain Severity:</span>
+                                        @for($n = 1; $n <= 5; $n++)
+                                            <button type="button" class="bt-pain-pill" data-pip="{{ $sym['id'] }}-{{ $n }}" onclick="setSymptomPain('{{ $sym['id'] }}', {{ $n }})">{{ $n }}</button>
+                                        @endfor
+                                        <span style="font-size:11px;color:#64748b;margin-left:6px;" id="sym-pain-desc-{{ $sym['id'] }}">Moderate Strain</span>
+                                        <input type="hidden" name="symptoms[{{ $sym['id'] }}]" id="sym-input-{{ $sym['id'] }}" value="" disabled>
+                                    </div>
+                                </div>
+                            @endif
                         @endforeach
                     </div>
+                @endforeach
+            </div>
 
-                    <div class="flat-box" style="margin-top:14px;background:var(--bt-cream);">
-                        <div class="field" style="margin-bottom:0;">
-                            <label>In Your Own Words — Additional Context Behind What You Selected (Passed to Consultant &amp; AI Synthesis)</label>
-                            <textarea name="custom_issue" rows="2" placeholder="Describe any specific context, recent compliance surprise, funder feedback, or growth bottleneck in your own words...">{{ old('custom_issue') }}</textarea>
-                        </div>
-                    </div>
-
-                    <div style="display:flex;justify-content:space-between;gap:10px;margin-top:16px;">
-                        <button type="button" class="btn btn-outline" onclick="gotoStep(1)">← Back to Business Profile</button>
-                        <button type="button" class="btn btn-amber" onclick="gotoStep(3)">Continue to Step 03: Evidence Questions →</button>
-                    </div>
+            <div class="bt-card" style="margin-top:16px;">
+                <div class="field" style="margin-bottom:0;">
+                    <label>In Your Own Words — Additional Operational Context (Passed to Consultant &amp; AI Synthesis)</label>
+                    <textarea name="custom_issue" rows="3" placeholder="Describe any specific context, recent compliance surprise, lender feedback, or supply chain bottleneck in your own words...">{{ old('custom_issue') }}</textarea>
                 </div>
-            </section>
+            </div>
 
-            <!-- STEP 3: ADAPTIVE GATEWAY & EVIDENCE QUESTIONNAIRE (Solid Slate Band) -->
-            <section id="wiz-step-3" class="sec-slate" style="display:none;min-height:calc(100vh - 160px);">
-                <div class="bt-container">
-                    <div class="sec-header">
+            <!-- Bottom Navigation Bar -->
+            <div class="bt-step-actions between">
+                <button type="button" class="btn btn-outline" onclick="gotoStep(1)">← Back to Business Profile</button>
+                <button type="button" class="btn btn-amber btn-lg" onclick="gotoStep(3)">Continue to Step 03: Evidence Questions →</button>
+            </div>
+        </section>
+
+        <!-- ============================================================== -->
+        <!-- STEP 3: ADAPTIVE GATEWAY & EVIDENCE QUESTIONNAIRE              -->
+        <!-- ============================================================== -->
+        <section id="wiz-step-3" class="bt-step-pane" style="display:none;">
+            <div class="bt-step-header">
+                <div>
+                    <div class="bt-step-eyebrow">STEP 03 OF 04 · OBJECTIVE EVIDENCE CHECK ("WHAT THE EVIDENCE SHOWS")</div>
+                    <h1 class="bt-step-title">{{ $uiText('text.wizard_step3_title') }}</h1>
+                    <p class="bt-step-desc">
+                        Deterministic functional evidence checks across all in-scope advisory modules. Select the option that genuinely matches your enterprise right now.
+                    </p>
+                </div>
+                <div style="display:flex;gap:8px;flex-wrap:wrap;align-items:center;">
+                    <span class="tag tag-solid" style="background:#059669;color:#fff;border-radius:6px;padding:5px 9px;">✓ Option 1: In Place (100)</span>
+                    <span class="tag tag-medium" style="background:#d97706;color:#fff;border-radius:6px;padding:5px 9px;">⚡ Option 2: Partial (50)</span>
+                    <span class="tag tag-high" style="background:#475569;color:#fff;border-radius:6px;padding:5px 9px;">✕ Option 3: Missing (0)</span>
+                </div>
+            </div>
+
+            <!-- Module Segmented Pill Subnav -->
+            <div class="mod-subnav" id="module-subnav"></div>
+
+            @foreach($fw->modules() as $mKey => $module)
+                <div class="module-pane" id="mod-pane-{{ $mKey }}" style="display:none;">
+                    <!-- Module Banner Card -->
+                    <div class="bt-module-banner">
                         <div>
-                            <div class="eyebrow">STEP 03 OF 04 · OBJECTIVE EVIDENCE CHECK ("WHAT THE EVIDENCE SHOWS")</div>
-                            <h1 style="font-size:26px;">{{ $uiText('text.wizard_step3_title') }}</h1>
+                            <div class="bt-step-eyebrow" style="color:var(--bt-amber);">MODULE {{ $mKey }}</div>
+                            <h3 style="font-size:20px;color:#fff;margin:2px 0 4px;">{{ $module['name'] }}</h3>
+                            <div style="font-size:12.5px;color:#94a3b8;max-width:640px;line-height:1.45;">{{ $module['description'] }}</div>
                         </div>
-                        <div style="font-size:12px;font-weight:700;color:var(--bt-umber);">
-                            Ordered best → worst: <span class="tag tag-solid">Option 1: In Place (100)</span>
-                            <span class="tag tag-medium">Option 2: Partial (50)</span>
-                            <span class="tag tag-high">Option 3: Missing (0)</span>
+                        <div class="bt-module-banner-score">
+                            <div style="font-size:10.5px;text-transform:uppercase;color:var(--bt-amber);font-weight:700;">Live Module Score</div>
+                            <div id="live-mod-score-{{ $mKey }}" style="font-size:22px;font-weight:800;color:#fff;">— / 100</div>
                         </div>
                     </div>
 
-                    <!-- Sub-navigation across modules in scope -->
-                    <div class="mod-subnav" id="module-subnav"></div>
-
-                    @foreach($fw->modules() as $mKey => $module)
-                        <div class="module-pane" id="mod-pane-{{ $mKey }}" style="display:none;">
-                            <div class="flat-box" style="background:var(--bt-espresso);color:#fff;margin-bottom:12px;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:10px;">
-                                <div>
-                                    <div class="eyebrow">MODULE {{ $mKey }}</div>
-                                    <h3 style="font-size:18px;color:#fff;">{{ $module['name'] }}</h3>
-                                    <div style="font-size:12px;color:#d0c7be;">{{ $module['description'] }}</div>
-                                </div>
-                                <div style="text-align:right;">
-                                    <div style="font-size:10.5px;text-transform:uppercase;color:var(--bt-amber);">Live Module Score Preview</div>
-                                    <div id="live-mod-score-{{ $mKey }}" style="font-size:22px;font-weight:800;">— / 100</div>
-                                </div>
+                    @foreach($module['criteria'] as $cKey => $criterion)
+                        <div style="margin-bottom:20px;">
+                            <div class="bt-criterion-header">
+                                <span>CRITERION {{ $cKey }} · {{ $criterion['name'] }}</span>
+                                @php $prog = $fw->programme($criterion['programme'] ?? ''); @endphp
+                                @if($prog)
+                                    <span style="color:var(--bt-amber-deep);font-weight:700;">Routes to: {{ $prog['line'] }} ({{ $prog['entry'] }})</span>
+                                @endif
                             </div>
 
-                            @foreach($module['criteria'] as $cKey => $criterion)
-                                <div style="margin-bottom:14px;">
-                                    <div style="display:flex;justify-content:space-between;align-items:center;background:#e4dcd1;padding:6px 11px;border:1px solid #c7;font-size:11.5px;font-weight:800;text-transform:uppercase;">
-                                        <span>CRITERION {{ $cKey }} · {{ $criterion['name'] }}</span>
-                                        @php $prog = $fw->programme($criterion['programme'] ?? ''); @endphp
-                                        @if($prog)
-                                            <span style="color:var(--bt-amber-dark);">Routes to: {{ $prog['line'] }} ({{ $prog['entry'] }})</span>
+                            @foreach($criterion['questions'] as $q)
+                                <div class="q-block {{ !empty($q['show_if']) ? 'followup' : '' }}"
+                                     id="q-block-{{ $q['code'] }}"
+                                     data-q-code="{{ $q['code'] }}"
+                                     data-q-module="{{ $mKey }}"
+                                     data-skip-stages="{{ json_encode($q['skip_stages'] ?? []) }}"
+                                     data-sectors="{{ json_encode($q['sectors'] ?? []) }}"
+                                     data-show-if="{{ json_encode($q['show_if'] ?? null) }}">
+                                    <div style="display:flex;justify-content:space-between;align-items:flex-start;gap:12px;">
+                                        <div style="font-weight:700;font-size:14px;color:#0f172a;line-height:1.4;">
+                                            @if(!empty($q['show_if']))
+                                                <span class="tag tag-amber" style="margin-right:6px;border-radius:4px;">ADAPTIVE FOLLOW-UP</span>
+                                            @endif
+                                            @if(!empty($q['sectors']))
+                                                <span class="tag tag-medium" style="margin-right:6px;border-radius:4px;">SECTOR-SPECIFIC</span>
+                                            @endif
+                                            {{ $q['text'] }}
+                                        </div>
+                                        @if(!empty($q['risk']))
+                                            <span class="tag {{ $q['risk'] === 'critical' ? 'tag-critical' : 'tag-medium' }}" style="border-radius:4px;flex-shrink:0;">
+                                                {{ strtoupper($q['risk']) }} RISK CHECK
+                                            </span>
                                         @endif
                                     </div>
 
-                                    @foreach($criterion['questions'] as $q)
-                                        <div class="q-block {{ !empty($q['show_if']) ? 'followup' : '' }}"
-                                             id="q-block-{{ $q['code'] }}"
-                                             data-q-code="{{ $q['code'] }}"
-                                             data-q-module="{{ $mKey }}"
-                                             data-skip-stages="{{ json_encode($q['skip_stages'] ?? []) }}"
-                                             data-sectors="{{ json_encode($q['sectors'] ?? []) }}"
-                                             data-show-if="{{ json_encode($q['show_if'] ?? null) }}">
-                                            <div style="display:flex;justify-content:space-between;align-items:flex-start;gap:10px;">
-                                                <div style="font-weight:700;font-size:13.5px;">
-                                                    @if(!empty($q['show_if']))
-                                                        <span class="tag tag-amber" style="margin-right:5px;">ADAPTIVE FOLLOW-UP</span>
-                                                    @endif
-                                                    @if(!empty($q['sectors']))
-                                                        <span class="tag tag-medium" style="margin-right:5px;">SECTOR-SPECIFIC</span>
-                                                    @endif
-                                                    {{ $q['text'] }}
-                                                </div>
-                                                @if(!empty($q['risk']))
-                                                    <span class="tag {{ $q['risk'] === 'critical' ? 'tag-critical' : 'tag-medium' }}">
-                                                        {{ strtoupper($q['risk']) }} RISK CHECK
-                                                    </span>
-                                                @endif
-                                            </div>
-
-                                            <div class="q-opt-grid">
-                                                @foreach($q['options'] as $optIdx => $optLabel)
-                                                    <button type="button"
-                                                            class="q-opt-btn"
-                                                            data-opt-btn="{{ $q['code'] }}-{{ $optIdx }}"
-                                                            onclick="selectAnswer('{{ $q['code'] }}', {{ $optIdx }}, '{{ $mKey }}')">
-                                                        <span>{{ $optLabel }}</span>
-                                                        <span style="font-size:10px;opacity:0.75;">{{ $optIdx === 0 ? '100' : ($optIdx === 1 ? '50' : '0') }}</span>
-                                                    </button>
-                                                @endforeach
-                                            </div>
-                                            <input type="hidden" name="answers[{{ $q['code'] }}]" id="ans-input-{{ $q['code'] }}" value="" disabled>
-                                        </div>
-                                    @endforeach
+                                    <div class="q-opt-grid">
+                                        @foreach($q['options'] as $optIdx => $optLabel)
+                                            <button type="button"
+                                                    class="q-opt-btn"
+                                                    data-opt-btn="{{ $q['code'] }}-{{ $optIdx }}"
+                                                    onclick="selectAnswer('{{ $q['code'] }}', {{ $optIdx }}, '{{ $mKey }}')">
+                                                <span>{{ $optLabel }}</span>
+                                                <span style="font-size:10.5px;font-weight:700;opacity:0.75;padding-left:8px;">{{ $optIdx === 0 ? '100 pts' : ($optIdx === 1 ? '50 pts' : '0 pts') }}</span>
+                                            </button>
+                                        @endforeach
+                                    </div>
+                                    <input type="hidden" name="answers[{{ $q['code'] }}]" id="ans-input-{{ $q['code'] }}" value="" disabled>
                                 </div>
                             @endforeach
                         </div>
                     @endforeach
+                </div>
+            @endforeach
 
-                    <div style="display:flex;justify-content:space-between;align-items:center;gap:10px;margin-top:16px;">
-                        <button type="button" class="btn btn-outline" onclick="prevModuleOrStep()">← Previous</button>
-                        <button type="button" class="btn btn-amber" id="next-mod-btn" onclick="nextModuleOrStep()">Next Module →</button>
+            <!-- Bottom Navigation Bar -->
+            <div class="bt-step-actions between">
+                <button type="button" class="btn btn-outline" onclick="prevModuleOrStep()">← Previous Module / Step</button>
+                <button type="button" class="btn btn-amber btn-lg" id="next-mod-btn" onclick="nextModuleOrStep()">Next Module →</button>
+            </div>
+        </section>
+
+        <!-- ============================================================== -->
+        <!-- STEP 4: SUPPORTING DOCUMENTS, PRIVACY CONSENT & REPORT        -->
+        <!-- ============================================================== -->
+        <section id="wiz-step-4" class="bt-step-pane" style="display:none;">
+            <div class="bt-step-header">
+                <div>
+                    <div class="bt-step-eyebrow">STEP 04 OF 04 · SUPPORTING EVIDENCE &amp; GOVERNANCE CONTROLS</div>
+                    <h1 class="bt-step-title">Supporting Documents, AI Consent &amp; Report Generation</h1>
+                    <p class="bt-step-desc">
+                        Optionally upload key corporate documents for verification, review privacy and security safeguards, and generate your comprehensive diagnostic report.
+                    </p>
+                </div>
+            </div>
+
+            <div class="flat-grid-2" style="margin-bottom:18px;">
+                <div class="bt-card">
+                    <div class="bt-step-eyebrow">OPTIONAL · AI DOCUMENT EXTRACTION VAULT</div>
+                    <h4 style="font-size:15px;margin:4px 0 8px;color:#0f172a;">Upload Financial Statements, Management Accounts, or Business Plan</h4>
+                    <p style="font-size:12.5px;color:#64748b;margin:0 0 14px;line-height:1.5;">
+                        Uploaded files are hashed (SHA-256), stored outside the public web root, and inspected for explicit financial or governance evidence. The diagnostic engine never fabricates numbers.
+                    </p>
+                    <div class="field">
+                        <label>Document Category</label>
+                        <select name="category">
+                            <option value="financial_statement">Audited / Reviewed Financial Statements</option>
+                            <option value="management_accounts">Monthly Management Accounts / Cash Flow</option>
+                            <option value="business_plan">Strategic / Business Plan or Pitch Deck</option>
+                            <option value="governance_doc">Board Charter / Org Structure / Compliance</option>
+                        </select>
+                    </div>
+                    <div class="field">
+                        <label>Select Document (PDF, TXT, CSV, DOCX, XLSX — Max 10MB)</label>
+                        <input type="file" name="supporting_document" style="padding:8px 12px;">
+                    </div>
+                    <div class="field" style="margin-bottom:0;">
+                        <label>Document Retention &amp; Auto-Purge Policy</label>
+                        <select name="retention_policy">
+                            <option value="6_months">6 Months (Purge after initial engagement)</option>
+                            <option value="18_months" selected>18 Months (Standard annual YoY benchmark comparison)</option>
+                            <option value="36_months">36 Months (Multi-year transformation programme)</option>
+                        </select>
                     </div>
                 </div>
-            </section>
 
-            <!-- STEP 4: SUPPORTING DOCUMENTS, PRIVACY CONSENT & REPORT GENERATION (Solid Cream Band) -->
-            <section id="wiz-step-4" class="sec-cream" style="display:none;min-height:calc(100vh - 160px);">
-                <div class="bt-container">
-                    <div class="sec-header">
-                        <div>
-                            <div class="eyebrow">STEP 04 OF 04 · SUPPORTING EVIDENCE &amp; GOVERNANCE CONTROLS</div>
-                            <h1 style="font-size:26px;">Supporting Documents, AI Consent &amp; Report Generation</h1>
-                        </div>
-                    </div>
+                <div class="bt-card">
+                    <div class="bt-step-eyebrow">SECURITY, PRIVACY &amp; EPISTEMIC INTEGRITY</div>
+                    <h4 style="font-size:15px;margin:4px 0 10px;color:#0f172a;">How Bridge Tailor Processes Your Diagnostic Data</h4>
+                    <table class="bt-table" style="margin-bottom:14px;font-size:12px;">
+                        <tr>
+                            <td style="font-weight:700;width:34%;color:#0f172a;">Controlled Scoring</td>
+                            <td style="color:#475569;">All 0–100 scores are computed deterministically by Bridge Tailor’s scoring engine, never by generative guesswork.</td>
+                        </tr>
+                        <tr>
+                            <td style="font-weight:700;color:#0f172a;">Server-Side AI Key</td>
+                            <td style="color:#475569;">OpenAI Responses API calls execute strictly on the Laravel server using Structured Outputs; keys never touch the browser.</td>
+                        </tr>
+                        <tr>
+                            <td style="font-weight:700;color:#0f172a;">Fact vs. Assumption</td>
+                            <td style="color:#475569;">Every finding is tagged as <code>CLIENT-PROVIDED</code>, <code>DOCUMENT-EVIDENCED</code>, or <code>CONSULTANT-ASSUMPTION</code>.</td>
+                        </tr>
+                        <tr>
+                            <td style="font-weight:700;color:#0f172a;">Consultant Review</td>
+                            <td style="color:#475569;">A Bridge Tailor consultant can review, amend, approve, and publish your final diagnostic report.</td>
+                        </tr>
+                    </table>
 
-                    <div class="flat-grid-2" style="margin-bottom:14px;">
-                        <div class="flat-box">
-                            <div class="eyebrow">OPTIONAL · AI DOCUMENT EXTRACTION VAULT</div>
-                            <h4 style="font-size:14px;margin-bottom:6px;">Upload Financial Statements, Management Accounts, or Business Plan</h4>
-                            <p style="font-size:12px;color:#443e3a;margin:0 0 10px;">
-                                Uploaded files are hashed (SHA-256), stored outside the public web root, and inspected for explicit financial or governance evidence. The AI never invents figures that are not present in your document.
-                            </p>
-                            <div class="field">
-                                <label>Document Category</label>
-                                <select name="category">
-                                    <option value="financial_statement">Audited / Reviewed Financial Statements</option>
-                                    <option value="management_accounts">Monthly Management Accounts / Cash Flow</option>
-                                    <option value="business_plan">Strategic / Business Plan or Pitch Deck</option>
-                                    <option value="governance_doc">Board Charter / Org Structure / Compliance</option>
-                                </select>
-                            </div>
-                            <div class="field">
-                                <label>Select Document (PDF, TXT, CSV, DOCX, XLSX — Max 10MB)</label>
-                                <input type="file" name="supporting_document">
-                            </div>
-                            <div class="field" style="margin-bottom:0;">
-                                <label>Document Retention &amp; Auto-Purge Policy</label>
-                                <select name="retention_policy">
-                                    <option value="6_months">6 Months (Purge after initial engagement)</option>
-                                    <option value="18_months" selected>18 Months (Standard annual YoY benchmark comparison)</option>
-                                    <option value="36_months">36 Months (Multi-year transformation programme)</option>
-                                </select>
-                            </div>
-                        </div>
-
-                        <div class="flat-box">
-                            <div class="eyebrow">SECURITY, PRIVACY &amp; EPISTEMIC INTEGRITY</div>
-                            <h4 style="font-size:14px;margin-bottom:6px;">How Bridge Tailor Processes Your Diagnostic Data</h4>
-                            <table class="bt-table" style="margin-bottom:12px;font-size:11.5px;">
-                                <tr>
-                                    <td style="font-weight:700;width:34%;">Controlled Scoring</td>
-                                    <td>All 0–100 scores are computed deterministically by Bridge Tailor’s scoring engine, never by generative guesswork.</td>
-                                </tr>
-                                <tr>
-                                    <td style="font-weight:700;">Server-Side AI Key</td>
-                                    <td>OpenAI Responses API calls execute strictly on the Laravel server using Structured Outputs; keys never touch the browser.</td>
-                                </tr>
-                                <tr>
-                                    <td style="font-weight:700;">Fact vs. Assumption</td>
-                                    <td>Every finding is tagged as <code>CLIENT-PROVIDED</code>, <code>DOCUMENT-EVIDENCED</code>, or <code>CONSULTANT-ASSUMPTION</code>.</td>
-                                </tr>
-                                <tr>
-                                    <td style="font-weight:700;">Consultant Review</td>
-                                    <td>A Bridge Tailor consultant can review, amend, approve, and publish your final diagnostic report.</td>
-                                </tr>
-                            </table>
-
-                            <label style="display:flex;align-items:flex-start;gap:8px;background:var(--bt-amber-pale);border:1px solid var(--bt-ink);padding:10px 12px;cursor:pointer;font-size:12px;font-weight:600;">
-                                <input type="checkbox" name="ai_consent" value="1" checked style="margin-top:3px;">
-                                <span>
-                                    I consent to Bridge Tailor processing these responses and any uploaded documents through the Bridge Tailor Diagnostic Engine (including OpenAI Responses API Structured Outputs) under Bridge Tailor’s confidentiality &amp; retention policy.
-                                </span>
-                            </label>
-                        </div>
-                    </div>
-
-                    <div style="display:flex;justify-content:space-between;align-items:center;gap:10px;border-top:2px solid var(--bt-espresso);padding-top:14px;">
-                        <button type="button" class="btn btn-outline" onclick="gotoStep(3)">← Back to Questionnaire</button>
-                        <button type="submit" class="btn btn-amber" style="padding:11px 24px;font-size:13px;">
-                            Compute Scores &amp; Generate AI Diagnostic Report →
-                        </button>
-                    </div>
+                    <label style="display:flex;align-items:flex-start;gap:10px;background:#fff7ed;border:1px solid #fed7aa;border-radius:8px;padding:12px 14px;cursor:pointer;font-size:12.5px;font-weight:600;color:#9a3412;line-height:1.45;">
+                        <input type="checkbox" name="ai_consent" value="1" checked style="margin-top:3px;accent-color:var(--bt-amber);">
+                        <span>
+                            I consent to Bridge Tailor processing these responses and any uploaded documents through the Bridge Tailor Diagnostic Engine (including OpenAI Responses API Structured Outputs) under Bridge Tailor’s confidentiality &amp; retention policy.
+                        </span>
+                    </label>
                 </div>
-            </section>
-        </div>
+            </div>
+
+            <!-- Submit Action Bar -->
+            <div class="bt-step-actions between">
+                <button type="button" class="btn btn-outline" onclick="gotoStep(3)">← Back to Questionnaire</button>
+                <button type="submit" class="btn btn-amber btn-lg" id="btn-submit-diag" style="padding:12px 28px;font-size:14px;font-weight:700;">
+                    Compute Scores &amp; Generate AI Diagnostic Report →
+                </button>
+            </div>
+        </section>
     </div>
 </form>
+
+<!-- Toast Message Container -->
+<div id="bt-toast" class="bt-toast">
+    <span id="bt-toast-text">Notification message</span>
+</div>
 @endsection
 
 @push('scripts')
@@ -687,6 +1166,26 @@
     const selectedSymptoms = {}; // id => pain 1..5
     const selectedAnswers = {};  // code => 0..2
 
+    const painDescriptions = {
+        1: 'Minor Friction',
+        2: 'Noticeable Inefficiency',
+        3: 'Moderate Strain',
+        4: 'Severe Bottleneck',
+        5: 'Acute Enterprise Crisis'
+    };
+
+    function showToast(msg) {
+        const toast = document.getElementById('bt-toast');
+        const text = document.getElementById('bt-toast-text');
+        if (toast && text) {
+            text.innerHTML = msg;
+            toast.classList.add('show');
+            setTimeout(() => {
+                toast.classList.remove('show');
+            }, 3500);
+        }
+    }
+
     function getScopedModules() {
         const boxes = document.querySelectorAll('.scope-checkbox:checked');
         const list = Array.from(boxes).map(cb => cb.value);
@@ -695,7 +1194,11 @@
 
     function setAssessmentMode(mode) {
         if (mode === 'comprehensive') {
-            document.querySelectorAll('.scope-checkbox').forEach(cb => cb.checked = true);
+            document.querySelectorAll('.scope-checkbox').forEach(cb => {
+                cb.checked = true;
+                const card = document.getElementById('scope-card-' + cb.value);
+                if (card) card.classList.add('active');
+            });
         }
         onScopeChange();
     }
@@ -754,6 +1257,10 @@
             if (btn) {
                 btn.classList.toggle('on', n <= pain);
             }
+        }
+        const descEl = document.getElementById('sym-pain-desc-' + id);
+        if (descEl && painDescriptions[pain]) {
+            descEl.textContent = painDescriptions[pain];
         }
     }
 
@@ -831,8 +1338,29 @@
             }
         });
 
-        document.getElementById('rail-symptom-count').textContent = Object.keys(selectedSymptoms).length;
-        document.getElementById('rail-answer-count').textContent = `${totalAnswered} / ${totalApplicable}`;
+        const symCount = Object.keys(selectedSymptoms).length;
+        const symEl = document.getElementById('rail-symptom-count');
+        if (symEl) symEl.textContent = symCount;
+
+        const ansEl = document.getElementById('rail-answer-count');
+        if (ansEl) ansEl.textContent = `${totalAnswered} / ${totalApplicable}`;
+
+        // Compute smooth overall percentage
+        let progressPct = 25;
+        if (currentStep === 1) {
+            progressPct = 25;
+        } else if (currentStep === 2) {
+            progressPct = 25 + Math.min(25, symCount * 4);
+        } else if (currentStep === 3) {
+            const qRatio = totalApplicable > 0 ? (totalAnswered / totalApplicable) : 0;
+            progressPct = Math.min(95, Math.round(50 + (qRatio * 45)));
+        } else if (currentStep === 4) {
+            progressPct = 100;
+        }
+        const pBar = document.getElementById('bt-wiz-progress-bar');
+        if (pBar) pBar.style.width = progressPct + '%';
+        const pPct = document.getElementById('bt-wiz-progress-pct');
+        if (pPct) pPct.textContent = progressPct + '%';
 
         Object.keys(FW.modules).forEach(m => {
             const statusEl = document.querySelector(`[data-rail-status="${m}"]`);
@@ -861,12 +1389,13 @@
         const activeMod = scoped[activeModIndex];
 
         const nav = document.getElementById('module-subnav');
+        if (!nav) return;
         nav.innerHTML = '';
         scoped.forEach((m, idx) => {
             const btn = document.createElement('button');
             btn.type = 'button';
             btn.className = 'mod-subnav-btn' + (idx === activeModIndex ? ' current' : '');
-            btn.textContent = `${idx + 1}. ${m} · ${FW.modules[m].short || FW.modules[m].name}`;
+            btn.innerHTML = `<strong>${idx + 1}.</strong> ${m} · ${FW.modules[m].short || FW.modules[m].name}`;
             btn.onclick = () => {
                 activeModIndex = idx;
                 showActiveModulePane();
@@ -882,13 +1411,13 @@
         if (nextBtn) {
             nextBtn.textContent = activeModIndex < scoped.length - 1
                 ? `Next Module (${scoped[activeModIndex + 1]}) →`
-                : 'Continue to Step 04: Documents & Generate Report →';
+                : 'Continue to Step 04: AI Consent & Report →';
         }
     }
 
     function showActiveModulePane() {
         renderModuleSubnav();
-        window.scrollTo({ top: 0, behavior: 'smooth' });
+        window.scrollTo({ top: 120, behavior: 'smooth' });
     }
 
     function nextModuleOrStep() {
@@ -916,7 +1445,7 @@
             const comp = document.getElementById('f_company_name').value.trim();
             const email = document.getElementById('f_contact_email').value.trim();
             if (!name || !comp || !email) {
-                alert('Please enter your Name, Company Name, and Business Email in Step 01 before proceeding.');
+                alert('Please complete your Name, Company Name, and Business Email in Step 01 before proceeding.');
                 return;
             }
         }
@@ -964,10 +1493,21 @@
             if (qEl) selectAnswer(code, idx, qEl.getAttribute('data-q-module'));
         });
         updateVisibilityAndCounts();
+        showToast('⚡ Sample African SME profile loaded! You can now freely navigate all 4 steps.');
     }
 
     document.addEventListener('DOMContentLoaded', () => {
         updateVisibilityAndCounts();
+
+        // Add loading state to submit button
+        const form = document.getElementById('diagnostic-form');
+        const submitBtn = document.getElementById('btn-submit-diag');
+        if (form && submitBtn) {
+            form.addEventListener('submit', () => {
+                submitBtn.disabled = true;
+                submitBtn.innerHTML = 'Computing Scores &amp; Generating Report... Please Wait';
+            });
+        }
     });
 </script>
 @endpush
