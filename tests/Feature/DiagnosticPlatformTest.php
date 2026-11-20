@@ -486,7 +486,7 @@ class DiagnosticPlatformTest extends TestCase
         $devRes->assertSee('Immutable Audit Log of Report Generation');
     }
 
-    public function test_all_user_roles_have_profile_in_navigation(): void
+    public function test_all_user_roles_can_access_their_profile(): void
     {
         $roles = ['client', 'consultant', 'admin', 'developer'];
 
@@ -498,14 +498,27 @@ class DiagnosticPlatformTest extends TestCase
             $items = NavigationItem::getForCurrentRequest();
             $labels = $items->pluck('label')->all();
 
-            $this->assertContains('My Profile', $labels, "Role '{$role}' does not have 'My Profile' in its navigation menu.");
+            // The main navbar should stay clean and focused (not cluttered with My Profile)
+            $this->assertNotContains('My Profile', $labels, "Role '{$role}' unexpectedly has 'My Profile' in main navbar.");
 
-            $profileItem = $items->firstWhere('label', 'My Profile');
-            $this->assertEquals(route('profile.show'), $profileItem->resolvedUrl());
-
+            // Profile page remains accessible directly and via utility bar
             $res = $this->get(route('profile.show'));
             $res->assertStatus(200);
             $res->assertSee($user->name);
         }
+    }
+
+    public function test_guest_does_not_see_client_staff_sign_in_in_utility_bar(): void
+    {
+        auth()->logout();
+
+        $response = $this->get('/');
+        $response->assertStatus(200);
+
+        // The top utility bar button should NOT be rendered for guests
+        $response->assertDontSee('Client / Staff Sign In');
+
+        // The primary navigation bar should still have Sign In
+        $response->assertSee('Sign In');
     }
 }

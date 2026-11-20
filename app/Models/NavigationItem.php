@@ -137,13 +137,11 @@ class NavigationItem extends Model
 
             // Client Navigation Items
             ['key' => 'client_portal', 'label' => 'My Companies & Action Tracker', 'url' => '/portal', 'route_name' => 'portal.index', 'target' => '_self', 'audience' => 'client', 'is_active' => true, 'is_visible' => true, 'is_cta' => false, 'is_system' => true, 'sort_order' => 10, 'created_at' => $now, 'updated_at' => $now],
-            ['key' => 'client_profile', 'label' => 'My Profile', 'url' => '/profile', 'route_name' => 'profile.show', 'target' => '_self', 'audience' => 'client', 'is_active' => true, 'is_visible' => true, 'is_cta' => false, 'is_system' => true, 'sort_order' => 15, 'created_at' => $now, 'updated_at' => $now],
             ['key' => 'client_assessment', 'label' => '+ New Business Assessment →', 'url' => '/wizard', 'route_name' => 'diagnostic.wizard', 'target' => '_self', 'audience' => 'client', 'is_active' => true, 'is_visible' => true, 'is_cta' => true, 'is_system' => true, 'sort_order' => 20, 'created_at' => $now, 'updated_at' => $now],
 
             // Consultant Navigation Items
             ['key' => 'consultant_desk', 'label' => 'Consultant Review Desk & CRM', 'url' => '/consultant', 'route_name' => 'consultant.dashboard', 'target' => '_self', 'audience' => 'consultant', 'is_active' => true, 'is_visible' => true, 'is_cta' => false, 'is_system' => true, 'sort_order' => 10, 'created_at' => $now, 'updated_at' => $now],
             ['key' => 'consultant_portal', 'label' => 'Client Portfolios', 'url' => '/portal', 'route_name' => 'portal.index', 'target' => '_self', 'audience' => 'consultant', 'is_active' => true, 'is_visible' => true, 'is_cta' => false, 'is_system' => true, 'sort_order' => 20, 'created_at' => $now, 'updated_at' => $now],
-            ['key' => 'consultant_profile', 'label' => 'My Profile', 'url' => '/profile', 'route_name' => 'profile.show', 'target' => '_self', 'audience' => 'consultant', 'is_active' => true, 'is_visible' => true, 'is_cta' => false, 'is_system' => true, 'sort_order' => 25, 'created_at' => $now, 'updated_at' => $now],
             ['key' => 'consultant_wizard', 'label' => '+ Assisted Diagnostic →', 'url' => '/wizard', 'route_name' => 'diagnostic.wizard', 'target' => '_self', 'audience' => 'consultant', 'is_active' => true, 'is_visible' => true, 'is_cta' => true, 'is_system' => true, 'sort_order' => 30, 'created_at' => $now, 'updated_at' => $now],
 
             // Admin Navigation Items
@@ -151,7 +149,6 @@ class NavigationItem extends Model
             ['key' => 'admin_consultant_desk', 'label' => 'Consultant Desk & CRM', 'url' => '/consultant', 'route_name' => 'consultant.dashboard', 'target' => '_self', 'audience' => 'admin', 'is_active' => true, 'is_visible' => true, 'is_cta' => false, 'is_system' => true, 'sort_order' => 20, 'created_at' => $now, 'updated_at' => $now],
             ['key' => 'admin_framework', 'label' => 'Framework & Questions Config', 'url' => '/consultant/framework', 'route_name' => 'consultant.framework', 'target' => '_self', 'audience' => 'admin', 'is_active' => true, 'is_visible' => true, 'is_cta' => false, 'is_system' => true, 'sort_order' => 30, 'created_at' => $now, 'updated_at' => $now],
             ['key' => 'admin_portal', 'label' => 'Client Portfolios', 'url' => '/portal', 'route_name' => 'portal.index', 'target' => '_self', 'audience' => 'admin', 'is_active' => true, 'is_visible' => true, 'is_cta' => false, 'is_system' => true, 'sort_order' => 40, 'created_at' => $now, 'updated_at' => $now],
-            ['key' => 'admin_profile', 'label' => 'My Profile', 'url' => '/profile', 'route_name' => 'profile.show', 'target' => '_self', 'audience' => 'admin', 'is_active' => true, 'is_visible' => true, 'is_cta' => false, 'is_system' => true, 'sort_order' => 45, 'created_at' => $now, 'updated_at' => $now],
             ['key' => 'admin_wizard', 'label' => '+ New Diagnostic →', 'url' => '/wizard', 'route_name' => 'diagnostic.wizard', 'target' => '_self', 'audience' => 'admin', 'is_active' => true, 'is_visible' => true, 'is_cta' => true, 'is_system' => true, 'sort_order' => 50, 'created_at' => $now, 'updated_at' => $now],
 
             // Developer Navigation Items
@@ -160,7 +157,6 @@ class NavigationItem extends Model
             ['key' => 'developer_consultant_desk', 'label' => 'Consultant Desk', 'url' => '/consultant', 'route_name' => 'consultant.dashboard', 'target' => '_self', 'audience' => 'developer', 'is_active' => true, 'is_visible' => true, 'is_cta' => false, 'is_system' => true, 'sort_order' => 30, 'created_at' => $now, 'updated_at' => $now],
             ['key' => 'developer_framework', 'label' => 'Framework JSON', 'url' => '/consultant/framework', 'route_name' => 'consultant.framework', 'target' => '_self', 'audience' => 'developer', 'is_active' => true, 'is_visible' => true, 'is_cta' => false, 'is_system' => true, 'sort_order' => 40, 'created_at' => $now, 'updated_at' => $now],
             ['key' => 'developer_portal', 'label' => 'Client Portal', 'url' => '/portal', 'route_name' => 'portal.index', 'target' => '_self', 'audience' => 'developer', 'is_active' => true, 'is_visible' => true, 'is_cta' => false, 'is_system' => true, 'sort_order' => 50, 'created_at' => $now, 'updated_at' => $now],
-            ['key' => 'developer_profile', 'label' => 'My Profile', 'url' => '/profile', 'route_name' => 'profile.show', 'target' => '_self', 'audience' => 'developer', 'is_active' => true, 'is_visible' => true, 'is_cta' => false, 'is_system' => true, 'sort_order' => 55, 'created_at' => $now, 'updated_at' => $now],
             ['key' => 'developer_wizard', 'label' => '+ New Assessment →', 'url' => '/wizard', 'route_name' => 'diagnostic.wizard', 'target' => '_self', 'audience' => 'developer', 'is_active' => true, 'is_visible' => true, 'is_cta' => true, 'is_system' => true, 'sort_order' => 60, 'created_at' => $now, 'updated_at' => $now],
         ];
 

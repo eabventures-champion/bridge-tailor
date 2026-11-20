@@ -1002,8 +1002,6 @@
                             @csrf
                             <button type="submit" class="bt-role-btn">Sign Out</button>
                         </form>
-                    @else
-                        <a href="{{ route('login') }}" class="bt-role-btn">Client / Staff Sign In</a>
                     @endauth
                 </div>
             </div>
