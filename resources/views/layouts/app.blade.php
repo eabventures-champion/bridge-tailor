@@ -471,8 +471,11 @@
         }
         .bt-footer-grid {
             display: grid;
+            grid-template-columns: 2fr 1.2fr 1.3fr;
+            gap: 24px;
+        }
+        .bt-footer-grid.has-col3 {
             grid-template-columns: 2fr 1fr 1fr 1.3fr;
-            gap: 20px;
         }
         /* Mobile menu toggle button */
         .bt-menu-toggle {
@@ -764,12 +767,13 @@
 
     @if($uiVisible('vis.footer_section'))
     @php
+        $showPracticeLines = $uiVisible('vis.footer_practice_lines');
         $col2Lines = array_filter(array_map('trim', explode("\n", (string) $uiText('text.footer_col2_items', ''))));
         $col3Lines = array_filter(array_map('trim', explode("\n", (string) $uiText('text.footer_col3_items', ''))));
         $col4Lines = array_filter(array_map('trim', explode("\n", (string) $uiText('text.footer_col4_items', ''))));
     @endphp
     <footer class="bt-footer">
-        <div class="bt-container bt-footer-grid">
+        <div class="bt-container bt-footer-grid {{ $showPracticeLines ? 'has-col3' : '' }}">
             <div>
                 <div style="font-weight:800;color:#fff;letter-spacing:0.06em;text-transform:uppercase;margin-bottom:6px;">
                     {{ $uiText('text.footer_col1_title') }}
@@ -791,6 +795,7 @@
                     @endforeach
                 </div>
             </div>
+            @if($showPracticeLines)
             <div>
                 <div style="font-weight:700;color:#fff;text-transform:uppercase;margin-bottom:6px;">
                     {{ $uiText('text.footer_col3_title') }}
@@ -801,6 +806,7 @@
                     @endforeach
                 </div>
             </div>
+            @endif
             <div>
                 <div style="font-weight:700;color:#fff;text-transform:uppercase;margin-bottom:6px;">
                     {{ $uiText('text.footer_col4_title') }}

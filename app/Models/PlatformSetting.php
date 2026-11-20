@@ -224,6 +224,11 @@ class PlatformSetting extends Model
                 'label' => 'Global — Footer Section',
                 'value' => '1',
             ],
+            'vis.footer_practice_lines' => [
+                'group' => 'visibility', 'type' => 'boolean',
+                'label' => 'Footer — Column 3: "Practice Lines" Section',
+                'value' => '0',
+            ],
 
             // Automated Consultant Routing Engine Settings
             'system.auto_assign_consultants' => [

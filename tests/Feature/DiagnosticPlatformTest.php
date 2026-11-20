@@ -343,9 +343,24 @@ class DiagnosticPlatformTest extends TestCase
         $response = $this->get('/');
         $response->assertSee('BT GLOBAL ADVISORY · ACCRA & LONDON');
         $response->assertSee('Core Assessment Frameworks');
-        $response->assertSee('Strategic Interventions');
         $response->assertSee('Compliance & Enterprise Security');
         $response->assertSee('01 · Governance & Board');
         $response->assertSee('02 · Growth Capital');
+        // By default, Column 3 (Practice Lines) is hidden
+        $response->assertDontSee('Practice Lines');
+
+        // Admin can toggle Column 3 visibility on
+        $this->actingAs($admin)
+            ->post('/admin/visibility', [
+                'vis' => [
+                    'vis.footer_section' => '1',
+                    'vis.footer_practice_lines' => '1',
+                ],
+            ])
+            ->assertRedirect();
+
+        auth()->logout();
+        $response = $this->get('/');
+        $response->assertSee('Strategic Interventions');
     }
 }
