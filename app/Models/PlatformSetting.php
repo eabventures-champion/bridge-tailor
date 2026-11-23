@@ -24,7 +24,7 @@ class PlatformSetting extends Model
             // Dynamic Text Overrides
             'text.top_bar_office' => [
                 'group' => 'text', 'type' => 'string',
-                'label' => 'Top Utility Bar — Office & Location Text',
+                'label' => 'Footer Office & Location Text',
                 'value' => 'East Legon, Accra, Ghana',
             ],
             'text.brand_logo_image' => [

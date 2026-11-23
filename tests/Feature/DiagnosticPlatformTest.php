@@ -521,4 +521,41 @@ class DiagnosticPlatformTest extends TestCase
         // The primary navigation bar should still have Sign In
         $response->assertSee('Sign In');
     }
+
+    public function test_unauthenticated_user_cannot_access_portal_and_is_redirected_to_login(): void
+    {
+        auth()->logout();
+
+        $this->get('/portal')->assertRedirect('/login');
+        $this->post('/portal/companies', ['name' => 'Unauthorized Corp'])->assertRedirect('/login');
+        $this->post('/portal/actions/1/log', ['delta' => 1, 'note' => 'Test'])->assertRedirect('/login');
+
+        // Authenticated client can access portal
+        $clientUser = User::where('role', 'client')->first();
+        $this->actingAs($clientUser)->get('/portal')->assertStatus(200);
+
+        // Authenticated consultant can access portal
+        $consultantUser = User::where('role', 'consultant')->first();
+        $this->actingAs($consultantUser)->get('/portal')->assertStatus(200);
+    }
+
+    public function test_top_utility_bar_does_not_render_office_info_and_footer_renders_it_below_first_column(): void
+    {
+        $clientUser = User::where('role', 'client')->first();
+
+        $response = $this->actingAs($clientUser)->get('/');
+        $response->assertStatus(200);
+
+        // Top utility bar has user status but not the office text inside .bt-utility
+        $content = $response->getContent();
+        preg_match('/<div class="bt-utility">.*?<\/div>\s*<\/div>/s', $content, $utilityMatches);
+        $this->assertNotEmpty($utilityMatches);
+        $this->assertStringNotContainsString('East Legon, Accra, Ghana', $utilityMatches[0]);
+        $this->assertStringNotContainsString('https://bridge-tailor.com', $utilityMatches[0]);
+        $this->assertStringContainsString('Signed in as', $utilityMatches[0]);
+
+        // Footer column 1 renders the office and website info
+        $this->assertStringContainsString('East Legon, Accra, Ghana', $content);
+        $this->assertStringContainsString('https://bridge-tailor.com', $content);
+    }
 }

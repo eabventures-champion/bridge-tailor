@@ -25,11 +25,13 @@ Route::post('/report/{ulid}/team-invites', [DiagnosticController::class, 'create
 Route::get('/team/{token}', [DiagnosticController::class, 'showTeamInvite'])->name('diagnostic.team.show');
 Route::post('/team/{token}', [DiagnosticController::class, 'submitTeamInvite'])->name('diagnostic.team.submit');
 
-// Multi-Company Client Account, Historical Tracking, Document Vault & Action Tracker
-Route::get('/portal', [ClientPortalController::class, 'index'])->name('portal.index');
-Route::post('/portal/companies', [ClientPortalController::class, 'storeCompany'])->name('portal.companies.store');
-Route::post('/portal/actions/{actionItem}/log', [ClientPortalController::class, 'logActionProgress'])->name('portal.actions.log');
-Route::delete('/portal/documents/{document}', [ClientPortalController::class, 'purgeDocument'])->name('portal.documents.purge');
+// Multi-Company Client Account, Historical Tracking, Document Vault & Action Tracker (Protected by Authentication)
+Route::middleware('auth')->group(function () {
+    Route::get('/portal', [ClientPortalController::class, 'index'])->name('portal.index');
+    Route::post('/portal/companies', [ClientPortalController::class, 'storeCompany'])->name('portal.companies.store');
+    Route::post('/portal/actions/{actionItem}/log', [ClientPortalController::class, 'logActionProgress'])->name('portal.actions.log');
+    Route::delete('/portal/documents/{document}', [ClientPortalController::class, 'purgeDocument'])->name('portal.documents.purge');
+});
 
 // Consultant Dashboard, Consultant Review Mode & Framework Editor (Protected by Role-Based Access Control)
 Route::prefix('consultant')->middleware(EnsureRole::class.':admin,consultant')->group(function () {

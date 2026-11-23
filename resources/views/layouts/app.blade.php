@@ -984,15 +984,11 @@
 </head>
 <body class="@yield('body_class') {{ request()->routeIs('diagnostic.landing') ? 'page-landing-light' : '' }}">
     <div class="bt-top-fixed">
-        <!-- Top Utility Bar: Brand Contact & Authenticated User Status -->
-        @if($uiVisible('vis.top_utility_bar'))
+        <!-- Top Utility Bar: Authenticated User Status -->
+        @if($uiVisible('vis.top_utility_bar') && auth()->check())
         <div class="bt-utility">
-            <div class="bt-utility-inner">
-                <div>
-                    <strong style="color:#0f172a;">BRIDGE-TAILOR CONSULTING</strong> · {{ $uiText('text.top_bar_office') }} ·
-                    <a href="https://bridge-tailor.com" target="_blank" rel="noopener" style="color:var(--bt-amber-deep);text-decoration:underline;">www.bridge-tailor.com</a>
-                </div>
-                <div style="display:flex;align-items:center;gap:12px;flex-wrap:wrap;">
+            <div class="bt-utility-inner" style="justify-content:flex-end;">
+                <div style="display:flex;align-items:center;gap:12px;flex-wrap:wrap;margin-left:auto;">
                     @auth
                         <span style="color:#334155;">Signed in as <a href="{{ route('profile.show') }}" style="color:var(--bt-amber-deep);font-weight:700;text-decoration:underline;">{{ auth()->user()->name }}</a>
                             <span class="tag tag-amber" style="margin-left:4px;">{{ strtoupper(auth()->user()->role) }}</span>
@@ -1113,6 +1109,10 @@
                 </p>
                 <div style="font-size:11px;color:#9c9288;">
                     {{ $uiText('text.footer_engine_note') }}
+                </div>
+                <div style="margin-top:12px;font-size:11.5px;color:#c2bab2;line-height:1.6;">
+                    {{ $uiText('text.top_bar_office') }} ·
+                    <a href="https://bridge-tailor.com" target="_blank" rel="noopener" style="color:var(--bt-amber);text-decoration:underline;">www.bridge-tailor.com</a>
                 </div>
             </div>
             <div>

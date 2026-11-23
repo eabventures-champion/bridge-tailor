@@ -18,29 +18,21 @@ class ClientPortalController extends Controller
     public function index(Request $request)
     {
         $user = Auth::user();
+        if (! $user) {
+            return redirect()->route('login');
+        }
+
         $fw = FrameworkVersion::active();
 
-        if ($user) {
-            if ($user->isConsultant()) {
-                $companies = Company::with(['assessments.report', 'actionItems.logs', 'documents', 'consultationRequests'])
-                    ->orderBy('name')
-                    ->get();
-            } else {
-                $companies = Company::with(['assessments.report', 'actionItems.logs', 'documents', 'consultationRequests'])
-                    ->where('owner_user_id', $user->id)
-                    ->orWhereHas('users', fn ($q) => $q->where('users.id', $user->id))
-                    ->orderBy('name')
-                    ->get();
-            }
-        } else {
-            // Unauthenticated visitor sees only companies created in their own session or the demo showcase account
-            $sessionAssessmentUlids = array_keys($request->session()->get('assessment_access', []));
+        if ($user->isConsultant()) {
             $companies = Company::with(['assessments.report', 'actionItems.logs', 'documents', 'consultationRequests'])
-                ->where('contact_email', 'kwame@voltaagro.com.gh')
-                ->when(! empty($sessionAssessmentUlids), function ($q) use ($sessionAssessmentUlids) {
-                    $q->orWhereHas('assessments', fn ($aq) => $aq->whereIn('ulid', $sessionAssessmentUlids));
-                })
-                ->orderBy('id')
+                ->orderBy('name')
+                ->get();
+        } else {
+            $companies = Company::with(['assessments.report', 'actionItems.logs', 'documents', 'consultationRequests'])
+                ->where('owner_user_id', $user->id)
+                ->orWhereHas('users', fn ($q) => $q->where('users.id', $user->id))
+                ->orderBy('name')
                 ->get();
         }
 
@@ -79,12 +71,10 @@ class ClientPortalController extends Controller
 
         $user = Auth::user();
         $company = Company::create($data + [
-            'owner_user_id' => $user?->id,
+            'owner_user_id' => $user->id,
         ]);
 
-        if ($user) {
-            $company->users()->syncWithoutDetaching([$user->id => ['company_role' => 'owner']]);
-        }
+        $company->users()->syncWithoutDetaching([$user->id => ['company_role' => 'owner']]);
 
         $assignmentService->autoAssignCompany($company);
 
@@ -153,17 +143,13 @@ class ClientPortalController extends Controller
     private function authorizeCompanyAccess(Request $request, Company $company): void
     {
         $user = Auth::user();
-        if ($user && $user->isConsultant()) {
+        if (! $user) {
+            abort(403, 'Unauthorized.');
+        }
+        if ($user->isConsultant()) {
             return;
         }
-        if ($user && ($company->owner_user_id === $user->id || $company->users()->where('users.id', $user->id)->exists())) {
-            return;
-        }
-        $sessionUlids = array_keys($request->session()->get('assessment_access', []));
-        if (! empty($sessionUlids) && $company->assessments()->whereIn('ulid', $sessionUlids)->exists()) {
-            return;
-        }
-        if ($company->contact_email === 'kwame@voltaagro.com.gh') {
+        if ($company->owner_user_id === $user->id || $company->users()->where('users.id', $user->id)->exists()) {
             return;
         }
         abort(403, 'Strict tenant isolation: you do not have permission to modify another company\'s records.');
