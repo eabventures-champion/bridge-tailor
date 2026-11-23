@@ -558,4 +558,24 @@ class DiagnosticPlatformTest extends TestCase
         $this->assertStringContainsString('East Legon, Accra, Ghana', $content);
         $this->assertStringContainsString('https://bridge-tailor.com', $content);
     }
+
+    public function test_mobile_navigation_renders_user_profile_signout_and_role_badge_next_to_hamburger(): void
+    {
+        $clientUser = User::where('role', 'client')->first();
+
+        $response = $this->actingAs($clientUser)->get('/');
+        $response->assertStatus(200);
+
+        $content = $response->getContent();
+
+        // Role badge rendered next to hamburger button in .bt-header-actions
+        $this->assertStringContainsString('bt-mobile-role-tag', $content);
+        $this->assertStringContainsString('CLIENT', $content);
+
+        // Hamburger drawer contains mobile user status, profile link and logout
+        $this->assertStringContainsString('bt-mobile-user-card', $content);
+        $this->assertStringContainsString($clientUser->name, $content);
+        $this->assertStringContainsString(route('profile.show'), $content);
+        $this->assertStringContainsString('bt-mobile-logout-btn', $content);
+    }
 }

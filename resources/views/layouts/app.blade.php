@@ -640,6 +640,21 @@
             grid-template-columns: 2fr 1fr 1fr 1.3fr;
         }
         /* Mobile menu toggle button - Minimalist Hamburger (No Box) */
+        .bt-header-actions {
+            display: none;
+        }
+        .bt-mobile-role-tag {
+            display: none !important;
+        }
+        .bt-mobile-user-card {
+            display: none !important;
+        }
+        .bt-mobile-only {
+            display: none !important;
+        }
+        .bt-desktop-only {
+            display: inline-block;
+        }
         .bt-menu-toggle {
             display: none;
             background: transparent !important;
@@ -756,6 +771,9 @@
             :root {
                 --bt-header-height: 56px;
             }
+            .bt-utility {
+                display: none !important;
+            }
             .bt-container {
                 padding: 16px 12px;
             }
@@ -765,11 +783,88 @@
             }
             .bt-header-inner {
                 padding: 10px 12px;
+                flex-wrap: nowrap;
+            }
+            .bt-header-actions {
+                display: inline-flex !important;
+                align-items: center;
+                gap: 8px;
+            }
+            .bt-mobile-role-tag {
+                display: inline-flex !important;
+                align-items: center;
+                font-size: 10.5px;
+                font-weight: 700;
+                letter-spacing: 0.05em;
+                padding: 3px 8px;
+                border-radius: 5px !important;
+                line-height: 1.2;
             }
             .bt-menu-toggle {
                 display: inline-flex;
                 align-items: center;
                 gap: 6px;
+            }
+            .bt-desktop-only {
+                display: none !important;
+            }
+            .bt-mobile-user-card {
+                display: block !important;
+                padding: 10px 12px;
+                margin: 4px 0 10px 0;
+                background-color: #f8fafc;
+                border: 1px solid #e2e8f0;
+                border-radius: 8px !important;
+                text-align: left;
+            }
+            .bt-mobile-user-label {
+                font-size: 10.5px;
+                color: #64748b;
+                text-transform: uppercase;
+                letter-spacing: 0.05em;
+                font-weight: 600;
+                display: block;
+            }
+            .bt-mobile-user-name {
+                font-size: 13.5px;
+                font-weight: 700;
+                color: #0f172a;
+                margin-top: 2px;
+            }
+            .bt-mobile-only {
+                display: flex !important;
+            }
+            .bt-mobile-logout-btn {
+                display: flex !important;
+                align-items: center !important;
+                justify-content: space-between !important;
+                margin-left: 0 !important;
+                width: 100% !important;
+                text-align: left !important;
+                padding: 13px 4px !important;
+                font-size: 13px !important;
+                font-weight: 600 !important;
+                letter-spacing: 0.05em !important;
+                text-transform: uppercase !important;
+                background: transparent !important;
+                border: none !important;
+                border-radius: 0 !important;
+                box-shadow: none !important;
+                color: var(--bt-danger, #9e2a1c) !important;
+                cursor: pointer;
+                font-family: inherit;
+                transition: color 0.2s ease, background-color 0.2s ease, padding-left 0.2s ease;
+            }
+            .bt-mobile-logout-btn:hover {
+                color: #781d12 !important;
+                background: rgba(158, 42, 28, 0.04) !important;
+                padding-left: 10px !important;
+            }
+            .bt-nav.open .bt-mobile-user-card,
+            .bt-nav.open .bt-mobile-only,
+            .bt-nav.open .bt-mobile-logout-btn {
+                opacity: 1;
+                transform: translateY(0);
             }
             .bt-nav {
                 position: absolute;
@@ -1020,14 +1115,26 @@
                     </span>
                     @endif
                 </a>
-                <button type="button" class="bt-menu-toggle" id="bt-menu-toggle-btn" onclick="toggleMobileNav(this)" aria-label="Toggle navigation" aria-expanded="false">
-                    <span class="bt-hamburger-icon">
-                        <span class="bt-bar"></span>
-                        <span class="bt-bar"></span>
-                        <span class="bt-bar"></span>
-                    </span>
-                </button>
+                <div class="bt-header-actions">
+                    @auth
+                        <span class="tag tag-amber bt-mobile-role-tag">{{ strtoupper(auth()->user()->role) }}</span>
+                    @endauth
+                    <button type="button" class="bt-menu-toggle" id="bt-menu-toggle-btn" onclick="toggleMobileNav(this)" aria-label="Toggle navigation" aria-expanded="false">
+                        <span class="bt-hamburger-icon">
+                            <span class="bt-bar"></span>
+                            <span class="bt-bar"></span>
+                            <span class="bt-bar"></span>
+                        </span>
+                    </button>
+                </div>
                 <nav class="bt-nav" id="bt-main-nav">
+                    @auth
+                        <div class="bt-mobile-user-card">
+                            <span class="bt-mobile-user-label">Signed in as</span>
+                            <div class="bt-mobile-user-name">{{ auth()->user()->name }}</div>
+                        </div>
+                    @endauth
+
                     @php
                         $dynamicNavItems = \App\Models\NavigationItem::getForCurrentRequest();
                     @endphp
@@ -1042,8 +1149,22 @@
                     @endforeach
 
                     @auth
+                        <a href="{{ route('profile.show') }}" class="bt-mobile-only {{ request()->routeIs('profile.*') ? 'active' : '' }}">
+                            <span>My Profile</span>
+                            <svg class="bt-nav-arrow" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="9 18 15 12 9 6"></polyline></svg>
+                        </a>
+                        <div class="bt-mobile-only" style="width:100%;margin-top:2px;">
+                            <form action="{{ route('logout') }}" method="POST" style="width:100%;margin:0;">
+                                @csrf
+                                <button type="submit" class="bt-mobile-logout-btn">
+                                    <span>Sign Out</span>
+                                    <svg class="bt-nav-arrow" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="9 18 15 12 9 6"></polyline></svg>
+                                </button>
+                            </form>
+                        </div>
+
                         @if(!$uiVisible('vis.top_utility_bar'))
-                            <form action="{{ route('logout') }}" method="POST" style="display:inline;margin:0;">
+                            <form action="{{ route('logout') }}" method="POST" class="bt-desktop-only" style="display:inline;margin:0;">
                                 @csrf
                                 <button type="submit" class="bt-role-btn" style="padding:7px 14px;font-size:12px;border-radius:6px!important;border:1px solid #cbd5e1;">Sign Out</button>
                             </form>
@@ -1158,7 +1279,7 @@
                 const topBar = document.querySelector('.bt-utility');
                 let h = 0;
                 if (headerBar) h += headerBar.offsetHeight;
-                if (topBar) h += topBar.offsetHeight;
+                if (topBar && window.getComputedStyle(topBar).display !== 'none') h += topBar.offsetHeight;
                 if (h <= 0) h = fixedHeader.offsetHeight;
                 document.documentElement.style.setProperty('--bt-header-height', h + 'px');
                 document.body.style.paddingTop = h + 'px';
