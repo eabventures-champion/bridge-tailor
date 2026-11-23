@@ -6,22 +6,22 @@
 <!-- Section 1: Solid Espresso Header & Scalable Multi-Company Portfolio Switcher -->
 <section class="sec-espresso">
     <div class="bt-container">
-        <div style="display:flex;justify-content:space-between;align-items:flex-end;gap:16px;flex-wrap:wrap;">
-            <div>
-                <div class="eyebrow">MULTI-COMPANY ACCOUNT · HISTORICAL TRACKING · APPLY &amp; TRACK</div>
-                <h1 style="font-size:28px;color:#fff;">Enterprise Portfolio &amp; Implementation Workspace</h1>
-                <div style="font-size:12.5px;color:#d6cdc2;margin-top:4px;">
+        <div class="portal-hero-row">
+            <div class="portal-hero-content">
+                <div class="eyebrow portal-eyebrow">MULTI-COMPANY ACCOUNT · HISTORICAL TRACKING · APPLY &amp; TRACK</div>
+                <h1 class="portal-title">Enterprise Portfolio &amp; Implementation Workspace</h1>
+                <div class="portal-subtitle">
                     Manage multiple businesses under one consulting account, compare historical diagnostic runs, and log implementation progress (-1 to +2 delta).
                 </div>
             </div>
 
             <!-- Scalable Enterprise Selector (Works for 3 or 300+ Businesses) -->
-            <div style="display:flex;align-items:stretch;gap:6px;flex-wrap:wrap;">
-                <div style="display:flex;align-items:center;background:#141210;border:1px solid var(--bt-amber);padding:4px 10px;gap:8px;">
-                    <span style="font-size:10px;font-weight:800;text-transform:uppercase;color:var(--bt-amber);letter-spacing:0.06em;">Active Business:</span>
+            <div class="portal-switcher-controls">
+                <div class="portal-active-select-box">
+                    <span class="portal-active-select-label">Active Business:</span>
                     <select onchange="if(this.value) window.location.href=this.value;"
                             aria-label="Select active business workspace"
-                            style="background:#141210;color:#fff;border:none;font-family:inherit;font-size:12.5px;font-weight:700;cursor:pointer;padding:4px 2px;outline:none;">
+                            class="portal-active-select">
                         @foreach($companies as $comp)
                             @php
                                 $latestScore = $comp->assessments->first()?->health_index;
@@ -35,7 +35,7 @@
                 </div>
 
                 <button type="button"
-                        class="btn btn-amber btn-sm"
+                        class="btn btn-amber btn-sm portal-search-btn"
                         onclick="const d=document.getElementById('portfolio-directory-drawer'); d.style.display = d.style.display === 'none' ? 'block' : 'none';">
                     ⇄ Search / Browse All ({{ $companies->count() }})
                 </button>
@@ -44,7 +44,7 @@
 
         <!-- Collapsible Searchable Enterprise Directory Drawer (Handles Any Number of Businesses Cleanly) -->
         <div id="portfolio-directory-drawer" style="display:none;margin-top:14px;border-top:1px solid #443e3a;padding-top:14px;">
-            <div style="display:grid;grid-template-columns:1fr 220px auto;gap:8px;margin-bottom:10px;align-items:center;" class="bt-action-log-form">
+            <div class="portal-dir-filter-grid">
                 <input type="text"
                        id="portfolio-search-input"
                        oninput="filterPortfolioDirectory()"
@@ -63,7 +63,7 @@
                 </div>
             </div>
 
-            <div style="max-height:290px;overflow-y:auto;border:1px solid #443e3a;">
+            <div style="max-height:290px;overflow-y:auto;overflow-x:auto;border:1px solid #443e3a;">
                 <table class="bt-table" style="margin:0;">
                     <thead>
                         <tr>

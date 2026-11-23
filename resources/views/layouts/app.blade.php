@@ -746,6 +746,75 @@
             color: var(--bt-amber-dark);
         }
 
+        /* Enterprise Portal Hero & Switcher */
+        .portal-hero-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-end;
+            gap: 20px;
+            flex-wrap: wrap;
+        }
+        .portal-hero-content {
+            flex: 1 1 auto;
+            max-width: 720px;
+        }
+        .portal-title {
+            font-size: 28px;
+            line-height: 1.25;
+            color: #ffffff;
+            margin: 0 0 6px 0;
+        }
+        .portal-subtitle {
+            font-size: 12.5px;
+            color: #d6cdc2;
+            margin: 0;
+            line-height: 1.5;
+        }
+        .portal-switcher-controls {
+            display: flex;
+            align-items: stretch;
+            gap: 8px;
+            flex-wrap: wrap;
+            flex-shrink: 0;
+        }
+        .portal-active-select-box {
+            display: flex;
+            align-items: center;
+            background: #141210;
+            border: 1px solid var(--bt-amber);
+            padding: 5px 12px;
+            gap: 8px;
+            border-radius: 8px !important;
+        }
+        .portal-active-select-label {
+            font-size: 10px;
+            font-weight: 800;
+            text-transform: uppercase;
+            color: var(--bt-amber);
+            letter-spacing: 0.06em;
+            white-space: nowrap;
+            flex-shrink: 0;
+        }
+        .portal-active-select {
+            background: #141210;
+            color: #ffffff;
+            border: none;
+            font-family: inherit;
+            font-size: 12.5px;
+            font-weight: 700;
+            cursor: pointer;
+            padding: 4px 2px;
+            outline: none;
+            max-width: 320px;
+        }
+        .portal-dir-filter-grid {
+            display: grid;
+            grid-template-columns: 1fr 220px auto;
+            gap: 8px;
+            margin-bottom: 10px;
+            align-items: center;
+        }
+
         /* Tablet & Mobile Breakpoints */
         @media (max-width: 960px) {
             .bt-hero-grid,
@@ -865,6 +934,72 @@
             .bt-nav.open .bt-mobile-logout-btn {
                 opacity: 1;
                 transform: translateY(0);
+            }
+
+            /* Portal Hero & Switcher Mobile Optimization */
+            .portal-hero-row {
+                flex-direction: column !important;
+                align-items: stretch !important;
+                justify-content: flex-start !important;
+                gap: 12px !important;
+            }
+            .portal-hero-content {
+                flex: 0 0 auto !important;
+                width: 100% !important;
+                max-width: 100% !important;
+            }
+            .portal-eyebrow {
+                font-size: 9.5px !important;
+                letter-spacing: 0.05em !important;
+                line-height: 1.4 !important;
+                margin-bottom: 5px !important;
+            }
+            .portal-title {
+                font-size: 21px !important;
+                line-height: 1.25 !important;
+                margin: 0 0 6px 0 !important;
+            }
+            .portal-subtitle {
+                font-size: 12px !important;
+                line-height: 1.45 !important;
+            }
+            .portal-switcher-controls {
+                flex-direction: column !important;
+                align-items: stretch !important;
+                width: 100% !important;
+                gap: 8px !important;
+                margin-top: 2px !important;
+            }
+            .portal-active-select-box {
+                width: 100% !important;
+                padding: 8px 12px !important;
+                box-sizing: border-box !important;
+                min-width: 0 !important;
+            }
+            .portal-active-select {
+                flex: 1 1 auto !important;
+                min-width: 0 !important;
+                width: 100% !important;
+                max-width: none !important;
+                font-size: 12px !important;
+                text-overflow: ellipsis !important;
+                overflow: hidden !important;
+                white-space: nowrap !important;
+            }
+            .portal-search-btn {
+                width: 100% !important;
+                justify-content: center !important;
+                padding: 10px 14px !important;
+                font-size: 12px !important;
+                font-weight: 700 !important;
+                text-align: center !important;
+                border-radius: 8px !important;
+            }
+            .portal-dir-filter-grid {
+                display: flex !important;
+                flex-direction: column !important;
+                gap: 8px !important;
+                align-items: stretch !important;
             }
             .bt-nav {
                 position: absolute;
