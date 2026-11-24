@@ -529,23 +529,248 @@
         color: #ffffff;
     }
 
+    /* Form row responsive layout */
+    .bt-sec-form-row {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 14px;
+    }
+
+    .bt-cleared-actions {
+        display: flex;
+        gap: 12px;
+        justify-content: center;
+        margin-top: 18px;
+    }
+
+    /* Developer 2FA Passcode Input */
+    .bt-dev-2fa-input {
+        width: 100%;
+        font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace !important;
+        font-size: 25px !important;
+        font-weight: 900 !important;
+        letter-spacing: 0.25em !important;
+        text-align: center;
+        color: #047857 !important;
+        background: #f0fdf4 !important;
+        border: 2px solid #10b981 !important;
+        border-radius: 10px !important;
+        padding: 14px 16px !important;
+        box-sizing: border-box !important;
+    }
+    .bt-dev-2fa-hint {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        font-size: 11px;
+        color: #64748b;
+        margin-top: 6px;
+    }
+
     @media (max-width: 640px) {
         .bt-security-wrap {
-            padding: 20px 12px;
+            padding: 14px 10px 32px;
+            min-height: calc(100vh - var(--bt-header-height, 60px));
+            min-height: calc(100dvh - var(--bt-header-height, 60px));
+        }
+        .bt-security-container {
+            max-width: 100%;
+        }
+        .bt-security-card {
+            border-radius: 14px !important;
+            border-top-width: 4px;
         }
         .bt-security-header {
-            padding: 26px 20px 20px;
+            padding: 22px 14px 16px;
+        }
+        .bt-security-badge {
+            font-size: 10px;
+            padding: 4px 10px;
+            letter-spacing: 0.05em;
+            margin-bottom: 12px;
+            max-width: 100%;
+            white-space: normal;
+            text-align: center;
         }
         .bt-security-title {
-            font-size: 24px;
+            font-size: 21px;
+            line-height: 1.25;
+            margin-bottom: 6px;
         }
+        .bt-security-sub {
+            font-size: 12px;
+            line-height: 1.5;
+        }
+
+        /* Segmented Tabs on Mobile */
+        .bt-sec-switcher {
+            padding: 4px;
+            gap: 4px;
+        }
+        .bt-sec-tab-btn {
+            padding: 10px 6px;
+            font-size: 11px;
+            letter-spacing: 0.02em;
+            gap: 5px;
+            line-height: 1.2;
+            border-radius: 8px !important;
+        }
+        .bt-sec-tab-btn svg {
+            width: 14px;
+            height: 14px;
+            flex-shrink: 0;
+        }
+
+        /* Tab Panes on Mobile */
         .bt-sec-pane {
-            padding: 24px 20px 28px;
+            padding: 18px 14px 22px;
+        }
+        .bt-sec-form-row {
+            grid-template-columns: 1fr;
+            gap: 0;
+        }
+        .bt-sec-form .field {
+            margin-bottom: 14px;
+        }
+        .bt-sec-form label {
+            font-size: 10.5px;
+            margin-bottom: 5px;
+        }
+
+        /* Prevent iOS Safari 16px auto-zoom */
+        .bt-sec-form input[type="text"],
+        .bt-sec-form input[type="email"],
+        .bt-sec-form input[type="password"],
+        .bt-sec-form select,
+        .bt-sec-form textarea {
+            font-size: 16px !important;
+            padding: 11px 12px !important;
+            border-radius: 8px !important;
+        }
+
+        /* Monospace Code Input on Mobile */
+        .bt-code-input {
+            font-size: 18px !important;
+            letter-spacing: 0.08em !important;
+            padding: 12px 8px !important;
+            border-radius: 10px !important;
+        }
+        .bt-code-format-hint {
+            flex-direction: column;
+            align-items: center;
+            gap: 4px;
+            text-align: center;
+            font-size: 11px;
+            margin-top: 8px;
+        }
+
+        /* Primary and secondary buttons */
+        .btn-sec-primary,
+        .btn-sec-request {
+            min-height: 46px;
+            padding: 12px 14px;
+            font-size: 12.5px;
+            white-space: normal;
+            text-align: center;
+            line-height: 1.35;
+        }
+
+        /* Cleared session actions */
+        .bt-cleared-actions {
+            flex-direction: column;
+            gap: 8px;
+        }
+        .bt-cleared-actions a,
+        .bt-cleared-actions form,
+        .bt-cleared-actions button {
+            width: 100% !important;
+        }
+
+        /* Dispatch alert box */
+        .bt-sec-dispatch-box {
+            padding: 12px 12px;
+            gap: 10px;
+            margin-bottom: 16px;
+        }
+        .bt-sec-dispatch-text {
+            font-size: 11.5px;
+            line-height: 1.5;
+        }
+
+        /* Developer terminal button on mobile */
+        .bt-dev-terminal-bar {
+            margin-top: 16px;
+            padding-top: 16px;
+            padding-bottom: 4px;
+        }
+        .bt-dev-terminal-btn {
+            font-size: 11px;
+            padding: 10px 14px;
+            max-width: 100%;
+            white-space: normal;
+            line-height: 1.35;
+        }
+
+        /* Developer modal on mobile */
+        .bt-dev-modal {
+            padding: 10px;
+            align-items: center;
+        }
+        .bt-dev-modal-content {
+            max-height: calc(100vh - 20px);
+            max-height: calc(100dvh - 20px);
+            display: flex;
+            flex-direction: column;
+            border-radius: 12px !important;
+        }
+        .bt-dev-modal-header {
+            padding: 13px 16px;
+            flex-shrink: 0;
+        }
+        .bt-dev-modal-body {
+            padding: 16px 14px 18px;
+            overflow-y: auto;
+            -webkit-overflow-scrolling: touch;
+            flex: 1 1 auto;
+        }
+        .bt-dev-2fa-input {
+            font-size: 20px !important;
+            letter-spacing: 0.16em !important;
+            padding: 11px 10px !important;
+        }
+        .bt-dev-2fa-hint {
+            flex-direction: column;
+            align-items: center;
+            gap: 3px;
+            text-align: center;
+        }
+
+        /* Sandbox bar on mobile */
+        .bt-sandbox-bar {
+            flex-direction: column;
+            align-items: stretch;
+            text-align: center;
+            gap: 10px;
+            padding: 12px 14px;
+        }
+        .bt-sandbox-btn {
+            width: 100%;
+            padding: 8px 12px;
+        }
+    }
+
+    @media (max-width: 360px) {
+        .bt-security-title {
+            font-size: 19px;
+        }
+        .bt-sec-tab-btn {
+            font-size: 10px;
+            padding: 8px 4px;
         }
         .bt-code-input {
-            font-size: 21px !important;
-            letter-spacing: 0.12em !important;
-            padding: 12px 14px !important;
+            font-size: 16px !important;
+            letter-spacing: 0.05em !important;
+            padding: 10px 6px !important;
         }
     }
 </style>
@@ -592,13 +817,13 @@
                         <p class="bt-sec-success-desc">
                             Your session has verified security clearance (Token: <code style="background:#ecfdf5;color:#047857;padding:2px 6px;border-radius:4px;font-weight:700;">{{ $clearedCode }}</code>). You may enter the platform freely.
                         </p>
-                        <div style="display:flex;gap:12px;justify-content:center;margin-top:18px;">
-                            <a href="{{ route('diagnostic.landing') }}" class="btn-sec-primary" style="text-decoration:none;width:auto;padding:11px 24px;">
+                        <div class="bt-cleared-actions">
+                            <a href="{{ route('diagnostic.landing') }}" class="btn-sec-primary" style="text-decoration:none;padding:11px 24px;">
                                 <span>Proceed to Platform →</span>
                             </a>
                             <form action="{{ route('security.lock') }}" method="POST" style="margin:0;">
                                 @csrf
-                                <button type="submit" class="btn-sec-request" style="width:auto;padding:11px 20px;">
+                                <button type="submit" class="btn-sec-request" style="padding:11px 20px;">
                                     <span>Lock Terminal</span>
                                 </button>
                             </form>
@@ -666,7 +891,7 @@
 
                 <form action="{{ route('security.request') }}" method="POST" class="bt-sec-form" id="requestCodeForm">
                     @csrf
-                    <div style="display:grid;grid-template-columns:1fr 1fr;gap:14px;">
+                    <div class="bt-sec-form-row">
                         <div class="field">
                             <label for="reqEmail">Your Email Address *</label>
                             <input type="email"
@@ -688,7 +913,7 @@
                         </div>
                     </div>
 
-                    <div style="display:grid;grid-template-columns:1fr 1fr;gap:14px;">
+                    <div class="bt-sec-form-row">
                         <div class="field">
                             <label for="reqOrg">Company / Organization</label>
                             <input type="text"
@@ -843,8 +1068,8 @@
                                autocomplete="one-time-code"
                                spellcheck="false"
                                placeholder="123456"
-                               style="font-family:ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace !important;font-size:25px !important;font-weight:900 !important;letter-spacing:0.25em !important;text-align:center;color:#047857 !important;background:#f0fdf4 !important;border:2px solid #10b981 !important;padding:14px 16px !important;">
-                        <div style="display:flex;justify-content:space-between;align-items:center;font-size:11px;color:#64748b;margin-top:6px;">
+                               class="bt-dev-2fa-input">
+                        <div class="bt-dev-2fa-hint">
                             <span>Code sent to {{ $dev2faEmail ?: 'eabventures@gmail.com' }}</span>
                             <span>Expires in 15 mins</span>
                         </div>
