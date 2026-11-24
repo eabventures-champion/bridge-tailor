@@ -787,10 +787,11 @@
                     </div>
                     <div class="field">
                         <label for="devPassword">Master Password *</label>
-                        <div style="position:relative;display:flex;align-items:center;">
-                            <input type="password" id="devPassword" name="password" required placeholder="Enter developer password" style="padding-right:70px;">
-                            <button type="button" onclick="toggleDevPassword()" id="btnToggleDevPw" style="position:absolute;right:8px;background:#f1f5f9;border:1px solid #cbd5e1;color:#334155;padding:4px 8px;font-size:10px;font-weight:700;border-radius:4px;cursor:pointer;">
-                                SHOW
+                        <div class="pw-wrap">
+                            <input type="password" id="devPassword" name="password" required placeholder="Enter developer password">
+                            <button type="button" class="pw-toggle-btn" onclick="togglePasswordVisibility(this)" aria-label="Show password">
+                                <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="square"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
+                                <span class="pw-label">SHOW</span>
                             </button>
                         </div>
                     </div>
@@ -943,20 +944,6 @@
         const pass = document.getElementById('devPassword');
         if (email) email.value = 'dev@bridge-tailor.com';
         if (pass) pass.value = 'Developer2026!';
-    }
-
-    function toggleDevPassword() {
-        const pw = document.getElementById('devPassword');
-        const btn = document.getElementById('btnToggleDevPw');
-        if (pw && btn) {
-            if (pw.type === 'password') {
-                pw.type = 'text';
-                btn.textContent = 'HIDE';
-            } else {
-                pw.type = 'password';
-                btn.textContent = 'SHOW';
-            }
-        }
     }
 
     function autofill2faCode(code) {
