@@ -8,6 +8,7 @@ use App\Models\Assessment;
 use App\Models\Company;
 use App\Models\FrameworkVersion;
 use App\Models\NavigationItem;
+use App\Models\PlatformSetting;
 use App\Models\User;
 use Illuminate\Foundation\Testing\DatabaseTransactions;
 use Tests\TestCase;
@@ -19,6 +20,20 @@ class DiagnosticPlatformTest extends TestCase
     protected function setUp(): void
     {
         parent::setUp();
+        PlatformSetting::flushCache();
+        PlatformSetting::updateOrCreate(
+            ['key' => 'privilege.admin_console_access'],
+            ['group' => 'privilege', 'type' => 'boolean', 'label' => 'Console', 'value' => '1']
+        );
+        PlatformSetting::updateOrCreate(
+            ['key' => 'privilege.admin_framework_access'],
+            ['group' => 'privilege', 'type' => 'boolean', 'label' => 'Framework', 'value' => '1']
+        );
+        PlatformSetting::updateOrCreate(
+            ['key' => 'security.gate_enabled'],
+            ['group' => 'system', 'type' => 'boolean', 'label' => 'Gate', 'value' => '0']
+        );
+        PlatformSetting::flushCache();
     }
 
     public function test_framework_definition_passes_structural_validation(): void

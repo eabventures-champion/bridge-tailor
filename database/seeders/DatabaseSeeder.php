@@ -50,6 +50,24 @@ class DatabaseSeeder extends Seeder
         }
         PlatformSetting::flushCache();
 
+        // Seed initial platform clearance code
+        \App\Models\PlatformSecurityCode::firstOrCreate(
+            ['access_code' => 'BT-SEC-DEMO26'],
+            [
+                'email' => 'client@bridge-tailor.com',
+                'name' => 'Demo Enterprise Client',
+                'organization' => 'Volta Agro-Processing Ltd',
+                'role_requested' => 'client',
+                'request_message' => 'Initial platform security code generated for demo and onboarding review.',
+                'delivered_to' => 'eabventures@gmail.com',
+                'status' => 'active',
+                'times_used' => 0,
+                'max_uses' => 100,
+                'approved_by' => $developer->id,
+                'expires_at' => now()->addMonths(6),
+            ]
+        );
+
         // 1. Users (Admin, Senior Consultant, Multi-Company Client Account)
         $admin = User::updateOrCreate(
             ['email' => 'admin@bridge-tailor.com'],

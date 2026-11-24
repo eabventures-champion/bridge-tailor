@@ -344,6 +344,23 @@ class PlatformSetting extends Model
                 'label' => 'Automated Assignment Strategy (least_loaded | round_robin)',
                 'value' => 'least_loaded',
             ],
+
+            // High-End Platform Security Access Gateway Controls
+            'security.gate_enabled' => [
+                'group' => 'system', 'type' => 'boolean',
+                'label' => 'Platform Security Clearance Gate (Enforces access code for all guests, clients, consultants & admins; Developer exempt)',
+                'value' => '1',
+            ],
+            'security.admin_email' => [
+                'group' => 'system', 'type' => 'string',
+                'label' => 'Security Request Recipient Email (eabventures@gmail.com)',
+                'value' => 'eabventures@gmail.com',
+            ],
+            'security.code_expiry_hours' => [
+                'group' => 'system', 'type' => 'string',
+                'label' => 'Security Access Code Validity Window (Hours)',
+                'value' => '72',
+            ],
         ];
     }
 

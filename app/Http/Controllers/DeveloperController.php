@@ -11,6 +11,7 @@ use App\Models\ConsultationRequest;
 use App\Models\FrameworkVersion;
 use App\Models\NavigationItem;
 use App\Models\PlatformSetting;
+use App\Models\PlatformSecurityCode;
 use App\Models\UploadedDocument;
 use App\Models\User;
 use Illuminate\Http\Request;
@@ -66,6 +67,10 @@ class DeveloperController extends Controller
         $navigationItems = NavigationItem::orderBy('audience')->orderBy('sort_order')->orderBy('id')->get();
         $routePrefix = request()->is('admin*') ? 'admin' : ($isDeveloper ? 'developer' : 'admin');
 
+        $securityCodes = PlatformSecurityCode::with('approver')->latest('id')->limit(50)->get();
+        $securityGateEnabled = PlatformSetting::visible('security.gate_enabled', true);
+        $securityAdminEmail = PlatformSetting::text('security.admin_email', 'eabventures@gmail.com');
+
         $stats = [
             'users_total' => $users->count(),
             'clients_count' => $users->where('role', 'client')->count(),
@@ -113,6 +118,9 @@ class DeveloperController extends Controller
             'textSettings' => $textSettings,
             'visibilitySettings' => $visibilitySettings,
             'navigationItems' => $navigationItems,
+            'securityCodes' => $securityCodes,
+            'securityGateEnabled' => $securityGateEnabled,
+            'securityAdminEmail' => $securityAdminEmail,
             'users' => $users,
             'companies' => $companies,
             'assessments' => $assessments,
@@ -536,5 +544,69 @@ class DeveloperController extends Controller
         AuditLog::record('menu.reset_defaults', null, null, []);
 
         return back()->with('status', 'All navigation menu items have been restored to platform system defaults.');
+    }
+
+    public function toggleSecurityGate(Request $request)
+    {
+        $enabled = $request->boolean('gate_enabled');
+        PlatformSetting::updateOrCreate(
+            ['key' => 'security.gate_enabled'],
+            [
+                'group' => 'system',
+                'type' => 'boolean',
+                'label' => 'Platform Security Clearance Gate',
+                'value' => $enabled ? '1' : '0',
+                'updated_by' => Auth::id(),
+            ]
+        );
+        PlatformSetting::flushCache();
+        AuditLog::record('developer.security_gate_toggled', null, null, ['enabled' => $enabled]);
+
+        $state = $enabled ? 'ACTIVE & ENFORCED' : 'DISABLED';
+
+        return back()->with('status', "High-End Platform Security Gate is now {$state}.");
+    }
+
+    public function storeSecurityCode(Request $request)
+    {
+        $data = $request->validate([
+            'email' => 'required|email|max:180',
+            'name' => 'nullable|string|max:160',
+            'organization' => 'nullable|string|max:180',
+            'role_requested' => 'nullable|string|in:guest,client,consultant,admin',
+            'max_uses' => 'nullable|integer|min:1|max:1000',
+            'custom_code' => 'nullable|string|min:4|max:32',
+        ]);
+
+        $code = ! empty($data['custom_code'])
+            ? strtoupper(trim($data['custom_code']))
+            : PlatformSecurityCode::generateUniqueCode();
+
+        $sec = PlatformSecurityCode::create([
+            'access_code' => $code,
+            'email' => strtolower(trim($data['email'])),
+            'name' => trim($data['name'] ?? ''),
+            'organization' => trim($data['organization'] ?? ''),
+            'role_requested' => $data['role_requested'] ?? 'client',
+            'request_message' => 'Manually issued by Platform Developer from Master Console.',
+            'delivered_to' => 'eabventures@gmail.com',
+            'status' => 'active',
+            'times_used' => 0,
+            'max_uses' => (int) ($data['max_uses'] ?? 50),
+            'approved_by' => Auth::id(),
+            'expires_at' => now()->addDays(30),
+        ]);
+
+        AuditLog::record('developer.security_code_created', null, null, ['code' => $sec->access_code, 'email' => $sec->email]);
+
+        return back()->with('status', "Generated new Security Access Code: {$sec->access_code} for {$sec->email}.");
+    }
+
+    public function revokeSecurityCode(Request $request, PlatformSecurityCode $code)
+    {
+        $code->update(['status' => 'revoked']);
+        AuditLog::record('developer.security_code_revoked', null, null, ['code' => $code->access_code, 'email' => $code->email]);
+
+        return back()->with('status', "Security Access Code {$code->access_code} has been revoked.");
     }
 }

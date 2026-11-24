@@ -131,6 +131,174 @@
         </form>
     </div>
 </section>
+
+<!-- Section 00.B: Developer Master Control — High-End Security Access Gate & Clearance Codes -->
+<section class="sec-slate" style="background:#0a0f1d;border-bottom:2px solid #f17e01;color:#f8fafc;">
+    <div class="bt-container">
+        <div class="sec-header" style="cursor:pointer;" onclick="toggleSectionCollapse('dev-security-gate-content', 'dev-security-gate-btn', 'dev-security-gate-badge')">
+            <div>
+                <div class="eyebrow" style="color:#ffa033;">00.B · HIGH-END PLATFORM SECURITY GATEWAY &amp; ACCESS CLEARANCE CODES</div>
+                <div style="display:flex;align-items:center;gap:10px;flex-wrap:wrap;">
+                    <h2 style="font-size:22px;color:#ffffff;margin:0;">High-End Security Access &amp; Request Dispatch Engine</h2>
+                    <span class="tag" style="background:rgba(241,126,1,0.2);color:#ffa033;border-color:#f17e01;" id="dev-security-gate-badge">
+                        {{ $securityGateEnabled ? 'GATE ENFORCED (HIGH-SECURITY)' : 'GATE DISABLED (OPEN ACCESS)' }}
+                    </span>
+                </div>
+                <div style="font-size:12px;color:#94a3b8;margin-top:4px;">
+                    Users across all roles (Guests, Clients, Consultants, Admins) are restricted from platform access unless they possess an approved Access Code. The Platform Developer is strictly exempt. Requests are automatically dispatched to <strong>{{ $securityAdminEmail }}</strong>.
+                </div>
+            </div>
+            <div style="display:flex;gap:8px;align-items:center;flex-wrap:wrap;" onclick="event.stopPropagation()">
+                <button type="button" class="btn btn-outline btn-sm" id="dev-security-gate-btn" onclick="toggleSectionCollapse('dev-security-gate-content', 'dev-security-gate-btn', 'dev-security-gate-badge')" style="background:#1e293b;color:#e2e8f0;border-color:#475569;">
+                    − Collapse Section ▲
+                </button>
+            </div>
+        </div>
+
+        <div id="dev-security-gate-content" style="display:block;margin-top:16px;">
+            <!-- Controls Grid: Gate Enforce Toggle & Manual Code Generator -->
+            <div style="display:grid;grid-template-columns:1fr 1.2fr;gap:18px;margin-bottom:20px;">
+                <!-- Card 1: Security Gate Toggle -->
+                <div class="flat-box-dark" style="background:#111827;border:1px solid rgba(255,255,255,0.12);padding:18px;">
+                    <div style="font-size:11px;font-weight:700;text-transform:uppercase;color:#ffa033;letter-spacing:0.06em;margin-bottom:6px;">
+                        Platform Security Gate Enforcement
+                    </div>
+                    <p style="font-size:12.5px;color:#cbd5e1;line-height:1.5;margin:0 0 14px;">
+                        When active, all visitors, clients, consultants, and admins must submit or verify an approved Access Code before browsing. The Platform Developer has unrestricted bypass.
+                    </p>
+                    <form action="{{ route('developer.security.toggle') }}" method="POST" style="display:flex;align-items:center;gap:14px;background:#0a0f1d;padding:12px 14px;border-radius:8px;border:1px solid #334155;">
+                        @csrf
+                        <input type="hidden" name="gate_enabled" value="0">
+                        <label style="display:flex;align-items:center;gap:10px;cursor:pointer;margin:0;color:#f8fafc;font-weight:600;font-size:13px;">
+                            <input type="checkbox" name="gate_enabled" value="1" {{ $securityGateEnabled ? 'checked' : '' }} onchange="this.form.submit()" style="width:20px;height:20px;accent-color:#f17e01;cursor:pointer;">
+                            <span>Enforce High-End Security Gate</span>
+                        </label>
+                        <span class="tag {{ $securityGateEnabled ? 'tag-ok' : 'tag-critical' }}" style="margin-left:auto;">
+                            {{ $securityGateEnabled ? 'ENFORCED' : 'DISABLED' }}
+                        </span>
+                    </form>
+                    <div style="font-size:11.5px;color:#94a3b8;margin-top:10px;">
+                        Dispatches access request notifications directly to: <code style="color:#ffa033;">{{ $securityAdminEmail }}</code>
+                    </div>
+                </div>
+
+                <!-- Card 2: Generate VIP / Instant Access Code -->
+                <div class="flat-box-dark" style="background:#111827;border:1px solid rgba(255,255,255,0.12);padding:18px;">
+                    <div style="font-size:11px;font-weight:700;text-transform:uppercase;color:#ffa033;letter-spacing:0.06em;margin-bottom:6px;">
+                        Manually Issue New Access Clearance Code
+                    </div>
+                    <form action="{{ route('developer.security.codes.store') }}" method="POST">
+                        @csrf
+                        <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:8px;">
+                            <div>
+                                <label style="display:block;font-size:10.5px;color:#cbd5e1;margin-bottom:4px;font-weight:600;">Recipient Email *</label>
+                                <input type="email" name="email" required placeholder="user@company.com" style="width:100%;padding:8px 10px;font-size:12.5px;background:#0a0f1d;color:#fff;border:1px solid #334155;border-radius:6px;">
+                            </div>
+                            <div>
+                                <label style="display:block;font-size:10.5px;color:#cbd5e1;margin-bottom:4px;font-weight:600;">Recipient Name</label>
+                                <input type="text" name="name" placeholder="Kwame Mensah" style="width:100%;padding:8px 10px;font-size:12.5px;background:#0a0f1d;color:#fff;border:1px solid #334155;border-radius:6px;">
+                            </div>
+                        </div>
+                        <div style="display:grid;grid-template-columns:1fr 1fr auto;gap:10px;align-items:flex-end;">
+                            <div>
+                                <label style="display:block;font-size:10.5px;color:#cbd5e1;margin-bottom:4px;font-weight:600;">Assigned Role</label>
+                                <select name="role_requested" style="width:100%;padding:8px 10px;font-size:12.5px;background:#0a0f1d;color:#fff;border:1px solid #334155;border-radius:6px;">
+                                    <option value="client">Client</option>
+                                    <option value="consultant">Consultant</option>
+                                    <option value="admin">Admin</option>
+                                    <option value="guest">Guest</option>
+                                </select>
+                            </div>
+                            <div>
+                                <label style="display:block;font-size:10.5px;color:#cbd5e1;margin-bottom:4px;font-weight:600;">Custom Code (Optional)</label>
+                                <input type="text" name="custom_code" placeholder="BT-SEC-VIP01" style="width:100%;padding:8px 10px;font-size:12.5px;background:#0a0f1d;color:#ffa033;font-weight:700;border:1px solid #334155;border-radius:6px;text-transform:uppercase;">
+                            </div>
+                            <button type="submit" class="btn btn-amber btn-sm" style="height:36px;padding:0 14px;">
+                                Generate Code →
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+
+            <!-- Table: All Issued Security Access Codes -->
+            <div style="background:#111827;border:1px solid rgba(255,255,255,0.12);border-radius:8px;overflow:hidden;">
+                <div style="padding:12px 16px;background:#0f172a;border-bottom:1px solid #334155;display:flex;justify-content:space-between;align-items:center;">
+                    <strong style="color:#ffffff;font-size:13px;">Security Access Clearance Logs &amp; Requests ({{ $securityCodes->count() }})</strong>
+                    <span style="font-size:11px;color:#94a3b8;">Delivered to eabventures@gmail.com</span>
+                </div>
+                <div class="bt-table-wrap">
+                    <table class="bt-table" style="background:#0a0f1d;color:#f8fafc;border:none;">
+                        <thead>
+                            <tr style="background:#1e293b;color:#94a3b8;font-size:11px;text-transform:uppercase;">
+                                <th style="padding:10px 14px;">Access Code</th>
+                                <th style="padding:10px 14px;">Requester &amp; Email</th>
+                                <th style="padding:10px 14px;">Role / Org</th>
+                                <th style="padding:10px 14px;">Request Message</th>
+                                <th style="padding:10px 14px;">Usage</th>
+                                <th style="padding:10px 14px;">Status</th>
+                                <th style="padding:10px 14px;">Issued / Expires</th>
+                                <th style="padding:10px 14px;text-align:right;">Action</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @forelse($securityCodes as $sc)
+                            <tr style="border-bottom:1px solid #1e293b;">
+                                <td style="padding:10px 14px;">
+                                    <code style="font-family:monospace;font-size:13px;font-weight:700;color:#ffa033;background:#0f172a;padding:3px 6px;border-radius:4px;border:1px solid rgba(241,126,1,0.3);">{{ $sc->access_code }}</code>
+                                </td>
+                                <td style="padding:10px 14px;">
+                                    <div style="font-weight:700;color:#ffffff;">{{ $sc->name ?: 'N/A' }}</div>
+                                    <div style="font-size:11.5px;color:#94a3b8;">{{ $sc->email }}</div>
+                                </td>
+                                <td style="padding:10px 14px;font-size:12px;">
+                                    <span class="tag tag-amber" style="font-size:10px;text-transform:uppercase;">{{ $sc->role_requested }}</span>
+                                    <div style="color:#94a3b8;margin-top:2px;">{{ $sc->organization ?: 'Personal / External' }}</div>
+                                </td>
+                                <td style="padding:10px 14px;font-size:12px;max-width:240px;color:#cbd5e1;">
+                                    <div style="white-space:nowrap;overflow:hidden;text-overflow:ellipsis;" title="{{ $sc->request_message }}">
+                                        {{ $sc->request_message ?: 'Manual issue' }}
+                                    </div>
+                                </td>
+                                <td style="padding:10px 14px;font-size:12px;">
+                                    <strong>{{ $sc->times_used }}</strong> <span style="color:#64748b;">/ {{ $sc->max_uses }}</span>
+                                </td>
+                                <td style="padding:10px 14px;">
+                                    <span class="tag {{ $sc->isValid() ? 'tag-ok' : ($sc->status === 'revoked' ? 'tag-critical' : 'tag-warn') }}" style="font-size:10px;">
+                                        {{ strtoupper($sc->status) }}
+                                    </span>
+                                </td>
+                                <td style="padding:10px 14px;font-size:11px;color:#94a3b8;">
+                                    <div>{{ $sc->created_at->format('M d, H:i') }}</div>
+                                    <div>Exp: {{ $sc->expires_at ? $sc->expires_at->format('M d') : 'Never' }}</div>
+                                </td>
+                                <td style="padding:10px 14px;text-align:right;">
+                                    @if($sc->status === 'active')
+                                    <form action="{{ route('developer.security.codes.revoke', $sc) }}" method="POST" style="margin:0;" onsubmit="return confirm('Revoke this access code immediately?')">
+                                        @csrf
+                                        <button type="submit" class="btn btn-outline btn-sm" style="color:#fca5a5;border-color:#ef4444;background:#1e293b;padding:3px 8px;font-size:10px;">
+                                            Revoke
+                                        </button>
+                                    </form>
+                                    @else
+                                    <span style="color:#64748b;font-size:11px;">Inert</span>
+                                    @endif
+                                </td>
+                            </tr>
+                            @empty
+                            <tr>
+                                <td colspan="8" style="padding:24px;text-align:center;color:#94a3b8;">
+                                    No access clearance requests recorded yet. When users submit requests via the Security Access page, they will appear here and in eabventures@gmail.com.
+                                </td>
+                            </tr>
+                            @endforelse
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
 @endif
 
 <!-- Section 2: Solid Cream Band — Show / Hide Platform Components & Cards -->

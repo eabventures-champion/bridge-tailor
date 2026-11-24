@@ -1274,14 +1274,22 @@
                         $dynamicNavItems = \App\Models\NavigationItem::getForCurrentRequest();
                     @endphp
 
-                    @foreach($dynamicNavItems as $navItem)
-                        <a href="{{ $navItem->resolvedUrl() }}"
-                           target="{{ $navItem->target ?: '_self' }}"
-                           class="{{ $navItem->is_cta ? 'bt-nav-cta' : '' }} {{ $navItem->isCurrent() ? 'active' : '' }}">
-                            <span>{{ $navItem->label }}</span>
-                            <svg class="bt-nav-arrow" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="9 18 15 12 9 6"></polyline></svg>
-                        </a>
-                    @endforeach
+                    @if(request()->routeIs('security.gate'))
+                        <div style="display:inline-flex;align-items:center;gap:10px;padding:6px 0;">
+                            <span class="tag" style="background:#0f172a;color:#ffa033;border-color:#f17e01;font-weight:700;font-size:11px;padding:4px 10px;">
+                                🔒 SECURITY CLEARANCE ACTIVE
+                            </span>
+                        </div>
+                    @else
+                        @foreach($dynamicNavItems as $navItem)
+                            <a href="{{ $navItem->resolvedUrl() }}"
+                               target="{{ $navItem->target ?: '_self' }}"
+                               class="{{ $navItem->is_cta ? 'bt-nav-cta' : '' }} {{ $navItem->isCurrent() ? 'active' : '' }}">
+                                <span>{{ $navItem->label }}</span>
+                                <svg class="bt-nav-arrow" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="9 18 15 12 9 6"></polyline></svg>
+                            </a>
+                        @endforeach
+                    @endif
 
                     @auth
                         <a href="{{ route('profile.show') }}" class="bt-mobile-only {{ request()->routeIs('profile.*') ? 'active' : '' }}">

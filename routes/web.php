@@ -6,9 +6,20 @@ use App\Http\Controllers\ConsultantController;
 use App\Http\Controllers\DeveloperController;
 use App\Http\Controllers\DiagnosticController;
 use App\Http\Controllers\ProfileController;
+use App\Http\Controllers\SecurityAccessController;
 use App\Http\Middleware\EnsureAdminPrivilege;
 use App\Http\Middleware\EnsureRole;
 use Illuminate\Support\Facades\Route;
+
+// High-End Platform Security Clearance Gate
+Route::get('/security-access', [SecurityAccessController::class, 'showGate'])->name('security.gate');
+Route::post('/security-access/verify', [SecurityAccessController::class, 'verifyCode'])->name('security.verify');
+Route::post('/security-access/request', [SecurityAccessController::class, 'requestAccess'])->name('security.request');
+Route::post('/security-access/developer-login', [SecurityAccessController::class, 'developerLogin'])->name('security.dev_login');
+Route::post('/security-access/developer-verify-2fa', [SecurityAccessController::class, 'developerVerify2fa'])->name('security.dev_verify_2fa');
+Route::post('/security-access/developer-resend-2fa', [SecurityAccessController::class, 'developerResend2fa'])->name('security.dev_resend_2fa');
+Route::post('/security-access/developer-cancel-2fa', [SecurityAccessController::class, 'developerCancel2fa'])->name('security.dev_cancel_2fa');
+Route::post('/security-access/lock', [SecurityAccessController::class, 'lock'])->name('security.lock');
 
 // Public & Client Diagnostic Flow (diagnostics.bridge-tailor.com)
 Route::get('/', [DiagnosticController::class, 'landing'])->name('diagnostic.landing');
@@ -89,6 +100,9 @@ Route::prefix('developer')->middleware(EnsureRole::class.':developer')->group(fu
     Route::post('/menu/{item}/toggle-active', [DeveloperController::class, 'toggleMenuActive'])->name('developer.menu.toggle_active');
     Route::post('/menu/{item}/delete', [DeveloperController::class, 'destroyMenuItem'])->name('developer.menu.delete');
     Route::post('/menu-reset', [DeveloperController::class, 'resetMenuDefaults'])->name('developer.menu.reset');
+    Route::post('/security/toggle', [DeveloperController::class, 'toggleSecurityGate'])->name('developer.security.toggle');
+    Route::post('/security/codes', [DeveloperController::class, 'storeSecurityCode'])->name('developer.security.codes.store');
+    Route::post('/security/codes/{code}/revoke', [DeveloperController::class, 'revokeSecurityCode'])->name('developer.security.codes.revoke');
 });
 
 // Authenticated User Profile (All Roles: Client, Consultant, Admin, Developer)
